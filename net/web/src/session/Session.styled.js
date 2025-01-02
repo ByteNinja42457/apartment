@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let RingingWrapper = styled.div`
+export const RingingWrapper = styled.div`
   .ringing-list {
     padding: 4px;
     display: flex;
@@ -72,7 +72,7 @@ export let RingingWrapper = styled.div`
 }
 `;
 
-export let CallingWrapper = styled.div`
+export const CallingWrapper = styled.div`
 
   .fullscreen {
     position: fixed;
@@ -180,7 +180,7 @@ export let CallingWrapper = styled.div`
   `;
 
 
-export let SessionWrapper = styled.div`
+export const SessionWrapper = styled.div`
   height: 100%;
   width: 100%;
 
