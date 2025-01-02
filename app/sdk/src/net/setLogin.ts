@@ -19,12 +19,12 @@ export async function setLogin(
   created: number;
   pushSupported: boolean;
 }> {
-  const mfa = code ? `&code=${code}` : '';
-  const endpoint = `http${secure ? 's' : ''}://${node}/account/apps?appName=${appName}&appVersion=${appVersion}&platform=${platform}&deviceToken=${deviceToken}&pushType=${pushType}${mfa}`;
-  const auth = encode(`${username}:${password}`);
-  const headers = new Headers();
+  let mfa = code ? `&code=${code}` : '';
+  let endpoint = `http${secure ? 's' : ''}://${node}/account/apps?appName=${appName}&appVersion=${appVersion}&platform=${platform}&deviceToken=${deviceToken}&pushType=${pushType}${mfa}`;
+  let auth = encode(`${username}:${password}`);
+  let headers = new Headers();
   headers.append('Authorization', 'Basic ' + auth);
-  const login = await fetchWithTimeout(endpoint, {
+  let login = await fetchWithTimeout(endpoint, {
     method: 'POST',
     headers,
     body: JSON.stringify(notifications),
