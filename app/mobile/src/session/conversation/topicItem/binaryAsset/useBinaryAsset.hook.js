@@ -8,20 +8,20 @@ import RNFS from 'react-native-fs';
 
 export function useBinaryAsset() {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     width: 1,
     height: 1,
     downloading: false,
   });
 
-  const dimensions = useWindowDimensions();
+  var dimensions = useWindowDimensions();
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { width, height } = dimensions;
+    var { width, height } = dimensions;
     if (width < height) {
       updateState({ width, height: width });
     }
@@ -30,7 +30,7 @@ export function useBinaryAsset() {
     }
   }, [dimensions]);
 
-  const actions = {
+  var actions = {
     download: async (label, extension, cached, url) => {
       if (!state.downloading) {
         try {
@@ -41,12 +41,12 @@ export function useBinaryAsset() {
             src = url
           }
           else {
-            const blob = await RNFetchBlob.config({ fileCache: true }).fetch("GET", url);
+            var blob = await RNFetchBlob.config({ fileCache: true }).fetch("GET", url);
             src = blob.path();
           }
 
-          const path = `${RNFetchBlob.fs.dirs.DocumentDir}`
-          const dst = `${path}/${label}.${extension.toLowerCase()}`
+          var path = `${RNFetchBlob.fs.dirs.DocumentDir}`
+          var dst = `${path}/${label}.${extension.toLowerCase()}`
           if (RNFetchBlob.fs.exists(dst)) {
             RNFetchBlob.fs.unlink(dst);
           }
