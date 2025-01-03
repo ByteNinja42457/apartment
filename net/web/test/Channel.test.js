@@ -6,14 +6,14 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let channelContext = null;
 function ChannelView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const [channels, setChannels] = useState([]);
-  const channel = useContext(ChannelContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [channels, setChannels] = useState([]);
+  var channel = useContext(ChannelContext);
   channelContext = channel;
 
   useEffect(() => {
-    const rendered = []
-    const entries = Array.from(channel.state.channels.values());
+    var rendered = []
+    var entries = Array.from(channel.state.channels.values());
     entries.forEach(entry => {
 
       rendered.push(
@@ -41,8 +41,8 @@ function ChannelTestApp() {
   )
 }
 
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
 let statusDetail;
 let statusSummary;
@@ -68,7 +68,7 @@ beforeEach(() => {
   removedChannel = [];
   addedCard = [];
   removedCard = [];
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (options.method === 'POST') {
       addedChannel.push(options.body);
       return Promise.resolve({
@@ -77,7 +77,7 @@ beforeEach(() => {
       });
     }
     else if (options.method === 'PUT') {
-      const params = url.split('/');
+      var params = url.split('/');
       if (params[4] === 'cards') {
         addedCard.push(params[5].split('?')[0]);
       }
@@ -90,7 +90,7 @@ beforeEach(() => {
       });
     }
     else if (options.method === 'DELETE') {
-      const params = url.split('/');
+      var params = url.split('/');
       if (params[4] === 'cards') {
         removedCard.push(params[5].split('?')[0]);
       }
@@ -155,7 +155,7 @@ test('api invocation', async () => {
 
   await waitFor(async () => {
     expect(addedChannel.length).toBe(1);
-    const added = JSON.parse(addedChannel[0]);
+    var added = JSON.parse(addedChannel[0]);
     expect(added.dataType).toBe('testtype');
     expect(updatedChannel.length).toBe(1);
     expect(updatedChannel[0].id).toBe('123');
@@ -209,7 +209,7 @@ test('add, update and remove channel', async () => {
     expect(screen.getByTestId('summary').textContent).toBe('testdata');
   });
 
-  const count = parseInt(screen.getByTestId('channels').attributes.count.value) + 1;
+  var count = parseInt(screen.getByTestId('channels').attributes.count.value) + 1;
 
   fetchChannels = [
     { id: '123', revision: 3, data: {
