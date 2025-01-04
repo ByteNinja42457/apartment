@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+export let styles = StyleSheet.create({
   video: {
     height: 72,
   },
