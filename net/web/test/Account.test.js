@@ -6,8 +6,8 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let accountContext = null;
 function AccountView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const account = useContext(AccountContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var account = useContext(AccountContext);
   accountContext = account;
 
   useEffect(() => {
@@ -34,8 +34,8 @@ function AccountTestApp() {
   )
 }
 
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 let fetchStatus;
 let sealSet;
 
@@ -43,7 +43,7 @@ beforeEach(() => {
   fetchStatus = {};
   sealSet = false;
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (url === '/account/seal?agent=abc123') {
       sealSet = true;
       return Promise.resolve({
