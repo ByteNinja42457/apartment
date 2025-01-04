@@ -3,14 +3,14 @@ import { CardContext } from 'context/CardContext';
 
 export function useCardIcon() {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     requested: false,
     offsync: false,
   });
 
-  const card = useContext(CardContext);
+  var card = useContext(CardContext);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -18,7 +18,7 @@ export function useCardIcon() {
     let requested = false;
     let offsync = false;
     card.state.cards.forEach(item => {
-      const status = item.card?.detail?.status;
+      var status = item.card?.detail?.status;
       if (status === 'pending' || status === 'requested') {
         requested = true;
       }
@@ -29,7 +29,7 @@ export function useCardIcon() {
     updateState({ requested, offsync }); 
   }, [card.state]);
 
-  const actions = {};
+  var actions = {};
 
   return { state, actions };
 }
