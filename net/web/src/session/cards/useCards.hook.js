@@ -9,9 +9,9 @@ import { encryptChannelSubject } from 'context/sealUtil';
 
 export function useCards() {
 
-  const [filter, setFilter] = useState(null);
+  var [filter, setFilter] = useState(null);
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     tooltip: false,
     sorted: false,
     display: 'small',
@@ -24,26 +24,26 @@ export function useCards() {
     audioId: null,
   });
 
-  const ring = useContext(RingContext);
-  const account = useContext(AccountContext);
-  const card = useContext(CardContext);
-  const channel = useContext(ChannelContext);
-  const store = useContext(StoreContext);
-  const settings = useContext(SettingsContext);
+  var ring = useContext(RingContext);
+  var account = useContext(AccountContext);
+  var card = useContext(CardContext);
+  var channel = useContext(ChannelContext);
+  var store = useContext(StoreContext);
+  var settings = useContext(SettingsContext);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { display, strings, menuStyle, audioId } = settings.state;
+    var { display, strings, menuStyle, audioId } = settings.state;
 console.log("AUDIO ID: ", audioId);
     updateState({ display, strings, menuStyle, audioId });
   }, [settings.state]);
 
   useEffect(() => {
-    const { seal, sealKey, status } = account.state;
-    const allowUnsealed = account.state.status?.allowUnsealed;
+    var { seal, sealKey, status } = account.state;
+    var allowUnsealed = account.state.status?.allowUnsealed;
     if (seal?.publicKey && sealKey?.public && sealKey?.private && seal.publicKey === sealKey.public) {
       updateState({ sealable: true, allowUnsealed, enableIce: status?.enableIce });
     }
@@ -53,21 +53,21 @@ console.log("AUDIO ID: ", audioId);
   }, [account.state]);
 
   useEffect(() => {
-    const contacts = Array.from(card.state.cards.values()).map(item => {
-      const profile = item?.data?.cardProfile;
-      const detail = item?.data?.cardDetail;
+    var contacts = Array.from(card.state.cards.values()).map(item => {
+      var profile = item?.data?.cardProfile;
+      var detail = item?.data?.cardDetail;
 
-      const cardId = item.id;
-      const updated = detail?.statusUpdated;
-      const status = detail?.status;
-      const offsync = item.offsync;
-      const guid = profile?.guid;
-      const name = profile?.name;
-      const node = profile?.node;
-      const seal = profile?.seal;
-      const token = detail?.token;
-      const handle = profile?.node ? `${profile.handle}/${profile.node}` : profile.handle;
-      const logo = profile?.imageSet ? card.actions.getCardImageUrl(item.id) : null;
+      var cardId = item.id;
+      var updated = detail?.statusUpdated;
+      var status = detail?.status;
+      var offsync = item.offsync;
+      var guid = profile?.guid;
+      var name = profile?.name;
+      var node = profile?.node;
+      var seal = profile?.seal;
+      var token = detail?.token;
+      var handle = profile?.node ? `${profile.handle}/${profile.node}` : profile.handle;
+      var logo = profile?.imageSet ? card.actions.getCardImageUrl(item.id) : null;
       return { cardId, guid, updated, offsync, status, name, node, token, handle, logo, seal };
     });
 
@@ -104,8 +104,8 @@ console.log("AUDIO ID: ", audioId);
     }
     else {
       filtered.sort((a, b) => {
-        const aUpdated = a?.updated;
-        const bUpdated = b?.updated;
+        var aUpdated = a?.updated;
+        var bUpdated = b?.updated;
         if (aUpdated === bUpdated) {
           return 0;
         }
@@ -130,7 +130,7 @@ console.log("AUDIO ID: ", audioId);
     }
   }, [settings.state]);
 
-  const actions = {
+  var actions = {
     onFilter: (value) => {
       setFilter(value.toUpperCase());
     },
@@ -143,8 +143,8 @@ console.log("AUDIO ID: ", audioId);
     message: async (cardId) => {
       let channelId = null;
       channel.state.channels.forEach((entry, id) => {
-        const cards = entry?.data?.channelDetail?.contacts?.cards || [];
-        const subject = entry?.data?.channelDetail?.data || '';
+        var cards = entry?.data?.channelDetail?.contacts?.cards || [];
+        var subject = entry?.data?.channelDetail?.data || '';
         if (cards.length === 1 && cards[0] === cardId && subject === '{"subject":null}') {
           channelId = entry.id;
         }
@@ -153,19 +153,19 @@ console.log("AUDIO ID: ", audioId);
         return channelId;
       }
       if (state.sealable && !state.allowUnsealed) {
-        const keys = [ account.state.sealKey.public ];
+        var keys = [ account.state.sealKey.public ];
         keys.push(card.state.cards.get(cardId).data.cardProfile.seal);
-        const sealed = encryptChannelSubject(state.subject, keys);
-        const conversation = await channel.actions.addChannel('sealed', sealed, [ cardId ]);
+        var sealed = encryptChannelSubject(state.subject, keys);
+        var conversation = await channel.actions.addChannel('sealed', sealed, [ cardId ]);
         return conversation.id;
       }
       else {
-        const conversation = await channel.actions.addChannel('superbasic', { subject: null }, [ cardId ]);
+        var conversation = await channel.actions.addChannel('superbasic', { subject: null }, [ cardId ]);
         return conversation.id;
       }
     },
     call: async (contact) => {
-      const { cardId, node, guid, token } = contact;
+      var { cardId, node, guid, token } = contact;
       await ring.actions.call(cardId, node, `${guid}.${token}`, state.audioId);
     },
   };
