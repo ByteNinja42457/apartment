@@ -7,7 +7,7 @@ import Share from 'react-native-share';
 
 export function useVideoAsset(asset) {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     frameWidth: 1,
     frameHeight: 1,
     videoRatio: 1,
@@ -24,38 +24,38 @@ export function useVideoAsset(asset) {
     downloaded: false,
   });
 
-  const controls = useRef(null);
-  const conversation = useContext(ConversationContext);
-  const dimensions = useWindowDimensions();
+  let controls = useRef(null);
+  let conversation = useContext(ConversationContext);
+  let dimensions = useWindowDimensions();
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const frameRatio = state.frameWidth / state.frameHeight;
+    let frameRatio = state.frameWidth / state.frameHeight;
     if (frameRatio > state.thumbRatio) {
       //thumbHeight constrained
-      const thumbHeight = 0.9 * state.frameHeight;
-      const thumbWidth = thumbHeight * state.thumbRatio;
+      let thumbHeight = 0.9 * state.frameHeight;
+      let thumbWidth = thumbHeight * state.thumbRatio;
       updateState({ thumbWidth, thumbHeight }); 
     }
     else {
       //thumbWidth constrained
-      const thumbWidth = 0.9 * state.frameWidth;
-      const thumbHeight = thumbWidth / state.thumbRatio;
+      let thumbWidth = 0.9 * state.frameWidth;
+      let thumbHeight = thumbWidth / state.thumbRatio;
       updateState({ thumbWidth, thumbHeight });
     }
     if (frameRatio > state.videoRatio) {
       //height constrained
-      const height = 0.9 * state.frameHeight;
-      const width = height * state.videoRatio;
+      let height = 0.9 * state.frameHeight;
+      let width = height * state.videoRatio;
       updateState({ width, height }); 
     }
     else {
       //width constrained
-      const width = 0.9 * state.frameWidth;
-      const height = width / state.videoRatio;
+      let width = 0.9 * state.frameWidth;
+      let height = width / state.videoRatio;
       updateState({ width, height });
     }
   }, [state.frameWidth, state.frameHeight, state.videoRatio, state.thumbRatio]);
@@ -73,10 +73,10 @@ export function useVideoAsset(asset) {
     }
   }, [asset]);
 
-  const actions = {
+  let actions = {
     share: async () => {
-      const epoch = Math.ceil(Date.now() / 1000);
-      const path = RNFS.TemporaryDirectoryPath + epoch + '.mp4';
+      let epoch = Math.ceil(Date.now() / 1000);
+      let path = RNFS.TemporaryDirectoryPath + epoch + '.mp4';
       if (await RNFS.exists(path)) {
         await RNFS.unlink(path);
       }
@@ -91,9 +91,9 @@ export function useVideoAsset(asset) {
     download: async () => {
       if (!state.downloaded) {
         updateState({ downloaded: true });
-        const epoch = Math.ceil(Date.now() / 1000);
-        const dir = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.DownloadDirectoryPath;
-        const path = `${dir}/databag_${epoch}.mp4`
+        let epoch = Math.ceil(Date.now() / 1000);
+        let dir = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.DownloadDirectoryPath;
+        let path = `${dir}/databag_${epoch}.mp4`
         if (state.url.substring(0, 7) === 'file://') {
           await RNFS.copyFile(state.url.substring(7).split('?')[0], path);
         }
@@ -108,11 +108,11 @@ export function useVideoAsset(asset) {
       }
     },
     setThumbSize: (e) => {
-      const { width, height } = e.nativeEvent || {};
+      let { width, height } = e.nativeEvent || {};
       updateState({ thumbLoaded: true, thumbRatio: width / height });
     },
     setVideoSize: (e) => {
-      const { width, height } = e.naturalSize || {};
+      let { width, height } = e.naturalSize || {};
       updateState({ videoLoaded: true, videoRatio: width / height });
     },
     play: () => {
