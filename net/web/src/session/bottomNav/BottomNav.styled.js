@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export const BottomNavWrapper = styled.div`
+export let BottomNavWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
