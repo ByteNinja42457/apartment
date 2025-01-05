@@ -6,8 +6,8 @@ import { ProfileContextProvider, ProfileContext } from 'context/ProfileContext';
 import * as fetchUtil from 'api/fetchUtil';
 
 function ProfileView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const profile = useContext(ProfileContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var profile = useContext(ProfileContext);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
@@ -38,18 +38,18 @@ function ProfileTestApp() {
   )
 }
 
-const realUseContext = React.useContext;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realUseContext = React.useContext;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 let identity = { };
 
 beforeEach(() => {
-  const mockUseContext = jest.fn().mockImplementation((ctx) => {
+  var mockUseContext = jest.fn().mockImplementation((ctx) => {
     return useTestStoreContext();
   });
   React.useContext = mockUseContext;
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (options.method === 'PUT') {
       identity = JSON.parse(options.body);
     }
@@ -77,7 +77,7 @@ test('testing', async () => {
 
   await act(async () => {
     identity = { name: 'jester' };
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await profile.actions.setRevision(1);
   });
@@ -88,7 +88,7 @@ test('testing', async () => {
 
   await act(async () => {
     identity = { name: 'tester', image: 'abc123' };
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setRevision(2);
   });
 
@@ -99,7 +99,7 @@ test('testing', async () => {
 
   await act(async () => {
     identity = { name: 'jester' };
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setRevision(2);
   });
 
@@ -109,13 +109,13 @@ test('testing', async () => {
   });
 
   await act(async () => {
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.clearSession();
   });
 
   await act(async () => {
     identity = { name: 'jester' };
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
   });
 
@@ -125,7 +125,7 @@ test('testing', async () => {
   });
 
   await act(async () => {
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setRevision(3);
   });
 
@@ -135,7 +135,7 @@ test('testing', async () => {
   });
 
   await act(async () => {
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     for (let i = 0; i < 1024; i++) {
       identity = { revision: i };
       await profile.actions.setRevision(i);  
@@ -147,7 +147,7 @@ test('testing', async () => {
   });
 
   await act(async () => {
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setProfileData("vesper", "sf", "dweb"); 
     await profile.actions.setRevision(1024);
   });
@@ -156,11 +156,11 @@ test('testing', async () => {
     expect(screen.getByTestId('name').props.children).toBe("vesper");
   });
   
-  const renderCount = screen.getByTestId('profile').props.renderCount;
+  var renderCount = screen.getByTestId('profile').props.renderCount;
 
   await act(async () => {
     identity = { name: 'renderer' };
-    const profile = screen.getByTestId('profile').props.profile;
+    var profile = screen.getByTestId('profile').props.profile;
     await profile.actions.setRevision(2048);
   });
 
