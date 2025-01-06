@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export const SelectItemWrapper = styled.div`
+export let SelectItemWrapper = styled.div`
   color: ${props => props.theme.mainText};
 
   .active {
@@ -57,7 +57,7 @@ export const SelectItemWrapper = styled.div`
   }
 `
 
-export const Markup = styled.div`
+export let Markup = styled.div`
   background-color: ${Colors.connected};
   border-radius: 8px;
   width: 8px;
