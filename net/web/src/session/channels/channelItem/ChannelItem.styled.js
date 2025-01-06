@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ChannelItemWrapper = styled.div`
+export let ChannelItemWrapper = styled.div`
   height: 48px;
   width: 100%;
   display: flex;
@@ -80,7 +80,7 @@ export const ChannelItemWrapper = styled.div`
   }
 `
 
-export const Markup = styled.div`
+export let Markup = styled.div`
   position: absolute;
   right: 0;
   border-radius: 8px;
