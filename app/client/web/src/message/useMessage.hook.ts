@@ -4,46 +4,46 @@ import { AppContext } from '../context/AppContext'
 import { ContextType } from '../context/ContextType'
 
 export function useMessage() {
-  const app = useContext(AppContext) as ContextType
-  const display = useContext(DisplayContext) as ContextType
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType
+  let display = useContext(DisplayContext) as ContextType
+  let [state, setState] = useState({
     strings: display.state.strings,
     timeFormat: display.state.timeFormat,
     dateFormat: display.state.dateFormat,
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    const { strings, timeFormat, dateFormat } = display.state
+    let { strings, timeFormat, dateFormat } = display.state
     updateState({ strings, timeFormat, dateFormat })
   }, [display.state])
 
-  const actions = {
+  let actions = {
     block: async (topicId: string) => {
-      const focus = app.state.focus
+      let focus = app.state.focus
       if (focus) {
         await focus.setBlockTopic(topicId)
       }
     },
     flag: async (topicId: string) => {
-      const focus = app.state.focus
+      let focus = app.state.focus
       if (focus) {
         await focus.flagTopic(topicId)
       }
     },
     remove: async (topicId: string) => {
-      const focus = app.state.focus
+      let focus = app.state.focus
       if (focus) {
         await focus.removeTopic(topicId)
       }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     saveSubject: async (topicId: string, sealed: boolean, subject: any) => {
-      const focus = app.state.focus
+      let focus = app.state.focus
       if (focus) {
         await focus.setTopicSubject(
           topicId,
@@ -55,9 +55,9 @@ export function useMessage() {
       }
     },
     getTimestamp: (created: number) => {
-      const now = Math.floor(new Date().getTime() / 1000)
-      const date = new Date(created * 1000)
-      const offset = now - created
+      let now = Math.floor(new Date().getTime() / 1000)
+      let date = new Date(created * 1000)
+      let offset = now - created
       if (offset < 43200) {
         if (state.timeFormat === '12h') {
           return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
