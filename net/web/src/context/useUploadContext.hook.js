@@ -2,24 +2,24 @@ import { useState, useRef } from 'react';
 import axios from 'axios';
 import Resizer from "react-image-file-resizer";
 
-const ENCRYPTED_BLOCK_SIZE = (256 * 1024);
-const IMAGE_SCALE_SIZE = (128 * 1024);
-const GIF_TYPE = 'image/gif';
-const WEBP_TYPE = 'image/webp';
+var ENCRYPTED_BLOCK_SIZE = (256 * 1024);
+var IMAGE_SCALE_SIZE = (128 * 1024);
+var GIF_TYPE = 'image/gif';
+var WEBP_TYPE = 'image/webp';
 
 export function useUploadContext() {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     progress: new Map(),
   });
-  const channels = useRef(new Map());
-  const index = useRef(0);
+  var channels = useRef(new Map());
+  var index = useRef(0);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   };
 
-  const updateComplete = (channel, topic) => {
+  var updateComplete = (channel, topic) => {
     let topics = channels.current.get(channel);
     if (topics) {
       topics.delete(topic);
@@ -27,7 +27,7 @@ export function useUploadContext() {
     updateProgress();
   }
 
-  const updateProgress = () => {
+  var updateProgress = () => {
     let progress = new Map();
     channels.current.forEach((topics, channel) => {
       let assets = [];
@@ -50,10 +50,10 @@ export function useUploadContext() {
     updateState({ progress });
   }
 
-  const abort = (channelId, topicId) => {
-    const channel = channels.current.get(channelId);
+  var abort = (channelId, topicId) => {
+    var channel = channels.current.get(channelId);
     if (channel) {
-      const topic = channel.get(topicId);
+      var topic = channel.get(topicId);
       if (topic) {
         topic.cancel.abort();
         channel.delete(topicId);
@@ -62,18 +62,18 @@ export function useUploadContext() {
     }
   }
 
-  const actions = {
+  var actions = {
     addTopic: (token, channelId, topicId, files, success, failure, contact) => {
       if (contact) {
-        const { server, cardId } = contact;
+        var { server, cardId } = contact;
 
         let host = "";
         if (server) {
           host = `https://${server}`
         }
 
-        const controller = new AbortController();
-        const entry = {
+        var controller = new AbortController();
+        var entry = {
           index: index.current,
           baseUrl: `${host}/content/channels/${channelId}/topics/${topicId}/`,
           urlParams: `?contact=${token}`,
@@ -86,17 +86,17 @@ export function useUploadContext() {
           cancel: controller,
         }
         index.current += 1;
-        const key = `${cardId}:${channelId}`;
+        var key = `${cardId}:${channelId}`;
         if (!channels.current.has(key)) {
           channels.current.set(key, new Map());
         }
-        const topics = channels.current.get(key);
+        var topics = channels.current.get(key);
         topics.set(topicId, entry);
         upload(entry, updateProgress, () => { updateComplete(key, topicId) });
       }
       else {
-        const controller = new AbortController();
-        const entry = {
+        var controller = new AbortController();
+        var entry = {
           index: index.current,
           baseUrl: `/content/channels/${channelId}/topics/${topicId}/`,
           urlParams: `?agent=${token}`,
@@ -109,11 +109,11 @@ export function useUploadContext() {
           cancel: controller,
         }
         index.current += 1;
-        const key = `:${channelId}`;
+        var key = `:${channelId}`;
         if (!channels.current.has(key)) {
           channels.current.set(key, new Map());
         }
-        const topics = channels.current.get(key);
+        var topics = channels.current.get(key);
         topics.set(topicId, entry);
         upload(entry, updateProgress, () => { updateComplete(key, topicId) } );
       }
@@ -127,8 +127,8 @@ export function useUploadContext() {
       }
     },
     clearErrors: (cardId, channelId) => {
-      const key = cardId ? `${cardId}:${channelId}` : `:${channelId}`;
-      const topics = channels.current.get(key);
+      var key = cardId ? `${cardId}:${channelId}` : `:${channelId}`;
+      var topics = channels.current.get(key);
       if (topics) {
         topics.forEach((topic, topicId) => {
           if (topic.error) {
@@ -156,7 +156,7 @@ export function useUploadContext() {
 function getImageThumb(data) {
   return new Promise((resolve, reject) => {
     if ((data.type === GIF_TYPE || data.type === WEBP_TYPE) && data.size < IMAGE_SCALE_SIZE) {
-      const reader = new FileReader();
+      var reader = new FileReader();
       reader.readAsDataURL(data);
       reader.onload = function () {
         resolve(reader.result);
@@ -176,7 +176,7 @@ function getImageThumb(data) {
 
 function getVideoThumb(data, pos) {
   return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(data);
+    var url = URL.createObjectURL(data);
     var video = document.createElement("video");
     var timeupdate = function (ev) {
       video.removeEventListener("timeupdate", timeupdate);
@@ -228,23 +228,23 @@ async function upload(entry, update, complete) {
     complete();
   }
   else {
-    const file = entry.files.shift();
+    var file = entry.files.shift();
     entry.active = {};
     try {
       if (file.encrypted) {
-        const { size, getEncryptedBlock, position, label, extension, image, video, audio, binary } = file;
-        const { data, type } = image ? { data: image, type: 'image' } : video ? { data: video, type: 'video' } : audio ? { data: audio, type: 'audio' } : { data: binary, type: 'binary' }
-        const thumb = await getThumb(data, type, position);
-        const parts = [];
+        var { size, getEncryptedBlock, position, label, extension, image, video, audio, binary } = file;
+        var { data, type } = image ? { data: image, type: 'image' } : video ? { data: video, type: 'video' } : audio ? { data: audio, type: 'audio' } : { data: binary, type: 'binary' }
+        var thumb = await getThumb(data, type, position);
+        var parts = [];
         for (let pos = 0; pos < size; pos += ENCRYPTED_BLOCK_SIZE) {
-          const len = pos + ENCRYPTED_BLOCK_SIZE > size ? size - pos : ENCRYPTED_BLOCK_SIZE;
-          const { blockEncrypted, blockIv } = await getEncryptedBlock(pos, len);
-          const part = await axios.post(`${entry.baseUrl}blocks${entry.urlParams}`, blockEncrypted, {
+          var len = pos + ENCRYPTED_BLOCK_SIZE > size ? size - pos : ENCRYPTED_BLOCK_SIZE;
+          var { blockEncrypted, blockIv } = await getEncryptedBlock(pos, len);
+          var part = await axios.post(`${entry.baseUrl}blocks${entry.urlParams}`, blockEncrypted, {
             headers: {'Content-Type': 'text/plain'},
             signal: entry.cancel.signal,
             onUploadProgress: (ev) => {
-              const { loaded, total } = ev;
-              const partLoaded = pos + Math.floor(len * loaded / total);
+              var { loaded, total } = ev;
+              var partLoaded = pos + Math.floor(len * loaded / total);
               entry.active = { loaded: partLoaded, total: size }
               update();
             }
@@ -256,13 +256,13 @@ async function upload(entry, update, complete) {
         });
       }
       else if (file.image) {
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('asset', file.image);
         let transform = encodeURIComponent(JSON.stringify(["ithumb;photo", "ilg;photo"]));
         let asset = await axios.post(`${entry.baseUrl}assets${entry.urlParams}&transforms=${transform}`, formData, {
           signal: entry.cancel.signal,
           onUploadProgress: (ev) => {
-            const { loaded, total } = ev;
+            var { loaded, total } = ev;
             entry.active = { loaded, total }
             update();
           },
@@ -275,14 +275,14 @@ async function upload(entry, update, complete) {
         });
       }
       else if (file.video) {
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('asset', file.video);
         let thumb = 'vthumb;video;' + file.position;
         let transform = encodeURIComponent(JSON.stringify(["vlq;video", "vhd;video", thumb]));
         let asset = await axios.post(`${entry.baseUrl}assets${entry.urlParams}&transforms=${transform}`, formData, {
           signal: entry.cancel.signal,
           onUploadProgress: (ev) => {
-            const { loaded, total } = ev;
+            var { loaded, total } = ev;
             entry.active = { loaded, total }
             update();
           },
@@ -296,13 +296,13 @@ async function upload(entry, update, complete) {
         });
       }
       else if (file.audio) {
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('asset', file.audio);
         let transform = encodeURIComponent(JSON.stringify(["acopy;audio"]));
         let asset = await axios.post(`${entry.baseUrl}assets${entry.urlParams}&transforms=${transform}`, formData, {
           signal: entry.cancel.signal,
           onUploadProgress: (ev) => {
-            const { loaded, total } = ev;
+            var { loaded, total } = ev;
             entry.active = { loaded, total }
             update();
           },
@@ -315,12 +315,12 @@ async function upload(entry, update, complete) {
         });
       }
       else if (file.binary) {
-        const formData = new FormData();
+        var formData = new FormData();
         formData.append('asset', file.binary);
         let asset = await axios.post(`${entry.baseUrl}blocks${entry.urlParams}&body=multipart`, formData, {
           signal: entry.cancel.signal,
           onUploadProgress: (ev) => {
-            const { loaded, total } = ev;
+            var { loaded, total } = ev;
             entry.active = { loaded, total }
             update();
           },
