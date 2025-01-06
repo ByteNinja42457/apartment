@@ -2,31 +2,31 @@ import { useEffect, useState } from 'react';
 
 export function useStoreContext() {
 
-  let [state, setState] = useState({});
+  const [state, setState] = useState({});
 
-  let resetState = () => {
+  const resetState = () => {
     setState((s) => {
       localStorage.setItem('store', JSON.stringify({}));
       return {}
     });
   };
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => {
-      let store = { ...s, ...value };
+      const store = { ...s, ...value };
       localStorage.setItem('store', JSON.stringify(store));
       return store;
     });
   };
 
   useEffect(() => {
-    let store = localStorage.getItem('store');
+    const store = localStorage.getItem('store');
     if (store != null) {
       updateState({ ...JSON.parse(store) });
     }
   }, []);
 
-  let actions = {
+  const actions = {
     clear: () => {
       resetState();
     },
