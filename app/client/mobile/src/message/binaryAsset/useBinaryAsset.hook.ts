@@ -6,9 +6,9 @@ import {MediaAsset} from '../../conversation/Conversation';
 import {Download} from '../../download';
 
 export function useBinaryAsset(topicId: string, asset: MediaAsset) {
-  const app = useContext(AppContext) as ContextType;
-  const display = useContext(DisplayContext) as ContextType;
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let [state, setState] = useState({
     strings: display.state.strings,
     dataUrl: null,
     loading: false,
@@ -16,21 +16,21 @@ export function useBinaryAsset(topicId: string, asset: MediaAsset) {
     loadPercent: 0,
     failed: false,
   });
-  const cancelled = useRef(false);
+  let cancelled = useRef(false);
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  const actions = {
+  let actions = {
     cancelLoad: () => {
       cancelled.current = true;
     },
     download: async () => {
       try {
         updateState({failed: false});
-        const extension = asset.binary?.extension || asset.encrypted?.extension;
-        const name = asset.binary?.label || asset.encrypted?.label;
+        let extension = asset.binary?.extension || asset.encrypted?.extension;
+        let name = asset.binary?.label || asset.encrypted?.label;
         await Download(state.dataUrl, name, extension);
       } catch (err) {
         console.log(err);
@@ -38,13 +38,13 @@ export function useBinaryAsset(topicId: string, asset: MediaAsset) {
       }
     },
     loadBinary: async () => {
-      const {focus} = app.state;
-      const assetId = asset.binary ? asset.binary.data : asset.encrypted ? asset.encrypted.parts : null;
+      let {focus} = app.state;
+      let assetId = asset.binary ? asset.binary.data : asset.encrypted ? asset.encrypted.parts : null;
       if (focus && assetId != null && !state.loading && !state.dataUrl) {
         cancelled.current = false;
         updateState({loading: true, loadPercent: 0});
         try {
-          const dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
+          let dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
             updateState({loadPercent});
             return !cancelled.current;
           });
