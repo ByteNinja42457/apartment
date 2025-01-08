@@ -9,32 +9,32 @@ import { getChannelSubjectLogo } from 'context/channelUtil';
 import { getLanguageStrings } from 'constants/Strings';
 
 export function useSharing() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     strings: getLanguageStrings(),
     channels: [],
   });
 
-  const channel = useContext(ChannelContext);
-  const card = useContext(CardContext);
-  const account = useContext(AccountContext);
-  const profile = useContext(ProfileContext);
+  var channel = useContext(ChannelContext);
+  var card = useContext(CardContext);
+  var account = useContext(AccountContext);
+  var profile = useContext(ProfileContext);
  
-  const resync = useRef(false); 
-  const syncing = useRef(false);
+  var resync = useRef(false); 
+  var syncing = useRef(false);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const setChannelItem = async (cardId, channelId, item) => {
-    const timestamp = item.summary.lastTopic.created;
+  var setChannelItem = async (cardId, channelId, item) => {
+    var timestamp = item.summary.lastTopic.created;
 
     // decrypt subject and message
     let locked = false;
     let unlocked = false;
     if (item.detail.dataType === 'sealed') {
       locked = true;
-      const seals = getChannelSeals(item.detail.data);
+      var seals = getChannelSeals(item.detail.data);
       if (isUnsealed(seals, account.state.sealKey)) {
         unlocked = true;
       }
@@ -49,7 +49,7 @@ export function useSharing() {
     if (item.detail.dataType === 'superbasic') {
       if (item.summary.lastTopic.dataType === 'superbasictopic') {
         try {
-          const data = JSON.parse(item.summary.lastTopic.data);
+          var data = JSON.parse(item.summary.lastTopic.data);
           if (typeof data.text === 'string') {
             message = data.text;
           }
@@ -60,8 +60,8 @@ export function useSharing() {
       }
     }
 
-    const profileGuid = profile.state?.identity?.guid;
-    const { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl, state.strings);
+    var profileGuid = profile.state?.identity?.guid;
+    var { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl, state.strings);
 
     return { cardId, channelId, subject, message, logo, timestamp, locked, unlocked };
   }
@@ -70,14 +70,14 @@ export function useSharing() {
     syncChannels();
   }, [account.state, card.state, channel.state]);
 
-  const syncChannels = async () => {
+  var syncChannels = async () => {
     if (syncing.current) {
       resync.current = true;
     }
     else {
       syncing.current = true;
 
-      const items = [];
+      var items = [];
       channel.state.channels.forEach((item, channelId) => {
         items.push({ channelId, channelItem: item });
       });
@@ -86,20 +86,20 @@ export function useSharing() {
           items.push({ cardId, channelId, channelItem });
         });
       });
-      const channels = [];
+      var channels = [];
       for (let i = 0; i < items.length; i++) {
-        const { cardId, channelId, channelItem } = items[i];
+        var { cardId, channelId, channelItem } = items[i];
         channels.push(await setChannelItem(cardId, channelId, channelItem));
       }
-      const filtered = channels.filter(item => {
+      var filtered = channels.filter(item => {
         if (!item.locked || item.unlocked) {
           return true;
         }
         return false;
       });
-      const sorted = filtered.sort((a, b) => {
-        const aCreated = a?.timestamp;
-        const bCreated = b?.timestamp;
+      var sorted = filtered.sort((a, b) => {
+        var aCreated = a?.timestamp;
+        var bCreated = b?.timestamp;
         if (aCreated === bCreated) {
           return 0;
         }
@@ -118,7 +118,7 @@ export function useSharing() {
     }
   };
 
-  const actions = {
+  var actions = {
   };
 
   return { state, actions };
