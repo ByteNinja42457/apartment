@@ -1,4 +1,4 @@
-export let Config = {
+export const Config = {
   tabbedWidth: 650,
 };
 
