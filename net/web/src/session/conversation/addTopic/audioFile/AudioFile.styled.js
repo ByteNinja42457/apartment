@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let AudioFileWrapper = styled.div`
+export const AudioFileWrapper = styled.div`
   position: relative;
   height: 100%;
 
