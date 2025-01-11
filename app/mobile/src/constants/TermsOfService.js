@@ -1,4 +1,4 @@
-export const tos = {
+export var tos = {
   en: `
 Thank you joining the Databag community! These Terms of Service (the “Terms”) cover your rights and obligations relating to your access and use of the Databag services, including but not limited to Databag (collectively, the “Service”). All references to “you”, “your”, or “user” refers to the user of the Service. In addition to these Terms, please review the Databag Privacy Policy, which describes our practices related to collection and use of your information. These Terms apply to our Privacy Policy as well. By using the Service, you represent and agree that you have read, understand, and agree to be bound by both these Terms and our Privacy Policy as binding agreements. Further, you agree that these Terms and our Privacy Policy apply to your past use, if any.
 
