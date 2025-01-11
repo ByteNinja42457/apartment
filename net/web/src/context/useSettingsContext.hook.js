@@ -4,7 +4,7 @@ import { en, fr, sp, pt, de, ru } from 'constants/Strings';
 
 export function useSettingsContext() {
 
-  const [state, setState] = useState({ 
+  var [state, setState] = useState({ 
     display: null,
     width: null,
     height: null,
@@ -24,15 +24,15 @@ export function useSettingsContext() {
     videoInputs: [],
   });
 
-  const SMALL_MEDIUM = 650;
-  const MEDIUM_LARGE = 1000;
-  const LARGE_XLARGE = 1600;
+  var SMALL_MEDIUM = 650;
+  var MEDIUM_LARGE = 1000;
+  var LARGE_XLARGE = 1600;
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   };
 
-  const handleResize = () => {
+  var handleResize = () => {
     if (window.innerWidth < SMALL_MEDIUM) {
       updateState({ display: 'small', width: window.innerWidth, height: window.innerHeight });
     }
@@ -47,18 +47,18 @@ export function useSettingsContext() {
     }
   };
 
-  const getDevices = async (type) => {
+  var getDevices = async (type) => {
     if (!navigator || !navigator.mediaDevices) {
       return [];
     }
 
-    const filtered = new Map();
-    const devices = await navigator.mediaDevices.enumerateDevices();
+    var filtered = new Map();
+    var devices = await navigator.mediaDevices.enumerateDevices();
 
     devices.filter(item => item.kind === type + 'input').forEach(item => {
       if (item) {
-        const label = item.label ? item.label : state.strings.integrated;
-        const entry = filtered.get(item.groupId);
+        var label = item.label ? item.label : state.strings.integrated;
+        var entry = filtered.get(item.groupId);
         if (entry) {
           if (item.label && label.length < entry.label.length) {
             filtered.set(item.groupId, { value: item.deviceId, label });
@@ -90,7 +90,7 @@ export function useSettingsContext() {
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
 
-    const scheme = localStorage.getItem('color_scheme');
+    var scheme = localStorage.getItem('color_scheme');
     if (scheme === 'dark') {
       updateState({ theme: scheme, scheme: 'dark', colors: DarkTheme, menuStyle: { backgroundColor: DarkTheme.modalArea, color: DarkTheme.mainText } });
     }
@@ -106,7 +106,7 @@ export function useSettingsContext() {
       }
     }
 
-    const timeFormat = localStorage.getItem('time_format');
+    var timeFormat = localStorage.getItem('time_format');
     if (timeFormat === '24h') {
       updateState({ timeFormat });
     }
@@ -114,7 +114,7 @@ export function useSettingsContext() {
       updateState({ timeFormat: '12h' });
     }
 
-    const dateFormat = localStorage.getItem('date_format');
+    var dateFormat = localStorage.getItem('date_format');
     if (dateFormat === 'dd/mm') {
       updateState({ dateFormat });
     }
@@ -122,7 +122,7 @@ export function useSettingsContext() {
       updateState({ dateFormat: 'mm/dd' });
     }
 
-    const language = localStorage.getItem('language');
+    var language = localStorage.getItem('language');
     if (language && language.startsWith('fr')) {
       updateState({ language: 'fr', strings: fr, themes: [{ value: 'dark', label: fr.dark }, { value: 'light', label: fr.light }]});
     }
@@ -142,7 +142,7 @@ export function useSettingsContext() {
       updateState({ language: 'ru', strings: ru, themes: [{ value: 'dark', label: ru.dark }, { value: 'light', label: ru.light }]});
     }
     else {
-      const browser = navigator.language;
+      var browser = navigator.language;
       if (browser && browser.startsWith('fr')) {
         updateState({ language: null, strings: fr, themes: [{ value: 'dark', label: fr.dark }, { value: 'light', label: fr.light }]});
       }
@@ -163,8 +163,8 @@ export function useSettingsContext() {
       }
     }
 
-    const audioId = localStorage.getItem('audio_input');
-    const videoId = localStorage.getItem('video_input');
+    var audioId = localStorage.getItem('audio_input');
+    var videoId = localStorage.getItem('video_input');
     updateState({ audioId, videoId });
 
     return () => {
@@ -174,7 +174,7 @@ export function useSettingsContext() {
     // eslint-disable-next-line
   }, []);
 
-  const actions = {
+  var actions = {
     setTheme: (theme) => {
       if (theme === 'dark') {
         localStorage.setItem('color_scheme', 'dark');
@@ -221,7 +221,7 @@ export function useSettingsContext() {
       }
       else {
         localStorage.removeItem('language');
-        const browser = navigator.language;
+        var browser = navigator.language;
         if (browser && browser.startsWith('fr')) {
           updateState({ language: null, strings: fr, themes: [{ value: 'dark', label: fr.dark }, { value: 'light', label: fr.light }]});
         }
