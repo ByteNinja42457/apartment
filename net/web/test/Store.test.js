@@ -5,8 +5,8 @@ import { StoreContext, StoreContextProvider } from 'context/StoreContext';
 
 let storeContext = null;
 function StoreView() {
-  var [renderCount, setRenderCount] = useState(0);
-  var store = useContext(StoreContext);
+  const [renderCount, setRenderCount] = useState(0);
+  const store = useContext(StoreContext);
   storeContext = store;
 
   useEffect(() => {
