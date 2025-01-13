@@ -73,7 +73,7 @@ export type CardItem = {
   channelRevision: number;
 };
 
-export let defaultCardItem = {
+export const defaultCardItem = {
   revision: 0,
   profile: {
     revision: 0,
@@ -111,7 +111,7 @@ export type ChannelItem = {
   unsealedSummary: string | null;
 };
 
-export let defaultChannelItem = {
+export const defaultChannelItem = {
   summary: {
     revision: 0,
     sealed: false,
@@ -171,7 +171,7 @@ export type AssetItem = {
   inline?: string;
 };
 
-export let defaultTopicItem = {
+export const defaultTopicItem = {
   detail: {
     revision: 0,
     guid: '',
