@@ -15,7 +15,7 @@ import { removeAdminMFAuth } from 'api/removeAdminMFAuth';
 
 export function useDashboard(token) {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     domain: "",
     accountStorage: null,
     keyType: null,
@@ -54,11 +54,11 @@ export function useDashboard(token) {
     mfaCode: '',
   });
 
-  const navigate = useNavigate();
-  const app = useContext(AppContext);
-  const settings = useContext(SettingsContext);
+  let navigate = useNavigate();
+  let app = useContext(AppContext);
+  let settings = useContext(SettingsContext);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -74,16 +74,16 @@ export function useDashboard(token) {
   }, [app]);
 
   useEffect(() => {
-    const { strings, colors, menuStyle } = settings.state;
+    let { strings, colors, menuStyle } = settings.state;
     updateState({ strings, colors, menuStyle });
   }, [settings.state]);
 
-  const actions = {
+  let actions = {
     setCreateLink: async () => {
       if (!state.createBusy) {
         updateState({ busy: true });
         try {
-          const create = await addAccountCreate(app.state.adminToken)
+          let create = await addAccountCreate(app.state.adminToken)
           updateState({ createToken: create, showCreate: true });
         }
         catch (err) {
@@ -130,7 +130,7 @@ export function useDashboard(token) {
       updateState({ enableIce });
     },
     setIceServiceFlag: (iceServiceFlag) => {
-      const iceUrl = iceServiceFlag ? 'https://rtc.live.cloudflare.com/v1/turn/keys/%%TURN_KEY_ID%%/credentials/generate' : '';
+      let iceUrl = iceServiceFlag ? 'https://rtc.live.cloudflare.com/v1/turn/keys/%%TURN_KEY_ID%%/credentials/generate' : '';
       updateState({ iceServiceFlag, iceUrl });
     },
     setIceUrl: (iceUrl) => {
@@ -162,7 +162,7 @@ export function useDashboard(token) {
       updateState({ mfaCode: code });
     },
     enableMFA: async () => {
-      const mfa = await addAdminMFAuth(app.state.adminToken);
+      let mfa = await addAdminMFAuth(app.state.adminToken);
       updateState({ mfaModal: true, mfaError: false, mfaText: mfa.secretText, mfaImage: mfa.secretImage, mfaCode: '' });
     },
     disableMFA: async () => {
@@ -175,7 +175,7 @@ export function useDashboard(token) {
         updateState({ mfaAuthEnabled: true, mfaModal: false });
       }
       catch (err) {
-        const msg = err?.message;
+        let msg = err?.message;
         updateState({ mfaError: msg });
       }
     },
@@ -186,10 +186,10 @@ export function useDashboard(token) {
       if (!state.busy) {
         updateState({ busy: true });
         try {
-          const { domain, keyType, accountStorage, pushSupported, transformSupported, allowUnsealed, enableImage, enableAudio, enableVideo, enableBinary, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit } = state;
-          const storage = accountStorage * 1073741824;
-          const iceService = iceServiceFlag ? 'cloudflare' : '';
-          const config = { domain,  accountStorage: storage, keyType, enableImage, enableAudio, enableVideo, enableBinary, pushSupported, transformSupported, allowUnsealed, enableIce, iceService, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit };
+          let { domain, keyType, accountStorage, pushSupported, transformSupported, allowUnsealed, enableImage, enableAudio, enableVideo, enableBinary, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit } = state;
+          let storage = accountStorage * 1073741824;
+          let iceService = iceServiceFlag ? 'cloudflare' : '';
+          let config = { domain,  accountStorage: storage, keyType, enableImage, enableAudio, enableVideo, enableBinary, pushSupported, transformSupported, allowUnsealed, enableIce, iceService, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit };
           await setNodeConfig(app.state.adminToken, config);
           updateState({ busy: false, showSettings: false });
         }
@@ -202,13 +202,13 @@ export function useDashboard(token) {
     },
   };
 
-  const syncConfig = async () => {
+  let syncConfig = async () => {
     try {
-      const enabled = await getAdminMFAuth(app.state.adminToken);
-      const config = await getNodeConfig(app.state.adminToken);
-      const { accountStorage, domain, keyType, pushSupported, transformSupported, allowUnsealed, enableImage, enableAudio, enableVideo, enableBinary, enableIce, iceService, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit } = config;
-      const iceServiceFlag = iceService === 'cloudflare';
-      const storage = Math.ceil(accountStorage / 1073741824);
+      let enabled = await getAdminMFAuth(app.state.adminToken);
+      let config = await getNodeConfig(app.state.adminToken);
+      let { accountStorage, domain, keyType, pushSupported, transformSupported, allowUnsealed, enableImage, enableAudio, enableVideo, enableBinary, enableIce, iceService, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit } = config;
+      let iceServiceFlag = iceService === 'cloudflare';
+      let storage = Math.ceil(accountStorage / 1073741824);
       updateState({ mfAuthSet: true, mfaAuthEnabled: enabled, configError: false, domain, accountStorage: storage, keyType, enableImage, enableAudio, enableVideo, enableBinary, pushSupported, transformSupported, allowUnsealed, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword, enableOpenAccess, openAccessLimit });
     }
     catch(err) {
@@ -217,9 +217,9 @@ export function useDashboard(token) {
     }
   };
 
-  const syncAccounts = async () => {
+  let syncAccounts = async () => {
     try {
-      const accounts = await getNodeAccounts(app.state.adminToken);
+      let accounts = await getNodeAccounts(app.state.adminToken);
       accounts.sort((a, b) => {
         if (a.handle < b.handle) {
           return -1;
