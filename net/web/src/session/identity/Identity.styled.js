@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const IdentityWrapper = styled.div`
+export let IdentityWrapper = styled.div`
   width: 100%;
   height: 48px;
   display: flex;
@@ -61,7 +61,7 @@ export const IdentityWrapper = styled.div`
   }
 `;
 
-export const LogoutContent = styled.div`
+export let LogoutContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,11 +73,11 @@ export const LogoutContent = styled.div`
   }
 `
 
-export const ErrorNotice = styled.div`
+export let ErrorNotice = styled.div`
   color: ${props => props.theme.alertText};
 `
 
-export const InfoNotice = styled.div`
+export let InfoNotice = styled.div`
   color: ${props => props.theme.linkText};
 `
 
