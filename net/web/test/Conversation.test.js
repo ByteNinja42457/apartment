@@ -6,9 +6,9 @@ import { ChannelContextProvider, ChannelContext } from 'context/ChannelContext';
 import { ConversationContextProvider, ConversationContext } from 'context/ConversationContext';
 import * as fetchUtil from 'api/fetchUtil';
 
-let cardContext = null;
-let channelContext = null;
-let conversationContext = null;
+var cardContext = null;
+var channelContext = null;
+var conversationContext = null;
 function ConversationView() {
   const [renderCount, setRenderCount] = useState(0);
   const [topics, setTopics] = useState([]);
@@ -56,18 +56,18 @@ function ConversationTestApp() {
 const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
 const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
-let beginSet;
-let endSet;
-let statusCards;
-let fetchCards;
-let statusChannels;
-let fetchChannels;
-let statusCardChannels;
-let fetchCardChannels;
-let statusTopics;
-let fetchTopics;
-let statusTopic;
-let fetchTopic;
+var beginSet;
+var endSet;
+var statusCards;
+var fetchCards;
+var statusChannels;
+var fetchChannels;
+var statusCardChannels;
+var fetchCardChannels;
+var statusTopics;
+var fetchTopics;
+var statusTopic;
+var fetchTopic;
 beforeEach(() => {
 
   statusCards = 200;
@@ -398,7 +398,7 @@ test('load more', async() => {
   });
 
   fetchTopics = [];
-  for (let i = 0; i < 32; i++) {
+  for (var i = 0; i < 32; i++) {
     fetchTopics.push({ id: i.toString(), revision: 5, data: {
       detailRevision: 3,
       tagRevision: 0,
@@ -425,7 +425,7 @@ test('load more', async() => {
   });
 
   fetchTopics = [];
-  for (let i = 100; i < 111; i++) {
+  for (var i = 100; i < 111; i++) {
     fetchTopics.push({ id: i.toString(), revision: 5, data: {
       detailRevision: 3,
       tagRevision: 0,
