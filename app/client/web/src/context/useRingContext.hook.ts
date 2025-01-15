@@ -3,26 +3,26 @@ import { AppContext } from '../context/AppContext'
 import { ContextType } from '../context/ContextType'
 import { Link, type Card } from 'databag-client-sdk'
 
-const CLOSE_POLL_MS = 100
+let CLOSE_POLL_MS = 100
 
 export function useRingContext() {
-  const app = useContext(AppContext) as ContextType
-  const call = useRef(null as { peer: RTCPeerConnection; link: Link; candidates: RTCIceCandidate[] } | null)
-  const localStream = useRef(null as null | MediaStream)
-  const localAudio = useRef(null as null | MediaStreamTrack)
-  const localVideo = useRef(null as null | MediaStreamTrack)
-  const remoteStream = useRef(null as null | MediaStream)
-  const updatingPeer = useRef(false)
+  let app = useContext(AppContext) as ContextType
+  let call = useRef(null as { peer: RTCPeerConnection; link: Link; candidates: RTCIceCandidate[] } | null)
+  let localStream = useRef(null as null | MediaStream)
+  let localAudio = useRef(null as null | MediaStreamTrack)
+  let localVideo = useRef(null as null | MediaStreamTrack)
+  let remoteStream = useRef(null as null | MediaStream)
+  let updatingPeer = useRef(false)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const peerUpdate = useRef([] as { type: string; data?: any }[])
-  const connecting = useRef(false)
-  const closing = useRef(false)
-  const passive = useRef(false)
-  const passiveTracks = useRef([] as { track: MediaStreamTrack; stream: MediaStream }[])
-  const [ringing, setRinging] = useState([] as { cardId: string; callId: string }[])
-  const [cards, setCards] = useState([] as Card[])
+  let peerUpdate = useRef([] as { type: string; data?: any }[])
+  let connecting = useRef(false)
+  let closing = useRef(false)
+  let passive = useRef(false)
+  let passiveTracks = useRef([] as { track: MediaStreamTrack; stream: MediaStream }[])
+  let [ringing, setRinging] = useState([] as { cardId: string; callId: string }[])
+  let [cards, setCards] = useState([] as Card[])
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     calls: [] as { callId: string; cardId: string }[],
     calling: null as null | Card,
     localStream: null as null | MediaStream,
@@ -38,16 +38,16 @@ export function useRingContext() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    const calls = ringing.map((ring) => ({ callId: ring.callId, card: cards.find((card) => ring.cardId === card.cardId) })).filter((ring) => ring.card && !ring.card.blocked)
+    let calls = ringing.map((ring) => ({ callId: ring.callId, card: cards.find((card) => ring.cardId === card.cardId) })).filter((ring) => ring.card && !ring.card.blocked)
     updateState({ calls })
   }, [ringing, cards])
 
-  const getAudioStream = async (audioId: null | string) => {
+  let getAudioStream = async (audioId: null | string) => {
     try {
       if (audioId) {
         return await navigator.mediaDevices.getUserMedia({ video: false, audio: { deviceId: audioId } })
@@ -58,7 +58,7 @@ export function useRingContext() {
     return await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
   }
 
-  const getVideoStream = async (videoId: null | string) => {
+  let getVideoStream = async (videoId: null | string) => {
     try {
       if (videoId) {
         return await navigator.mediaDevices.getUserMedia({ video: { deviceId: videoId }, audio: false })
@@ -69,10 +69,10 @@ export function useRingContext() {
     return await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
   }
 
-  const linkStatus = async (status: string) => {
+  let linkStatus = async (status: string) => {
     if (call.current) {
       if (status === 'connected') {
-        const connectedTime = Math.floor(new Date().getTime() / 1000)
+        let connectedTime = Math.floor(new Date().getTime() / 1000)
         updateState({ connected: true, connectedTime })
         try {
           await actions.enableAudio()
@@ -87,18 +87,18 @@ export function useRingContext() {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updatePeer = async (type: string, data?: any) => {
+  let updatePeer = async (type: string, data?: any) => {
     peerUpdate.current.push({ type, data })
 
     if (!updatingPeer.current) {
       updatingPeer.current = true
       while (!closing.current && call.current && peerUpdate.current.length > 0) {
-        const { peer, link, candidates } = call.current
-        const { type, data } = peerUpdate.current.shift() || { type: '' }
+        let { peer, link, candidates } = call.current
+        let { type, data } = peerUpdate.current.shift() || { type: '' }
         try {
           switch (type) {
             case 'negotiate': {
-              const description = await peer.createOffer()
+              let description = await peer.createOffer()
               await peer.setLocalDescription(description)
               await link.sendMessage({ description })
               break
@@ -108,19 +108,19 @@ export function useRingContext() {
               break
             case 'message':
               if (data.description) {
-                const offer = new RTCSessionDescription(data.description)
+                let offer = new RTCSessionDescription(data.description)
                 await peer.setRemoteDescription(offer)
                 if (data.description.type === 'offer') {
-                  const description = await peer.createAnswer()
+                  let description = await peer.createAnswer()
                   await peer.setLocalDescription(description)
                   link.sendMessage({ description })
                 }
-                for (const candidate of candidates) {
+                for (let candidate of candidates) {
                   await peer.addIceCandidate(candidate)
                 }
                 call.current.candidates = []
               } else if (data.candidate) {
-                const candidate = new RTCIceCandidate(data.candidate)
+                let candidate = new RTCIceCandidate(data.candidate)
                 if (peer.remoteDescription == null) {
                   candidates.push(candidate)
                 } else {
@@ -169,15 +169,15 @@ export function useRingContext() {
     }
   }
 
-  const setup = async (link: Link, card: Card, polite: boolean) => {
+  let setup = async (link: Link, card: Card, polite: boolean) => {
     passive.current = polite
     localAudio.current = null
     localVideo.current = null
     localStream.current = null
     remoteStream.current = new MediaStream()
-    const ice = link.getIce()
-    const peer = transmit(ice)
-    const candidates = [] as RTCIceCandidate[]
+    let ice = link.getIce()
+    let peer = transmit(ice)
+    let candidates = [] as RTCIceCandidate[]
     call.current = { peer, link, candidates }
     link.setStatusListener(linkStatus)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -197,13 +197,13 @@ export function useRingContext() {
     })
   }
 
-  const cleanup = async () => {
+  let cleanup = async () => {
     closing.current = true
     while (updatingPeer.current || connecting.current) {
       await new Promise((r) => setTimeout(r, CLOSE_POLL_MS))
     }
     if (call.current) {
-      const { peer, link } = call.current
+      let { peer, link } = call.current
       peer.close()
       link.close()
       call.current = null
@@ -223,8 +223,8 @@ export function useRingContext() {
     closing.current = false
   }
 
-  const transmit = (ice: { urls: string; username: string; credential: string }[]) => {
-    const peerConnection = new RTCPeerConnection({ iceServers: ice })
+  let transmit = (ice: { urls: string; username: string; credential: string }[]) => {
+    let peerConnection = new RTCPeerConnection({ iceServers: ice })
     peerConnection.addEventListener('connectionstatechange', (event) => {
       console.log(peerConnection, event)
     })
@@ -251,15 +251,15 @@ export function useRingContext() {
 
   useEffect(() => {
     if (app.state.session) {
-      const setRing = (ringing: { cardId: string; callId: string }[]) => {
+      let setRing = (ringing: { cardId: string; callId: string }[]) => {
         setRinging(ringing)
       }
-      const setContacts = (cards: Card[]) => {
+      let setContacts = (cards: Card[]) => {
         setCards(cards)
       }
-      const ring = app.state.session.getRing()
+      let ring = app.state.session.getRing()
       ring.addRingingListener(setRinging)
-      const contact = app.state.session.getContact()
+      let contact = app.state.session.getContact()
       contact.addCardListener(setContacts)
       return () => {
         ring.removeRingingListener(setRing)
@@ -269,16 +269,16 @@ export function useRingContext() {
     }
   }, [app.state.session])
 
-  const actions = {
+  let actions = {
     setFullscreen: (fullscreen: boolean) => {
       updateState({ fullscreen })
     },
     ignore: async (callId: string, card: Card) => {
-      const ring = app.state.session.getRing()
+      let ring = app.state.session.getRing()
       await ring.ignore(card.cardId, callId)
     },
     decline: async (callId: string, card: Card) => {
-      const ring = app.state.session.getRing()
+      let ring = app.state.session.getRing()
       await ring.decline(card.cardId, callId)
     },
     end: async () => {
@@ -290,9 +290,9 @@ export function useRingContext() {
       }
       try {
         connecting.current = true
-        const { cardId, node } = card
-        const ring = app.state.session.getRing()
-        const link = await ring.accept(cardId, callId, node)
+        let { cardId, node } = card
+        let ring = app.state.session.getRing()
+        let link = await ring.accept(cardId, callId, node)
         await setup(link, card, true)
         connecting.current = false
       } catch (err) {
@@ -306,8 +306,8 @@ export function useRingContext() {
       }
       try {
         connecting.current = true
-        const contact = app.state.session.getContact()
-        const link = await contact.callCard(card.cardId)
+        let contact = app.state.session.getContact()
+        let link = await contact.callCard(card.cardId)
         await setup(link, card, false)
         connecting.current = false
       } catch (err) {
@@ -322,8 +322,8 @@ export function useRingContext() {
       if (!localAudio.current) {
         try {
           connecting.current = true
-          const audioStream = await getAudioStream(null)
-          const audioTrack = audioStream.getTracks().find((track: MediaStreamTrack) => track.kind === 'audio')
+          let audioStream = await getAudioStream(null)
+          let audioTrack = audioStream.getTracks().find((track: MediaStreamTrack) => track.kind === 'audio')
           if (!audioTrack) {
             throw new Error('no available audio track')
           }
@@ -354,8 +354,8 @@ export function useRingContext() {
       if (!localVideo.current) {
         try {
           connecting.current = true
-          const videoStream = await getVideoStream(null)
-          const videoTrack = videoStream.getTracks().find((track: MediaStreamTrack) => track.kind === 'video')
+          let videoStream = await getVideoStream(null)
+          let videoTrack = videoStream.getTracks().find((track: MediaStreamTrack) => track.kind === 'video')
           if (videoTrack) {
             updatePeer('local_track', { track: videoTrack, stream: videoStream })
           }
