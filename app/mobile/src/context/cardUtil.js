@@ -9,7 +9,7 @@ export function getCardByGuid(cards, guid) {
 }
 
 export function getProfileByGuid(cards, guid) {
-  const { cardId, name, handle, imageSet, node } = getCardByGuid(cards, guid) || {}
+  var { cardId, name, handle, imageSet, node } = getCardByGuid(cards, guid) || {}
   return { cardId, name, handle, imageSet, node }
 }
 
