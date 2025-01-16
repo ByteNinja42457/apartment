@@ -109,21 +109,21 @@ export class OfflineStore implements Store {
     return await this.sql.get(`SELECT ${fields.join(', ')} FROM ${table}_${guid}`);
   }
   private async getFilteredOrderedValues(guid: string, table: string, fields: string[], where: {field: string, value: string}[], order: string[], limit: number): Promise<any[]> {
-    let sort = order.map(field => (field + ' DESC')).join(', ')
-    let condition = `${where.map(({field}) => (field + '=?')).join(' AND ')}`;
-    let params = where.map(({value}) => value);
+    const sort = order.map(field => (field + ' DESC')).join(', ')
+    const condition = `${where.map(({field}) => (field + '=?')).join(' AND ')}`;
+    const params = where.map(({value}) => value);
     return await this.sql.get(`SELECT ${fields.join(', ')} FROM ${table}_${guid} WHERE ${condition} ORDER BY ${sort} LIMIT ${limit}`, params);
   }
   private async getFilteredValues(guid: string, table: string, fields: string[], where: {field: string, value: string}[]): Promise<any[]> {
-    let condition = `${where.map(({field}) => (field + '=?')).join(' AND ')}`;
-    let params = where.map(({value}) => value);
+    const condition = `${where.map(({field}) => (field + '=?')).join(' AND ')}`;
+    const params = where.map(({value}) => value);
     return await this.sql.get(`SELECT ${fields.join(', ')} FROM ${table}_${guid} WHERE ${condition}`, params);
   }
 
   private async getFilteredOrderedOffsetValues(guid: string, table: string, fields: string[], where: {field: string, value: string}[], order: string[], primaryOffset: {field: string, value: number}, secondaryOffset: {field: string, value: string}, limit: number): Promise<any[]> {
-    let sort = order.map(field => (field + ' DESC')).join(', ')
-    let condition = `${where.map(({field}) => (field + '=?')).join(' AND ')} AND (${primaryOffset.field}<? OR (${primaryOffset.field}=? AND ${secondaryOffset.field}<?))`
-    let params = [...where.map(({value}) => value), primaryOffset.value, primaryOffset.value, secondaryOffset.value];
+    const sort = order.map(field => (field + ' DESC')).join(', ')
+    const condition = `${where.map(({field}) => (field + '=?')).join(' AND ')} AND (${primaryOffset.field}<? OR (${primaryOffset.field}=? AND ${secondaryOffset.field}<?))`
+    const params = [...where.map(({value}) => value), primaryOffset.value, primaryOffset.value, secondaryOffset.value];
     return await this.sql.get(`SELECT ${fields.join(', ')} FROM ${table}_${guid} WHERE ${condition} ORDER BY ${sort} LIMIT ${limit}`, params);
   }
 
@@ -153,8 +153,8 @@ export class OfflineStore implements Store {
 
   private async getAppValue(guid: string, id: string, unset: any): Promise<any> {
     try {
-      let params = [`${guid}::${id}`];
-      let rows = await this.sql.get(`SELECT * FROM app WHERE key=?`, params);
+      const params = [`${guid}::${id}`];
+      const rows = await this.sql.get(`SELECT * FROM app WHERE key=?`, params);
       if (rows.length == 1 && rows[0].value != null) {
         return JSON.parse(rows[0].value);
       }
@@ -174,8 +174,8 @@ export class OfflineStore implements Store {
 
   private async getTableValue(guid: string, table: string, field: string, where: {field: string, value: string}[], unset: any): Promise<any> {
     try {
-      let params = where.map(({value}) => value);
-      let rows = await this.sql.get(`SELECT ${field} FROM ${table}_${guid} WHERE ${where.map(column => (column.field + '=?')).join(' AND ')}`, params)
+      const params = where.map(({value}) => value);
+      const rows = await this.sql.get(`SELECT ${field} FROM ${table}_${guid} WHERE ${where.map(column => (column.field + '=?')).join(' AND ')}`, params)
       if (rows.length == 1 && rows[0][field]) {
         return this.parse(rows[0][field]);
       }
@@ -186,12 +186,12 @@ export class OfflineStore implements Store {
   }
 
   private async setTableValue(guid: string, table: string, record: {field: string, value: any}[], where: {field: string, value: string}[]): Promise<void> {
-    let params = [...record.map(({value}) => JSON.stringify(value)), ...where.map(({value}) => value)]
+    const params = [...record.map(({value}) => JSON.stringify(value)), ...where.map(({value}) => value)]
     await this.sql.set(`UPDATE ${table}_${guid} SET ${record.map(({field}) => (field + '=?')).join(', ')} WHERE ${where.map(({field}) => (field + '=?')).join(' AND ')}`, params);
   }
 
   private async clearTableValue(guid: string, table: string, field: string, where: {field: string, value: string}[]): Promise<void> {
-    let params = where.map(({value}) => (value));
+    const params = where.map(({value}) => (value));
     await this.sql.set(`UPDATE ${table}_${guid} SET ${field}=null WHERE ${where.map(column => (column.field + '=?' + column.value)).join(' AND ')}`, params);
   }
 
@@ -236,7 +236,7 @@ export class OfflineStore implements Store {
   }
 
   public async getMarkers(guid: string, type: string): Promise<{id: string, value: string}[]> {
-    let markers = await this.getFilteredValues(guid, 'marker', ['value', 'id'], [{ field: 'type', value: type }]);
+    const markers = await this.getFilteredValues(guid, 'marker', ['value', 'id'], [{ field: 'type', value: type }]);
     return markers.map(marker => ({ id: marker.id, value: marker.value }));
   }
 
@@ -305,7 +305,7 @@ export class OfflineStore implements Store {
   }
 
   public async getContacts(guid: string): Promise<{ cardId: string; item: CardItem }[]> {
-    let cards = await this.getValues(guid, 'card', [
+    const cards = await this.getValues(guid, 'card', [
       'revision',
       'card_id',
       'profile',
@@ -328,9 +328,9 @@ export class OfflineStore implements Store {
   }
 
   public async addContactCard(guid: string, cardId: string, item: CardItem): Promise<void> {
-    let fields = ['card_id', 'revision', 'profile', 'detail', 'profile_revision', 'article_revision', 'channel_revision'];
-    let { revision, profile, detail, profileRevision, articleRevision, channelRevision } = item;
-    let value = [cardId, revision, JSON.stringify(profile), JSON.stringify(detail), profileRevision, articleRevision, channelRevision];
+    const fields = ['card_id', 'revision', 'profile', 'detail', 'profile_revision', 'article_revision', 'channel_revision'];
+    const { revision, profile, detail, profileRevision, articleRevision, channelRevision } = item;
+    const value = [cardId, revision, JSON.stringify(profile), JSON.stringify(detail), profileRevision, articleRevision, channelRevision];
     await this.addValue(guid, 'card', fields, value);
   }
 
@@ -365,7 +365,7 @@ export class OfflineStore implements Store {
   }
 
   public async getContactCardChannels(guid: string): Promise<{ cardId: string; channelId: string; item: ChannelItem }[]> {
-    let channels = await this.getValues(guid, 'card_channel', ['card_id', 'channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary']);
+    const channels = await this.getValues(guid, 'card_channel', ['card_id', 'channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary']);
     return channels.map((channel) => ({
       cardId: channel.card_id,
       channelId: channel.channel_id,
@@ -380,9 +380,9 @@ export class OfflineStore implements Store {
   }
 
   public async addContactCardChannel(guid: string, cardId: string, channelId: string, item: ChannelItem): Promise<void> {
-    let fields = ['card_id', 'channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary'];
-    let { detail, unsealedDetail, summary, unsealedSummary } = item;
-    let value = [cardId, channelId, JSON.stringify(detail), JSON.stringify(unsealedDetail), JSON.stringify(summary), JSON.stringify(unsealedSummary)];
+    const fields = ['card_id', 'channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary'];
+    const { detail, unsealedDetail, summary, unsealedSummary } = item;
+    const value = [cardId, channelId, JSON.stringify(detail), JSON.stringify(unsealedDetail), JSON.stringify(summary), JSON.stringify(unsealedSummary)];
     await this.addValue(guid, 'card_channel', fields, value);
   }
 
@@ -424,7 +424,7 @@ export class OfflineStore implements Store {
   }
 
   public async getContentChannels(guid: string): Promise<{ channelId: string; item: ChannelItem }[]> {
-    let channels = await this.getValues(guid, 'channel', ['channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary']);
+    const channels = await this.getValues(guid, 'channel', ['channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary']);
     return channels.map((channel) => ({
       channelId: channel.channel_id,
       item: {
@@ -438,9 +438,9 @@ export class OfflineStore implements Store {
   }
 
   public async addContentChannel(guid: string, channelId: string, item: ChannelItem): Promise<void> {
-    let fields = ['channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary'];
-    let { detail, unsealedDetail, summary, unsealedSummary } = item;
-    let value = [channelId, JSON.stringify(detail), JSON.stringify(unsealedDetail), JSON.stringify(summary), JSON.stringify(unsealedSummary)];
+    const fields = ['channel_id', 'detail', 'unsealed_detail', 'summary', 'unsealed_summary'];
+    const { detail, unsealedDetail, summary, unsealedSummary } = item;
+    const value = [channelId, JSON.stringify(detail), JSON.stringify(unsealedDetail), JSON.stringify(summary), JSON.stringify(unsealedSummary)];
     await this.addValue(guid, 'channel', fields, value);
   }
 
@@ -472,10 +472,10 @@ export class OfflineStore implements Store {
     await this.setTableValue(guid, 'channel', [{field: 'sync', value: sync}], [{field: 'channel_id', value: channelId}]);
   }
   public async getContentChannelTopics(guid: string, channelId: string, count: number, offset: { topicId: string, position: number } | null): Promise<{ topicId: string, item: TopicItem }[]> {
-    let fields = ['topic_id', 'detail', 'unsealed_detail', 'position'];
-    let where = [{field: 'channel_id', value: channelId}];
-    let order = ['position', 'topic_id'];
-    let topics = offset ?
+    const fields = ['topic_id', 'detail', 'unsealed_detail', 'position'];
+    const where = [{field: 'channel_id', value: channelId}];
+    const order = ['position', 'topic_id'];
+    const topics = offset ?
       await this.getFilteredOrderedOffsetValues(guid, 'channel_topic', fields, where, order, {field: 'position', value: offset.position}, {field: 'topic_id', value: offset.topicId}, count) :
       await this.getFilteredOrderedValues(guid, 'channel_topic', fields, where, order, count); 
     return topics.map((topic) => ({
@@ -488,9 +488,9 @@ export class OfflineStore implements Store {
     })); 
   }
   public async addContentChannelTopic(guid: string, channelId: string, topicId: string, item: TopicItem): Promise<void> { 
-    let fields = ['channel_id', 'topic_id', 'detail', 'unsealed_detail', 'position'];
-    let { detail, unsealedDetail, position } = item;
-    let value = [channelId, topicId, JSON.stringify(detail), JSON.stringify(unsealedDetail), position];
+    const fields = ['channel_id', 'topic_id', 'detail', 'unsealed_detail', 'position'];
+    const { detail, unsealedDetail, position } = item;
+    const value = [channelId, topicId, JSON.stringify(detail), JSON.stringify(unsealedDetail), position];
     await this.addValue(guid, 'channel_topic', fields, value);
   }
   public async removeContentChannelTopic(guid: string, channelId: string, topicId: string): Promise<void> {
@@ -509,10 +509,10 @@ export class OfflineStore implements Store {
     return await this.setTableValue(guid, 'card_channel', [{field: 'sync', value: sync}], [{field: 'card_id', value: cardId}, {field: 'channel_id', value: channelId}]);
   }
   public async getContactCardChannelTopics(guid: string, cardId: string, channelId: string, count: number, offset: { topicId: string, position: number } | null): Promise<{ topicId: string, item: TopicItem }[]> {
-    let fields = ['topic_id', 'detail', 'unsealed_detail', 'position'];
-    let where = [{field: 'card_id', value: cardId}, {field: 'channel_id', value: channelId}];
-    let order = ['position', 'topic_id'];
-    let topics = offset ? 
+    const fields = ['topic_id', 'detail', 'unsealed_detail', 'position'];
+    const where = [{field: 'card_id', value: cardId}, {field: 'channel_id', value: channelId}];
+    const order = ['position', 'topic_id'];
+    const topics = offset ? 
       await this.getFilteredOrderedOffsetValues(guid, 'card_channel_topic', fields, where, order, {field: 'position', value: offset.position}, {field: 'topic_id', value: offset.topicId}, count) :
       await this.getFilteredOrderedValues(guid, 'card_channel_topic', fields, where, order, count);
     return topics.map((topic) => ({
@@ -525,9 +525,9 @@ export class OfflineStore implements Store {
     })); 
   }
   public async addContactCardChannelTopic(guid: string, cardId: string, channelId: string, topicId: string, item: TopicItem): Promise<void> {
-    let fields = ['card_id', 'channel_id', 'topic_id', 'detail', 'unsealed_detail', 'position'];
-    let { detail, unsealedDetail, position } = item;
-    let value = [cardId, channelId, topicId, JSON.stringify(detail), JSON.stringify(unsealedDetail), position];
+    const fields = ['card_id', 'channel_id', 'topic_id', 'detail', 'unsealed_detail', 'position'];
+    const { detail, unsealedDetail, position } = item;
+    const value = [cardId, channelId, topicId, JSON.stringify(detail), JSON.stringify(unsealedDetail), position];
     await this.addValue(guid, 'card_channel_topic', fields, value);
   }
   public async removeContactCardChannelTopic(guid: string, cardId: string, channelId: string, topicId: string): Promise<void> {
@@ -551,7 +551,7 @@ export class OnlineStore implements Store {
   }
 
   private async getAppValue(guid: string, id: string, unset: any): Promise<any> {
-    let value = await this.web.getValue(`${guid}::${id}`);
+    const value = await this.web.getValue(`${guid}::${id}`);
     if (value != null) {
       return JSON.parse(value);
     }
@@ -571,9 +571,9 @@ export class OnlineStore implements Store {
   }
 
   public async setMarker(guid: string, type: string, id: string, value: string) {
-    let markers = await this.getAppValue(guid, `marker_${type}`, []);
+    const markers = await this.getAppValue(guid, `marker_${type}`, []);
     try {
-      let updated = markers.filter((marker: {id: string, value: string}) => (marker.id !== id));
+      const updated = markers.filter((marker: {id: string, value: string}) => (marker.id !== id));
       updated.push({ id, value });
       this.setAppValue(guid, `marker_${type}`, updated);
     } catch (err) {
@@ -582,9 +582,9 @@ export class OnlineStore implements Store {
   }
 
   public async clearMarker(guid: string, type: string, id: string) {
-    let markers = await this.getAppValue(guid, `marker_${type}`, []);
+    const markers = await this.getAppValue(guid, `marker_${type}`, []);
     try {
-      let updated = markers.filter((marker: {id: string, value: string}) => (marker.id !== id));
+      const updated = markers.filter((marker: {id: string, value: string}) => (marker.id !== id));
       this.setAppValue(guid, `marker_${type}`, updated);
     } catch (err) {
       this.log.error(err);
@@ -592,7 +592,7 @@ export class OnlineStore implements Store {
   }
 
   public async getMarkers(guid: string, type: string): Promise<{ id: string, value: string }[]> {
-    let markers = await this.getAppValue(guid, `marker_${type}`, []);
+    const markers = await this.getAppValue(guid, `marker_${type}`, []);
     try {
       return markers.map((marker: {id: string, value: string}) => ({ id: marker.id, value: marker.value }));
     } catch (err) {
