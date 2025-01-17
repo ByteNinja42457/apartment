@@ -11,16 +11,16 @@ import * as fetchUtil from 'api/fetchUtil';
 let profileHook;
 let profileContext;
 function ProfileView() {
-  const { state, actions } = useProfile();
+  var { state, actions } = useProfile();
 
-  const [name, setName] = useState();
-  const [renderCount, setRenderCount] = useState(0);
-  const profile = useContext(ProfileContext);
+  var [name, setName] = useState();
+  var [renderCount, setRenderCount] = useState(0);
+  var profile = useContext(ProfileContext);
   profileContext = profile;
   profileHook = actions;
 
   useEffect(() => {
-    const rendered = [];
+    var rendered = [];
     setName(state.name);
     setRenderCount(renderCount + 1);
   }, [state]);
@@ -47,11 +47,11 @@ function ProfileTestApp() {
 }
 
 let updated;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
   let updated = false; 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (options.method === 'PUT') {
       updated = true;
     }
