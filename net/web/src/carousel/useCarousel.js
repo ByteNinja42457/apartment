@@ -3,16 +3,16 @@ import { useNavigate } from 'react-router-dom';
 
 export function useCarousel() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
   });
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
-  let actions = {
+  const actions = {
   };
 
   return { state, actions };
