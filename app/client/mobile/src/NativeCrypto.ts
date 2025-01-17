@@ -6,54 +6,54 @@ import {RSA} from 'react-native-rsa-native';
 export class NativeCrypto implements Crypto {
   // generate salt for pbk function
   public async pbkdfSalt(): Promise<{saltHex: string}> {
-    const salt = CryptoJS.lib.WordArray.random(128 / 8);
-    const saltHex = salt.toString();
+    var salt = CryptoJS.lib.WordArray.random(128 / 8);
+    var saltHex = salt.toString();
     return {saltHex};
   }
 
   // generate aes key with pbkdf2
   public async pbkdfKey(saltHex: string, password: string): Promise<{aesKeyHex: string}> {
-    const salt = CryptoJS.enc.Hex.parse(saltHex);
-    const aes = CryptoJS.PBKDF2(password, salt, {
+    var salt = CryptoJS.enc.Hex.parse(saltHex);
+    var aes = CryptoJS.PBKDF2(password, salt, {
       keySize: 256 / 32,
       iterations: 1024,
       hasher: CryptoJS.algo.SHA1,
     });
-    const aesKeyHex = aes.toString();
+    var aesKeyHex = aes.toString();
     return {aesKeyHex};
   }
 
   // generate random aes key
   public async aesKey(): Promise<{aesKeyHex: string}> {
-    const aesKey = CryptoJS.lib.WordArray.random(256 / 8);
-    const aesKeyHex = aesKey.toString();
+    var aesKey = CryptoJS.lib.WordArray.random(256 / 8);
+    var aesKeyHex = aesKey.toString();
     return {aesKeyHex};
   }
 
   // generate iv to use to aes function
   public async aesIv(): Promise<{ivHex: string}> {
-    const iv = CryptoJS.lib.WordArray.random(128 / 8);
-    const ivHex = iv.toString();
+    var iv = CryptoJS.lib.WordArray.random(128 / 8);
+    var ivHex = iv.toString();
     return {ivHex};
   }
 
   // encrypt data with aes key and iv
   public async aesEncrypt(data: string, ivHex: string, aesKeyHex: string): Promise<{encryptedDataB64: string}> {
-    const iv = CryptoJS.enc.Hex.parse(ivHex);
-    const key = CryptoJS.enc.Hex.parse(aesKeyHex);
-    const encrypted = CryptoJS.AES.encrypt(data, key, {iv});
-    const encryptedDataB64 = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+    var iv = CryptoJS.enc.Hex.parse(ivHex);
+    var key = CryptoJS.enc.Hex.parse(aesKeyHex);
+    var encrypted = CryptoJS.AES.encrypt(data, key, {iv});
+    var encryptedDataB64 = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
     return {encryptedDataB64};
   }
 
   // decrypt data with aes key and iv
   public async aesDecrypt(encryptedDataB64: string, ivHex: string, aesKeyHex: string): Promise<{data: string}> {
-    const iv = CryptoJS.enc.Hex.parse(ivHex);
-    const key = CryptoJS.enc.Hex.parse(aesKeyHex);
-    const ciphertext = CryptoJS.enc.Base64.parse(encryptedDataB64);
-    const cipher = CryptoJS.lib.CipherParams.create({ciphertext, iv});
-    const decrypted = CryptoJS.AES.decrypt(cipher, key, {iv});
-    const data = decrypted.toString(CryptoJS.enc.Utf8);
+    var iv = CryptoJS.enc.Hex.parse(ivHex);
+    var key = CryptoJS.enc.Hex.parse(aesKeyHex);
+    var ciphertext = CryptoJS.enc.Base64.parse(encryptedDataB64);
+    var cipher = CryptoJS.lib.CipherParams.create({ciphertext, iv});
+    var decrypted = CryptoJS.AES.decrypt(cipher, key, {iv});
+    var data = decrypted.toString(CryptoJS.enc.Utf8);
     return {data};
   }
 
@@ -62,20 +62,20 @@ export class NativeCrypto implements Crypto {
     publicKeyB64: string;
     privateKeyB64: string;
   }> {
-    const crypto = new JSEncrypt({default_key_size: '2048'});
+    var crypto = new JSEncrypt({default_key_size: '2048'});
     crypto.getKey();
-    const publicKey = crypto.getPublicKey();
-    const publicKeyB64 = this.convertPem(publicKey);
-    const privateKey = crypto.getPrivateKey();
-    const privateKeyB64 = this.convertPem(privateKey);
+    var publicKey = crypto.getPublicKey();
+    var publicKeyB64 = this.convertPem(publicKey);
+    var privateKey = crypto.getPrivateKey();
+    var privateKeyB64 = this.convertPem(privateKey);
     return {publicKeyB64, privateKeyB64};
   }
 
   // encrypt data with public rsa key
   public async rsaEncrypt(data: string, publicKeyB64: string): Promise<{encryptedDataB64: string}> {
-    const crypto = new JSEncrypt();
+    var crypto = new JSEncrypt();
     crypto.setPublicKey(publicKeyB64);
-    const encryptedDataB64 = crypto.encrypt(data);
+    var encryptedDataB64 = crypto.encrypt(data);
     if (!encryptedDataB64) {
       throw new Error('rsaEncrypt failed');
     }
@@ -84,10 +84,10 @@ export class NativeCrypto implements Crypto {
 
   // decrypt data with private rsa key
   public async rsaDecrypt(encryptedDataB64: string, privateKeyB64: string): Promise<{data: string}> {
-    const begin = '-----BEGIN RSA PRIVATE KEY-----\n';
-    const end = '\n-----END RSA PRIVATE KEY-----';
-    const key = `${begin}${privateKeyB64}${end}`;
-    const data = await RSA.decrypt(encryptedDataB64, key);
+    var begin = '-----BEGIN RSA PRIVATE KEY-----\n';
+    var end = '\n-----END RSA PRIVATE KEY-----';
+    var key = `${begin}${privateKeyB64}${end}`;
+    var data = await RSA.decrypt(encryptedDataB64, key);
     if (!data) {
       throw new Error('rsaDecrypt failed');
     }
@@ -95,7 +95,7 @@ export class NativeCrypto implements Crypto {
   }
 
   private convertPem(pem: string): string {
-    const lines = pem.split('\n');
+    var lines = pem.split('\n');
     let encoded = '';
     for (let i = 0; i < lines.length; i++) {
       if (
