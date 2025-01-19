@@ -4,32 +4,32 @@ import {AppContext} from '../context/AppContext';
 import {ContextType} from '../context/ContextType';
 
 export function useBase() {
-  const app = useContext(AppContext) as ContextType;
-  const display = useContext(DisplayContext) as ContextType;
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let [state, setState] = useState({
     strings: display.state.strings,
     profileSet: null as null | boolean,
     cardSet: null as null | boolean,
     channelSet: null as null | boolean,
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    const setProfile = (profile: Profile) => {
+    let setProfile = (profile: Profile) => {
       updateState({profileSet: Boolean(profile.name)});
     };
-    const setCards = (cards: Card[]) => {
+    let setCards = (cards: Card[]) => {
       updateState({cardSet: cards.length > 0});
     };
-    const setChannels = ({channels, cardId}: {channels: Channel[]; cardId: string | null}) => {
+    let setChannels = ({channels, cardId}: {channels: Channel[]; cardId: string | null}) => {
       updateState({channelSet: cardId && channels.length > 0});
     };
 
     if (app.state.session) {
-      const {identity, contact, content} = app.state.session;
+      let {identity, contact, content} = app.state.session;
       identity.addProfileListener(setProfile);
       contact.addCardListener(setCards);
       content.addChannelListener(setChannels);
@@ -42,7 +42,7 @@ export function useBase() {
     }
   }, [app.state.session]);
 
-  const actions = {};
+  let actions = {};
 
   return {state, actions};
 }
