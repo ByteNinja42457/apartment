@@ -3,14 +3,14 @@ import {AppContext} from '../context/AppContext';
 import {DisplayContext} from '../context/DisplayContext';
 import {ContextType} from '../context/ContextType';
 
-let DEBOUNCE_MS = 1000;
+const DEBOUNCE_MS = 1000;
 
 export function useSettings() {
-  let display = useContext(DisplayContext) as ContextType;
-  let app = useContext(AppContext) as ContextType;
-  let debounce = useRef(setTimeout(() => {}, 0));
+  const display = useContext(DisplayContext) as ContextType;
+  const app = useContext(AppContext) as ContextType;
+  const debounce = useRef(setTimeout(() => {}, 0));
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     config: {} as Config,
     profile: {} as Profile,
     profileSet: false,
@@ -41,14 +41,14 @@ export function useSettings() {
     blockedMessages: [] as {cardId: string | null; channelId: string; topicId: string; timestamp: number}[],
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let getSession = () => {
-    let session = app.state?.session;
-    let settings = session?.getSettings();
-    let identity = session?.getIdentity();
+  const getSession = () => {
+    const session = app.state?.session;
+    const settings = session?.getSettings();
+    const identity = session?.getIdentity();
     if (!settings || !identity) {
       console.log('session not set in settings hook');
     }
@@ -56,14 +56,14 @@ export function useSettings() {
   };
 
   useEffect(() => {
-    let {settings, identity} = getSession();
-    let setConfig = (config: Config) => {
+    const {settings, identity} = getSession();
+    const setConfig = (config: Config) => {
       updateState({config});
     };
     settings.addConfigListener(setConfig);
-    let setProfile = (profile: Profile) => {
-      let {handle, name, location, description} = profile;
-      let url = identity.getProfileImageUrl();
+    const setProfile = (profile: Profile) => {
+      const {handle, name, location, description} = profile;
+      const url = identity.getProfileImageUrl();
       updateState({
         profile,
         handle,
@@ -83,12 +83,12 @@ export function useSettings() {
   }, []);
 
   useEffect(() => {
-    let {fullDayTime, monthFirstDate} = app.state;
+    const {fullDayTime, monthFirstDate} = app.state;
     updateState({fullDayTime, monthFirstDate});
   }, [app.state]);
 
   useEffect(() => {
-    let {strings, dateFormat, timeFormat} = display.state;
+    const {strings, dateFormat, timeFormat} = display.state;
     updateState({
       strings,
       dateFormat,
@@ -96,42 +96,42 @@ export function useSettings() {
     });
   }, [display.state]);
 
-  let actions = {
+  const actions = {
     getUsernameStatus: async (username: string) => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       return await settings.getUsernameStatus(username);
     },
     setLogin: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.setLogin(state.handle, state.password);
     },
     enableNotifications: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.enableNotifications();
     },
     disableNotifications: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.disableNotifications();
     },
     enableRegistry: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.enableRegistry();
     },
     disableRegistry: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.disableRegistry();
     },
     enableMFA: async () => {
-      let {settings} = getSession();
-      let {secretImage, secretText} = await settings.enableMFA();
+      const {settings} = getSession();
+      const {secretImage, secretText} = await settings.enableMFA();
       updateState({secretImage, secretText});
     },
     disableMFA: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.disableMFA();
     },
     confirmMFA: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.confirmMFA(state.code);
     },
     setCode: (code: string) => {
@@ -145,35 +145,35 @@ export function useSettings() {
       }, 1000);
     },
     setSeal: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.setSeal(state.sealPassword);
     },
     clearSeal: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.clearSeal();
     },
     unlockSeal: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.unlockSeal(state.sealPassword);
     },
     forgetSeal: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.forgetSeal();
     },
     updateSeal: async () => {
-      let {settings} = getSession();
+      const {settings} = getSession();
       await settings.updateSeal(state.sealPassword);
     },
     setProfileData: async (name: string, location: string, description: string) => {
-      let {identity} = getSession();
+      const {identity} = getSession();
       await identity.setProfileData(name, location, description);
     },
     setProfileImage: async (image: string) => {
-      let {identity} = getSession();
+      const {identity} = getSession();
       await identity.setProfileImage(image);
     },
     getProfileImageUrl: () => {
-      let {identity} = getSession();
+      const {identity} = getSession();
       return identity.getProfileImageUrl();
     },
     setDateFormat: (format: string) => {
@@ -198,9 +198,9 @@ export function useSettings() {
         updateState({available: true, checked: true});
       } else {
         debounce.current = setTimeout(async () => {
-          let {settings} = getSession();
+          const {settings} = getSession();
           try {
-            let available = await settings.getUsernameStatus(handle);
+            const available = await settings.getUsernameStatus(handle);
             updateState({taken: !available, checked: true});
           } catch (err) {
             console.log(err);
@@ -227,8 +227,8 @@ export function useSettings() {
       updateState({description});
     },
     setDetails: async () => {
-      let {identity} = getSession();
-      let {name, location, description} = state;
+      const {identity} = getSession();
+      const {name, location, description} = state;
       await identity.setProfileData(name, location, description);
     },
     setSealDelete: (sealDelete: string) => {
@@ -251,42 +251,42 @@ export function useSettings() {
       await app.actions.setMonthFirstDate(flag);
     },
     loadBlockedMessages: async () => {
-      let settings = app.state.session.getSettings();
-      let blockedMessages = await settings.getBlockedTopics();
+      const settings = app.state.session.getSettings();
+      const blockedMessages = await settings.getBlockedTopics();
       updateState({blockedMessages});
     },
     unblockMessage: async (cardId: string | null, channelId: string, topicId: string) => {
-      let content = app.state.session.getContent();
+      const content = app.state.session.getContent();
       await content.clearBlockedChannelTopic(cardId, channelId, topicId);
-      let blockedMessages = state.blockedMessages.filter(blocked => blocked.cardId !== cardId || blocked.channelId !== channelId || blocked.topicId !== topicId);
+      const blockedMessages = state.blockedMessages.filter(blocked => blocked.cardId !== cardId || blocked.channelId !== channelId || blocked.topicId !== topicId);
       updateState({blockedMessages});
     },
     loadBlockedChannels: async () => {
-      let settings = app.state.session.getSettings();
-      let blockedChannels = await settings.getBlockedChannels();
+      const settings = app.state.session.getSettings();
+      const blockedChannels = await settings.getBlockedChannels();
       updateState({blockedChannels});
     },
     unblockChannel: async (cardId: string | null, channelId: string) => {
-      let content = app.state.session.getContent();
+      const content = app.state.session.getContent();
       await content.setBlockedChannel(cardId, channelId, false);
-      let blockedChannels = state.blockedChannels.filter(blocked => blocked.cardId !== cardId || blocked.channelId !== channelId);
+      const blockedChannels = state.blockedChannels.filter(blocked => blocked.cardId !== cardId || blocked.channelId !== channelId);
       updateState({blockedChannels});
     },
     loadBlockedContacts: async () => {
-      let settings = app.state.session.getSettings();
-      let blockedContacts = await settings.getBlockedCards();
+      const settings = app.state.session.getSettings();
+      const blockedContacts = await settings.getBlockedCards();
       updateState({blockedContacts});
     },
     unblockContact: async (cardId: string) => {
-      let contact = app.state.session.getContact();
+      const contact = app.state.session.getContact();
       await contact.setBlockedCard(cardId, false);
-      let blockedContacts = state.blockedContacts.filter(blocked => blocked.cardId !== cardId);
+      const blockedContacts = state.blockedContacts.filter(blocked => blocked.cardId !== cardId);
       updateState({blockedContacts});
     },
     getTimestamp: (created: number) => {
-      let now = Math.floor(new Date().getTime() / 1000);
-      let date = new Date(created * 1000);
-      let offset = now - created;
+      const now = Math.floor(new Date().getTime() / 1000);
+      const date = new Date(created * 1000);
+      const offset = now - created;
       if (offset < 43200) {
         if (state.timeFormat === '12h') {
           return date.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
