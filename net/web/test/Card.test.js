@@ -6,14 +6,14 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let cardContext = null;
 function CardView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const [cards, setCards] = useState([]);
-  const card = useContext(CardContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [cards, setCards] = useState([]);
+  var card = useContext(CardContext);
   cardContext = card;
 
   useEffect(() => {
-    const rendered = []
-    const entries = Array.from(card.state.cards.values());
+    var rendered = []
+    var entries = Array.from(card.state.cards.values());
     entries.forEach(entry => {
 
       rendered.push(
@@ -42,8 +42,8 @@ function CardTestApp() {
   )
 }
 
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
 let statusCards;
 let statusMessage;
@@ -63,9 +63,9 @@ beforeEach(() => {
   fetchDetail = {};
   statusProfile = 200;
   fetchProfile = {};
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
 
-    const params = url.split('/');
+    var params = url.split('/');
     if (params[4]?.split('?')[0] === 'message') {
 
       return Promise.resolve({
