@@ -8,7 +8,7 @@ import { getChannelSeals, isUnsealed, getContentKey, encryptTopicSubject, decryp
 import { getLanguageStrings } from 'constants/Strings';
 
 export function useConversation() {
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     strings: getLanguageStrings(),
     hosted: null,
     subject: null,
@@ -26,32 +26,32 @@ export function useConversation() {
     moreBusy: false,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const profile = useContext(ProfileContext);
-  const card = useContext(CardContext);
-  const conversation = useContext(ConversationContext);
-  const account = useContext(AccountContext);
+  let profile = useContext(ProfileContext);
+  let card = useContext(CardContext);
+  let conversation = useContext(ConversationContext);
+  let account = useContext(AccountContext);
 
-  const contentKey = useRef();
-  const keyId = useRef();
+  let contentKey = useRef();
+  let keyId = useRef();
 
   useEffect(() => {
     setContentKey();
   }, [conversation.state, account.state]);
 
-  const setContentKey = async () => {
-    const type = conversation.state.channel?.detail?.dataType;
+  let setContentKey = async () => {
+    let type = conversation.state.channel?.detail?.dataType;
     if (type === 'sealed') {
-      const cardId = conversation.state.card?.card?.cardId;
-      const channelId = conversation.state.channel?.channelId;
-      const contentId = `${cardId}:${channelId}`;
+      let cardId = conversation.state.card?.card?.cardId;
+      let channelId = conversation.state.channel?.channelId;
+      let contentId = `${cardId}:${channelId}`;
       if (contentId !== keyId.current) {
-        const channelDetail = conversation.state.channel?.detail;
-        const seals = getChannelSeals(channelDetail?.data);
-        const sealKey = account.state.sealKey;
+        let channelDetail = conversation.state.channel?.detail;
+        let seals = getChannelSeals(channelDetail?.data);
+        let sealKey = account.state.sealKey;
         if (isUnsealed(seals, sealKey)) {
           contentKey.current = await getContentKey(seals, sealKey);
           keyId.current = contentId;
@@ -72,23 +72,23 @@ export function useConversation() {
   };
 
   useEffect(() => {
-    const loaded = conversation.state.loaded;
-    const cardId = conversation.state.card?.card?.cardId;
-    const profileGuid = profile.state.identity?.guid;
-    const channel = conversation.state.channel;
-    const hosted = conversation.state.card == null;
-    const cards = card.state.cards;
+    let loaded = conversation.state.loaded;
+    let cardId = conversation.state.card?.card?.cardId;
+    let profileGuid = profile.state.identity?.guid;
+    let channel = conversation.state.channel;
+    let hosted = conversation.state.card == null;
+    let cards = card.state.cards;
     cardImageUrl = card.actions.getCardImageUrl;
-    const { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, channel, cards, cardImageUrl, state.strings);
+    let { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, channel, cards, cardImageUrl, state.strings);
 
     if (channel?.topicRevision && channel.readRevision !== channel.topicRevision) {
       conversation.actions.setChannelReadRevision(channel.topicRevision);
     }
 
-    const items = Array.from(conversation.state.topics.values());
-    const sorted = items.sort((a, b) => {
-      const aTimestamp = a?.detail?.created;
-      const bTimestamp = b?.detail?.created;
+    let items = Array.from(conversation.state.topics.values());
+    let sorted = items.sort((a, b) => {
+      let aTimestamp = a?.detail?.created;
+      let bTimestamp = b?.detail?.created;
       if(aTimestamp === bTimestamp) {
         return 0;
       }
@@ -97,7 +97,7 @@ export function useConversation() {
       }
       return -1;
     });
-    const filtered = sorted.filter(item => !(item.blocked));
+    let filtered = sorted.filter(item => !(item.blocked));
 
     updateState({ hosted, loaded, logo, subject, topics: filtered, delayed: false });
   
@@ -107,7 +107,7 @@ export function useConversation() {
 
   }, [conversation.state, profile.state]);
 
-  const actions = {
+  let actions = {
     setFocus: (focus) => {
       updateState({ focus });
     },
@@ -124,12 +124,12 @@ export function useConversation() {
       if (!state.updateBusy) {
         try {
           updateState({ updateBusy: true });
-          const message = { ...state.editData, text: state.editMessage };
+          let message = { ...state.editData, text: state.editMessage };
           if (state.editType === 'superbasictopic') {
             await conversation.actions.setTopicSubject(state.editTopicId, state.editType, message);
           }
           else {
-            const sealed = encryptTopicSubject({ message }, state.contentKey);
+            let sealed = encryptTopicSubject({ message }, state.contentKey);
             await conversation.actions.setTopicSubject(state.editTopicId, state.editType, sealed);
           }
           updateState({ updateBusy: false }); 
