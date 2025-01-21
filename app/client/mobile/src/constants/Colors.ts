@@ -1,4 +1,4 @@
-export const Colors = {
+export let Colors = {
   primary: '#408060',
   secondary: '#8fbea7',
   danger: '#ff6666',
