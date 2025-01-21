@@ -4,31 +4,31 @@ import { ContextType } from '../../context/ContextType'
 import { MediaAsset } from '../../conversation/Conversation'
 
 export function useBinaryAsset(topicId: string, asset: MediaAsset) {
-  const app = useContext(AppContext) as ContextType
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType
+  let [state, setState] = useState({
     dataUrl: '',
     loading: false,
     loadPercent: 0,
   })
-  const cancelled = useRef(false)
+  let cancelled = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const actions = {
+  let actions = {
     cancelLoad: () => {
       cancelled.current = true
     },
     loadBinary: async () => {
-      const { focus } = app.state
-      const assetId = asset.binary ? asset.binary.data : asset.encrypted ? asset.encrypted.parts : null
+      let { focus } = app.state
+      let assetId = asset.binary ? asset.binary.data : asset.encrypted ? asset.encrypted.parts : null
       if (focus && assetId != null && !state.loading && !state.dataUrl) {
         cancelled.current = false
         updateState({ loading: true, loadPercent: 0 })
         try {
-          const dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
+          let dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
             updateState({ loadPercent })
             return !cancelled.current
           })
