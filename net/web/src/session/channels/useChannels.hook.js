@@ -10,9 +10,9 @@ import { isUnsealed, getChannelSeals, getContentKey, decryptChannelSubject, decr
 
 export function useChannels() {
 
-  const [filter, setFilter] = useState();
+  var [filter, setFilter] = useState();
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     display: null,
     channels: [],
     showAdd: false,
@@ -21,20 +21,20 @@ export function useChannels() {
     menuStyle: {},
   });
 
-  const profile = useContext(ProfileContext);
-  const card = useContext(CardContext);
-  const channel = useContext(ChannelContext);
-  const account = useContext(AccountContext);
-  const store = useContext(StoreContext);
-  const settings = useContext(SettingsContext);
+  var profile = useContext(ProfileContext);
+  var card = useContext(CardContext);
+  var channel = useContext(ChannelContext);
+  var account = useContext(AccountContext);
+  var store = useContext(StoreContext);
+  var settings = useContext(SettingsContext);
 
-  const channels = useRef(new Map());
+  var channels = useRef(new Map());
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const syncChannelDetail = (item, cardValue, channelValue) => {
+  var syncChannelDetail = (item, cardValue, channelValue) => {
 
     // extract member info
     let memberCount = 0;
@@ -42,7 +42,7 @@ export function useChannels() {
     let img = null;
     let logo = null;
     if (cardValue) {
-      const profile = cardValue?.data?.cardProfile;
+      var profile = cardValue?.data?.cardProfile;
       if (profile?.name) {
         names.push(profile.name);
       }
@@ -58,8 +58,8 @@ export function useChannels() {
     }
     for (let guid of channelValue?.data?.channelDetail?.members) {
       if (guid !== profile.state.identity.guid) {
-        const contact = getCardByGuid(card.state.cards, guid);
-        const profile = contact?.data?.cardProfile;
+        var contact = getCardByGuid(card.state.cards, guid);
+        var profile = contact?.data?.cardProfile;
         if (profile?.name) {
           names.push(profile.name);
         }
@@ -91,21 +91,21 @@ export function useChannels() {
     }
 
     // update title on detailRevision or sealKey changes
-    const sealKey = account.state.sealKey;
-    const detailRevision = channelValue?.data?.detailRevision;
+    var sealKey = account.state.sealKey;
+    var detailRevision = channelValue?.data?.detailRevision;
     if (item.detailRevision !== detailRevision || item.sealKey !== sealKey) {
-      const detail = channelValue.data?.channelDetail;
+      var detail = channelValue.data?.channelDetail;
       if (detail?.dataType === 'sealed') {
         item.locked = true;
         try {
-          const { sealKey } = account.state;
-          const seals = getChannelSeals(detail.data);
+          var { sealKey } = account.state;
+          var seals = getChannelSeals(detail.data);
           if (isUnsealed(seals, sealKey)) {
             item.unlocked = true;
             if (!item.contentKey) {
               item.contentKey = getContentKey(seals, sealKey);
             }
-            const unsealed = decryptChannelSubject(detail.data, item.contentKey);
+            var unsealed = decryptChannelSubject(detail.data, item.contentKey);
             item.title = unsealed?.subject;
           }
           else {
@@ -123,7 +123,7 @@ export function useChannels() {
         item.locked = false;
         item.unlocked = true;
         try {
-          const data = JSON.parse(detail.data);
+          var data = JSON.parse(detail.data);
           item.title = data.subject;
         }
         catch(err) {
@@ -144,16 +144,16 @@ export function useChannels() {
   }
 
 
-  const syncChannelSummary = (item, channelValue) => {
+  var syncChannelSummary = (item, channelValue) => {
 
-    const sealKey = account.state.sealKey;
-    const topicRevision = channelValue?.data?.topicRevision;
+    var sealKey = account.state.sealKey;
+    var topicRevision = channelValue?.data?.topicRevision;
     if (item.topicRevision !== topicRevision || item.sealKey !== sealKey) {
-      const topic = channelValue.data?.channelSummary?.lastTopic;
+      var topic = channelValue.data?.channelSummary?.lastTopic;
       item.updated = topic?.created;
       if (topic?.dataType === 'superbasictopic') {
         try {
-          const data = JSON.parse(topic.data);
+          var data = JSON.parse(topic.data);
           item.message = data.text;
         }
         catch (err) {
@@ -163,7 +163,7 @@ export function useChannels() {
       else if (topic?.dataType === 'sealedtopic') {
         try {
           if (item.contentKey) {
-            const unsealed = decryptTopicSubject(topic.data, item.contentKey);
+            var unsealed = decryptTopicSubject(topic.data, item.contentKey);
             item.message = unsealed?.message?.text;
           }
           else {
@@ -183,11 +183,11 @@ export function useChannels() {
   };
 
   useEffect(() => {
-    const login = store.state['login:timestamp'];
-    const conversations = new Map();
+    var login = store.state['login:timestamp'];
+    var conversations = new Map();
     card.state.cards.forEach((cardValue, cardId) => {
       cardValue.channels.forEach((channelValue, channelId) => {
-        const key = `${channelId}::${cardId}`;
+        var key = `${channelId}::${cardId}`;
         let item = channels.current.get(key);
         if (!item) {
           item = { cardId, channelId };
@@ -196,8 +196,8 @@ export function useChannels() {
         syncChannelDetail(item, cardValue, channelValue);
         syncChannelSummary(item, channelValue);
 
-        const revision = store.state[key];
-        const topicRevision = channelValue.data?.topicRevision;
+        var revision = store.state[key];
+        var topicRevision = channelValue.data?.topicRevision;
         if (login && item.updated && item.updated > login && topicRevision !== revision) {
           item.updatedFlag = true;
         }
@@ -208,7 +208,7 @@ export function useChannels() {
       });
     });
     channel.state.channels.forEach((channelValue, channelId) => {
-      const key = `${channelId}::${undefined}`;
+      var key = `${channelId}::${undefined}`;
       let item = channels.current.get(key);
       if (!item) {
         item = { channelId };
@@ -216,8 +216,8 @@ export function useChannels() {
       syncChannelDetail(item, null, channelValue);
       syncChannelSummary(item, channelValue);
 
-      const revision = store.state[key];
-      const topicRevision = channelValue.data?.topicRevision;
+      var revision = store.state[key];
+      var topicRevision = channelValue.data?.topicRevision;
       if (login && item.updated && item.updated > login && topicRevision !== revision) {
         item.updatedFlag = true;
       }
@@ -228,10 +228,10 @@ export function useChannels() {
     });
     channels.current = conversations;
 
-    const merged = Array.from(conversations.values());
+    var merged = Array.from(conversations.values());
     merged.sort((a, b) => {
-      const aUpdated = a.updated;
-      const bUpdated = b.updated;
+      var aUpdated = a.updated;
+      var bUpdated = b.updated;
       if (aUpdated === bUpdated) {
         return 0;
       }
@@ -241,9 +241,9 @@ export function useChannels() {
       return -1;
     });
 
-    const filtered = merged.filter((item) => {
+    var filtered = merged.filter((item) => {
       if (filter) {
-        const subject = item.subject?.toUpperCase();
+        var subject = item.subject?.toUpperCase();
         if (subject) {
           return subject.includes(filter);
         }
@@ -256,9 +256,9 @@ export function useChannels() {
       }
     });
 
-    const sealKey = account.state.sealKey?.public && account.state.sealKey?.private;
-    const allowUnsealed = account.state.status?.allowUnsealed;
-    const allowAdd = allowUnsealed || sealKey;
+    var sealKey = account.state.sealKey?.public && account.state.sealKey?.private;
+    var allowUnsealed = account.state.status?.allowUnsealed;
+    var allowAdd = allowUnsealed || sealKey;
 
     updateState({ channels: filtered, allowAdd });
 
@@ -266,11 +266,11 @@ export function useChannels() {
   }, [account.state, store.state, card.state, channel.state, filter]);
 
   useEffect(() => {
-    const { display, strings, menuStyle } = settings.state;
+    var { display, strings, menuStyle } = settings.state;
     updateState({ display, strings, menuStyle });
   }, [settings.state]);
 
-  const actions = {
+  var actions = {
     onFilter: (value) => {
       setFilter(value?.toUpperCase());
     },
