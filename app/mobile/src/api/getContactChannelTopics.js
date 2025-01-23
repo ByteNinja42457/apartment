@@ -4,23 +4,23 @@ export async function getContactChannelTopics(server, token, channelId, revision
   const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
   const protocol = insecure ? 'http' : 'https';
 
-  var rev = ''
+  let rev = ''
   if (revision != null) {
     rev = `&revision=${revision}`
   }
-  var cnt = ''
+  let cnt = ''
   if (count != null) {
     cnt = `&count=${count}`
   }
-  var bgn = ''
+  let bgn = ''
   if (begin != null) {
     bgn = `&begin=${begin}`
   }
-  var edn = ''
+  let edn = ''
   if (end != null) {
     edn = `&end=${end}`
   }
-  var topics = await fetchWithTimeout(`${protocol}://${server}/content/channels/${channelId}/topics?contact=${token}${rev}${cnt}${bgn}${edn}`, 
+  let topics = await fetchWithTimeout(`${protocol}://${server}/content/channels/${channelId}/topics?contact=${token}${rev}${cnt}${bgn}${edn}`, 
     { method: 'GET' });
   checkResponse(topics)
 
