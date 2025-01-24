@@ -3,19 +3,19 @@ import { Colors } from 'constants/Colors';
 
 export function useCopyButton() {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     color: Colors.background,
     message: 'copeid',
     show: false,
   });
 
-  const timeout = useRef();
+  let timeout = useRef();
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const actions = {
+  let actions = {
     copy: async (onCopy) => {
       try {
         await onCopy();
