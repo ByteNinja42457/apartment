@@ -3,7 +3,7 @@ import { CardContext } from 'context/CardContext';
 import { RingContext } from 'context/RingContext';
 
 export function useCall() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     callLogo: null,
     localStream: null,
     localVideo: false,
@@ -13,26 +13,26 @@ export function useCall() {
     remoteAudio: false,
   });
 
-  const ring = useContext(RingContext);
-  const card = useContext(CardContext);
+  var ring = useContext(RingContext);
+  var card = useContext(CardContext);
 
   useEffect(() => {
     let callLogo = null;
-    const contact = card.state.cards.get(ring.state.cardId);
+    var contact = card.state.cards.get(ring.state.cardId);
     if (contact) {
-      const { imageSet } = contact.card?.profile || {};
+      var { imageSet } = contact.card?.profile || {};
       callLogo = imageSet ? card.actions.getCardImageUrl(ring.state.cardId) : null;
     }
 
-    const { localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio } = ring.state;
+    var { localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio } = ring.state;
     updateState({ callLogo, localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio });
   }, [ring.state]);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const actions = {
+  var actions = {
     end: async () => {
       await ring.actions.end();
     },
