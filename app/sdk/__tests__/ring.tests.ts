@@ -5,7 +5,7 @@ import { waitFor } from '../__mocks__/waitFor';
 import { ConsoleLogging } from '../src/logging';
 
 jest.mock('../src/net/fetchUtil', () => {
-  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     console.log(url, options);
     return Promise.resolve({ state: 200, json: () => {} });
   });
@@ -16,7 +16,7 @@ jest.mock('../src/net/fetchUtil', () => {
   }
 });
 
-var mockLink = new MockLinkModule();
+const mockLink = new MockLinkModule();
 jest.mock('../src/link', () => {
   return {
     Connection: jest.fn().mockImplementation(() => {
@@ -27,15 +27,15 @@ jest.mock('../src/link', () => {
 
 test('rings correctly', async () => {
   let calling = [] as { cardId: string, callId: string }[];
-  var endContactCall = async (cardId: string, callId: string) => {
+  const endContactCall = async (cardId: string, callId: string) => {
     console.log("ending");
   };
-  var ringing = (calls: { cardId: string, callId: string }[]) => {
+  const ringing = (calls: { cardId: string, callId: string }[]) => {
     calling = calls;
   };
 
-  var log = new ConsoleLogging();
-  var ringModule = new RingModule(log, endContactCall);
+  const log = new ConsoleLogging();
+  const ringModule = new RingModule(log, endContactCall);
 
   ringModule.addRingingListener(ringing);
   ringModule.ring({ cardId: 'card1', callId: 'call1', calleeToken: 'token1', ice: [] });
