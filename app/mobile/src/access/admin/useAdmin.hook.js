@@ -10,10 +10,10 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useAdmin() {
 
-  const navigate = useNavigate();
-  const app = useContext(AppContext);
+  let navigate = useNavigate();
+  let app = useContext(AppContext);
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     strings: getLanguageStrings(),
     busy: false,
     enabled: false,
@@ -29,7 +29,7 @@ export function useAdmin() {
     mfaError: null,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -37,7 +37,7 @@ export function useAdmin() {
     updateState({ version: app.state.version });
   }, [app]);
 
-  const checkStatus = async () => {
+  let checkStatus = async () => {
     try {
       updateState({ unclaimed: status });
     }
@@ -55,7 +55,7 @@ export function useAdmin() {
     }
   }, [state.server, state.token]);
 
-  const actions = {
+  let actions = {
     setServer: (server) => {
       updateState({ server });
     },
@@ -84,13 +84,13 @@ export function useAdmin() {
       if (!state.busy) {
         try {
           updateState({ busy: true });
-          const node = state.server.trim();
-          const unclaimed = await getNodeStatus(node);
+          let node = state.server.trim();
+          let unclaimed = await getNodeStatus(node);
           if (unclaimed) {
             await setNodeStatus(node, state.token);
           }
           try {
-            const session = await setNodeAccess(node, state.token, state.mfaCode);
+            let session = await setNodeAccess(node, state.token, state.mfaCode);
             updateState({ server: node, busy: false });
             navigate('/dashboard', { state: { server: node, token: session, mfa: true }});
           }
