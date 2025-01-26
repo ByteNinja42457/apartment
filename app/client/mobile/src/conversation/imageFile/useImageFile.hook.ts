@@ -1,18 +1,18 @@
 import {useState} from 'react';
 
 export function useImageFile() {
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     loaded: false,
     ratio: 1,
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let actions = {
+  const actions = {
     loaded: e => {
-      let {width, height} = e.nativeEvent.source;
+      const {width, height} = e.nativeEvent.source;
       updateState({loaded: true, ratio: width / height});
     },
   };
