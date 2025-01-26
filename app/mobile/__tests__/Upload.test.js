@@ -5,10 +5,10 @@ import { UploadContextProvider, UploadContext } from 'context/UploadContext';
 import axios from 'axios';
 
 function UploadView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [channel, setChannel] = useState(0);
-  const upload = useContext(UploadContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [total, setTotal] = useState(0);
+  var [channel, setChannel] = useState(0);
+  var upload = useContext(UploadContext);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
@@ -40,12 +40,12 @@ function UploadTestApp() {
   )
 }
 
-const realPost = axios.post;
+var realPost = axios.post;
 let asset;
 beforeEach(() => {
   asset = {};
 
-  const mockPost = jest.fn().mockImplementation(async (url, data, options) => {
+  var mockPost = jest.fn().mockImplementation(async (url, data, options) => {
     for (let i = 0; i < 10; i++) {
       await new Promise(r => setTimeout(r, 10));
       options.onUploadProgress({ loaded: i * 11, total: 111 });
@@ -67,7 +67,7 @@ test('testing', async () => {
 
   setComplete = false;
   await act(async () => {
-    const upload = screen.getByTestId('upload').props.upload;
+    var upload = screen.getByTestId('upload').props.upload;
     upload.actions.addTopic('test.org', 'asdf', '123', '1', [{ type: 'audio', data: 'asdf'}], ()=>{setComplete=true}, ()=>{});
   });
 
@@ -79,7 +79,7 @@ test('testing', async () => {
 
   setComplete = false;
   await act(async () => {
-    const upload = screen.getByTestId('upload').props.upload;
+    var upload = screen.getByTestId('upload').props.upload;
     upload.actions.addTopic('test.org', 'asdf', '123', '1', [{ type: 'audio', data: 'asdf'}], ()=>{setComplete=true}, ()=>{}, '96');
   });
 
