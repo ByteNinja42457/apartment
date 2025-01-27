@@ -5,12 +5,12 @@ import {ContextType} from '../context/ContextType';
 import {Profile} from 'databag-client-sdk';
 
 export function useRegistry() {
-  let updating = useRef(false);
-  let update = useRef(null as {username: string; server: string} | null);
-  let debounce = useRef(setTimeout(() => {}, 0));
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
-  let [state, setState] = useState({
+  const updating = useRef(false);
+  const update = useRef(null as {username: string; server: string} | null);
+  const debounce = useRef(setTimeout(() => {}, 0));
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const [state, setState] = useState({
     layout: '',
     strings: display.state.strings,
     username: '',
@@ -20,22 +20,22 @@ export function useRegistry() {
     guid: '',
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let getRegistry = async (username: string, server: string) => {
+  const getRegistry = async (username: string, server: string) => {
     update.current = {username, server};
     if (!updating.current) {
       while (update.current != null) {
         updating.current = true;
-        let params = update.current;
+        const params = update.current;
         update.current = null;
         try {
-          let contact = app.state.session?.getContact();
-          let handle = params.username ? params.username : null;
-          let node = params.server ? params.server : null;
-          let profiles = await contact.getRegistry(handle, node);
+          const contact = app.state.session?.getContact();
+          const handle = params.username ? params.username : null;
+          const node = params.server ? params.server : null;
+          const profiles = await contact.getRegistry(handle, node);
           updateState({profiles});
         } catch (err) {
           console.log(err);
@@ -51,9 +51,9 @@ export function useRegistry() {
   }, [state.profiles, state.guid]);
 
   useEffect(() => {
-    let identity = app.state?.session?.getIdentity();
-    let setProfile = (profile: Profile) => {
-      let {guid} = profile;
+    const identity = app.state?.session?.getIdentity();
+    const setProfile = (profile: Profile) => {
+      const {guid} = profile;
       updateState({guid});
     };
     if (identity) {
@@ -66,7 +66,7 @@ export function useRegistry() {
   }, []);
 
   useEffect(() => {
-    let {layout} = display.state;
+    const {layout} = display.state;
     updateState({layout});
   }, [display.state]);
 
@@ -83,7 +83,7 @@ export function useRegistry() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.username, state.server]);
 
-  let actions = {
+  const actions = {
     setUsername: (username: string) => {
       updateState({username});
     },
