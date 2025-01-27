@@ -1,4 +1,4 @@
-export const Colors = {
+export let Colors = {
   background: '#8fbea7',
   primary: '#448866',
   cancel: '#dddddd',
@@ -39,7 +39,7 @@ export const Colors = {
   selectHover: '#fafafa',
 };
 
-export const LightTheme = {
+export let LightTheme = {
   remoteArea: '#080808',
   localArea: '#888888',
   splashArea: '#8fbea7',
@@ -78,7 +78,7 @@ export const LightTheme = {
   confirmed: '#aaaaaa',
 };
 
-export const DarkTheme = {
+export let DarkTheme = {
   remoteArea: '#080808',
   localArea: '#888888',
   splashArea: '#4c4c4c',
