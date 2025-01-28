@@ -5,10 +5,10 @@ import { defaultProfileEntity } from '../src/entities';
 import { Profile } from '../src/types';
 import { waitFor } from '../__mocks__/waitFor';
 
-var testProfile = JSON.parse(JSON.stringify(defaultProfileEntity));
+const testProfile = JSON.parse(JSON.stringify(defaultProfileEntity));
 
 jest.mock('../src/net/fetchUtil', () => {
-  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     if (options.method === 'GET') {
       testProfile.handle = "test";
       return Promise.resolve({ status: 200, json: () => (testProfile) });
@@ -38,9 +38,9 @@ class TestStore extends NoStore {
 
 test('identity module works', async () => {
   let profile: Profile | null = null;
-  var log = new ConsoleLogging();
-  var store = new TestStore();
-  var identity = new IdentityModule(log, store, 'test_guid', 'test_token', 'test_url', false);
+  const log = new ConsoleLogging();
+  const store = new TestStore();
+  const identity = new IdentityModule(log, store, 'test_guid', 'test_token', 'test_url', false);
   identity.setRevision(5);
   identity.addProfileListener((ev: Profile) => { profile = ev });
   await waitFor(() => (profile?.handle == 'test' && profile?.name != 'test_name' && !profile?.imageSet));
