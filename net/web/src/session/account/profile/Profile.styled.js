@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let ProfileWrapper = styled.div`
+export const ProfileWrapper = styled.div`
   min-height: 100%;
   width: 100%;
   display: flex;
@@ -202,7 +202,7 @@ export let ProfileWrapper = styled.div`
   }
 `
 
-export let ProfileDetailsWrapper = styled.div`
+export const ProfileDetailsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -250,7 +250,7 @@ export let ProfileDetailsWrapper = styled.div`
   }
 `;
 
-export let ProfileImageWrapper = styled.div`
+export const ProfileImageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
