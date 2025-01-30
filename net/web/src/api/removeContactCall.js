@@ -6,7 +6,7 @@ export async function removeContactCall(server, token, callId) {
     host = `https://${server}`
   }
 
-  const call = await fetchWithTimeout(`${host}/talk/calls/${callId}?contact=${token}`, { method: 'DELETE' });
+  var call = await fetchWithTimeout(`${host}/talk/calls/${callId}?contact=${token}`, { method: 'DELETE' });
   checkResponse(call);
 }
 
