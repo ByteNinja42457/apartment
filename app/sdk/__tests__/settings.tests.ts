@@ -6,10 +6,10 @@ import { defaultConfigEntity } from '../src/entities';
 import { Config } from '../src/types';
 import { waitFor } from '../__mocks__/waitFor';
 
-var testConfig = JSON.parse(JSON.stringify(defaultConfigEntity));
+const testConfig = JSON.parse(JSON.stringify(defaultConfigEntity));
 
 jest.mock('../src/net/fetchUtil', () => {
-  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     if (options.method === 'GET') {
       testConfig.storageUsed = 2;
       return Promise.resolve({ status: 200, json: () => (testConfig) });
@@ -81,10 +81,10 @@ class TestStore extends NoStore {
 
 test('settings module works', async () => {
   let config: Config | null = null;
-  var log = new ConsoleLogging();
-  var store = new TestStore();
-  var crypto = new TestCrypto();
-  var settings = new SettingsModule(log, store, crypto, 'test_guid', 'test_token', 'test_url', false);
+  const log = new ConsoleLogging();
+  const store = new TestStore();
+  const crypto = new TestCrypto();
+  const settings = new SettingsModule(log, store, crypto, 'test_guid', 'test_token', 'test_url', false);
   settings.addConfigListener((ev: Config) => { config = ev });
   settings.setRevision(5);
   await waitFor(() => (config?.storageUsed == 2));
