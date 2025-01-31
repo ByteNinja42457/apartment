@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react'
 
 export function useAudioFile(source: File) {
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     label: '',
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    let label = source.name.split('.').shift()
+    const label = source.name.split('.').shift()
     updateState({ label })
   }, [source])
 
-  let actions = {
+  const actions = {
     setLabel: (label: string) => {
       updateState({ label })
     },
