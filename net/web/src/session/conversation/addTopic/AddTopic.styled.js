@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AddTopicWrapper = styled.div`
+export let AddTopicWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
