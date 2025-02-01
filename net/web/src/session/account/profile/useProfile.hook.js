@@ -6,7 +6,7 @@ import avatar from 'images/avatar.png';
 
 export function useProfile() {
   
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     handle: null,
     name: null,
     url: null,
@@ -29,17 +29,17 @@ export function useProfile() {
     menuStyle: {},
   });
 
-  const IMAGE_DIM = 192;
-  const app = useContext(AppContext);
-  const settings = useContext(SettingsContext);
-  const profile = useContext(ProfileContext);
+  var IMAGE_DIM = 192;
+  var app = useContext(AppContext);
+  var settings = useContext(SettingsContext);
+  var profile = useContext(ProfileContext);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { node, name, handle, location, description, image } = profile.state.identity;
+    var { node, name, handle, location, description, image } = profile.state.identity;
     let url = !image ? null : profile.state.imageUrl;
     let editImage = !image ? avatar : url;
     updateState({ name, location, description, node, handle, url, urlSet: true,
@@ -47,11 +47,11 @@ export function useProfile() {
   }, [profile.state]);
 
   useEffect(() => {
-    const { display, strings, menuStyle } = settings.state;
+    var { display, strings, menuStyle } = settings.state;
     updateState({ displaySet: true, display, strings, menuStyle });
   }, [settings.state]);
 
-  const actions = {
+  var actions = {
     logout: app.actions.logout,
     setEditImage: (value) => {
       updateState({ editImage: value });
@@ -90,12 +90,12 @@ export function useProfile() {
       if(!state.busy) {
         updateState({ busy: true });
         try {
-          const processImg = () => {
+          var processImg = () => {
             return new Promise((resolve, reject) => {
               let img = new Image();
               img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const context = canvas.getContext('2d');
+                var canvas = document.createElement("canvas");
+                var context = canvas.getContext('2d');
                 canvas.width = IMAGE_DIM;
                 canvas.height = IMAGE_DIM;
                 context.imageSmoothingQuality = "medium";
