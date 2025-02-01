@@ -69,17 +69,17 @@ export class SessionModule implements Session {
     this.connection = new Connection(log, token, node, secure);
     this.ring = new RingModule(log, async (cardId: string, callId: string) => { await this.contact.endCall(cardId, callId) });
 
-    let onStatus = (ev: string) => {
+    const onStatus = (ev: string) => {
       this.status = ev;
       this.emitter.emit('status', this.getStatus());
     };
 
-    let onSeal = (seal: { privateKey: string; publicKey: string } | null) => {
+    const onSeal = (seal: { privateKey: string; publicKey: string } | null) => {
       this.contact.setSeal(seal);
       this.stream.setSeal(seal);
     };
 
-    let onRevision = async (ev: Revision) => {
+    const onRevision = async (ev: Revision) => {
       await this.identity.setRevision(ev.profile);
       await this.settings.setRevision(ev.account);
       await this.contact.setRevision(ev.card);
@@ -88,7 +88,7 @@ export class SessionModule implements Session {
       await this.stream.setRevision(ev.channel);
     };
 
-    let onRing = (ev: Call) => {
+    const onRing = (ev: Call) => {
       this.ring.ring(ev);
     };
 
@@ -111,7 +111,7 @@ export class SessionModule implements Session {
   }
 
   public getParams(): { node: string; secure: boolean; token: string } {
-    let { node, secure, token } = this;
+    const { node, secure, token } = this;
     return { node, secure, token };
   }
 
