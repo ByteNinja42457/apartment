@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let CarouselWrapper = styled.div`
+export const CarouselWrapper = styled.div`
   position: relative;
   display: grid;
   width: 100%;
