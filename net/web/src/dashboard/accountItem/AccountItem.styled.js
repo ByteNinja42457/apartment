@@ -1,7 +1,7 @@
 import { Button } from 'antd';
 import styled from 'styled-components';
 
-export const AccountItemWrapper = styled.div`
+export let AccountItemWrapper = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -73,23 +73,23 @@ export const AccountItemWrapper = styled.div`
   }
 `;
 
-export const EnableButton = styled(Button)`
+export let EnableButton = styled(Button)`
   color: orange;
 `;
 
-export const DisableButton = styled(Button)`
+export let DisableButton = styled(Button)`
   color: orange;
 `;
 
-export const ResetButton = styled(Button)`
+export let ResetButton = styled(Button)`
   color: #1890ff;
 `;
 
-export const DeleteButton = styled(Button)`
+export let DeleteButton = styled(Button)`
   color: red;
 `
 
-export const AccessLayout = styled.div`
+export let AccessLayout = styled.div`
   .control {
     display: flex;
     justify-content: flex-end;
