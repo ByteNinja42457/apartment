@@ -5,12 +5,12 @@ import { ContextType } from '../context/ContextType'
 import { Profile } from 'databag-client-sdk'
 
 export function useRegistry() {
-  let updating = useRef(false)
-  let update = useRef(null as { username: string; server: string } | null)
-  let debounce = useRef(setTimeout(() => {}, 0))
-  let app = useContext(AppContext) as ContextType
-  let display = useContext(DisplayContext) as ContextType
-  let [state, setState] = useState({
+  const updating = useRef(false)
+  const update = useRef(null as { username: string; server: string } | null)
+  const debounce = useRef(setTimeout(() => {}, 0))
+  const app = useContext(AppContext) as ContextType
+  const display = useContext(DisplayContext) as ContextType
+  const [state, setState] = useState({
     strings: display.state.strings,
     username: '',
     server: '',
@@ -20,22 +20,22 @@ export function useRegistry() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  let getRegistry = async (username: string, server: string) => {
+  const getRegistry = async (username: string, server: string) => {
     update.current = { username, server }
     if (!updating.current) {
       while (update.current != null) {
         updating.current = true
-        let params = update.current
+        const params = update.current
         update.current = null
         try {
-          let contact = app.state.session?.getContact()
-          let username = params.username ? params.username : null
-          let server = params.server ? params.server : null
-          let profiles = await contact.getRegistry(username, server)
+          const contact = app.state.session?.getContact()
+          const username = params.username ? params.username : null
+          const server = params.server ? params.server : null
+          const profiles = await contact.getRegistry(username, server)
           updateState({ profiles })
         } catch (err) {
           console.log(err)
@@ -50,9 +50,9 @@ export function useRegistry() {
   }, [state.profiles, state.guid])
 
   useEffect(() => {
-    let identity = app.state?.session?.getIdentity()
-    let setProfile = (profile: Profile) => {
-      let { guid } = profile
+    const identity = app.state?.session?.getIdentity()
+    const setProfile = (profile: Profile) => {
+      const { guid } = profile
       updateState({ guid })
     }
     if (identity) {
@@ -75,7 +75,7 @@ export function useRegistry() {
     }
   }, [state.username, state.server])
 
-  let actions = {
+  const actions = {
     setUsername: (username: string) => {
       updateState({ username })
     },
