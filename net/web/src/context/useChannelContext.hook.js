@@ -16,23 +16,23 @@ import { clearChannelCard } from 'api/clearChannelCard';
 import { UploadContext } from 'context/UploadContext';
 
 export function useChannelContext() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     offsync: false,
     channels: new Map(),
   });
-  const upload = useContext(UploadContext);
-  const access = useRef(null);
-  const setRevision = useRef(null);
-  const curRevision = useRef(null);
-  const channels = useRef(new Map());
-  const syncing = useRef(false);
-  const force = useRef(false);
+  var upload = useContext(UploadContext);
+  var access = useRef(null);
+  var setRevision = useRef(null);
+  var curRevision = useRef(null);
+  var channels = useRef(new Map());
+  var syncing = useRef(false);
+  var force = useRef(false);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const resync = async () => {
+  var resync = async () => {
     try {
       force.current = true;
       await sync();
@@ -42,15 +42,15 @@ export function useChannelContext() {
     }
   };
 
-  const sync = async () => {
+  var sync = async () => {
     if (!syncing.current && (setRevision.current !== curRevision.current || force.current)) {
       syncing.current = true;
       force.current = false;
 
       try {
-        const token = access.current;
-        const revision = curRevision.current;
-        const delta = await getChannels(token, setRevision.current);
+        var token = access.current;
+        var revision = curRevision.current;
+        var delta = await getChannels(token, setRevision.current);
         for (let channel of delta) {
           if (channel.data) {
             let cur = channels.current.get(channel.id);
@@ -101,7 +101,7 @@ export function useChannelContext() {
     }
   }
 
-  const actions = {
+  var actions = {
     setToken: (token) => {
       if (access.current || syncing.current) {
         throw new Error("invalid channel session state");
@@ -136,9 +136,9 @@ export function useChannelContext() {
     },
     addTopic: async (channelId, type, message, files) => {
       if (files?.length) {
-        const topicId = await addChannelTopic(access.current, channelId, null, null, null);
+        var topicId = await addChannelTopic(access.current, channelId, null, null, null);
         upload.actions.addTopic(access.current, channelId, topicId, files, async (assets) => {
-          const subject = message(assets);
+          var subject = message(assets);
           await setChannelTopicSubject(access.current, channelId, topicId, type, subject);
         }, async () => {
           try {
@@ -150,7 +150,7 @@ export function useChannelContext() {
         });
       }
       else {
-        const subject = message([]);
+        var subject = message([]);
         await addChannelTopic(access.current, channelId, type, subject);
       }
       //await resync();
