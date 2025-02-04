@@ -13,7 +13,7 @@ import { sanitizeUrl } from '@braintree/sanitize-url';
 
 export function useConversation(cardId, channelId) {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     display: null,
     upload: false,
     uploadError: false,
@@ -27,35 +27,35 @@ export function useConversation(cardId, channelId) {
     menuStyle: {},
   });
 
-  var profile = useContext(ProfileContext);
-  var card = useContext(CardContext);
-  var account = useContext(AccountContext);
-  var settings = useContext(SettingsContext);  
-  var conversation = useContext(ConversationContext);
-  var upload = useContext(UploadContext);
-  var store = useContext(StoreContext);
+  const profile = useContext(ProfileContext);
+  const card = useContext(CardContext);
+  const account = useContext(AccountContext);
+  const settings = useContext(SettingsContext);  
+  const conversation = useContext(ConversationContext);
+  const upload = useContext(UploadContext);
+  const store = useContext(StoreContext);
 
-  var loading = useRef(false);
-  var conversationId = useRef(null);
-  var topics = useRef(new Map());
+  const loading = useRef(false);
+  const conversationId = useRef(null);
+  const topics = useRef(new Map());
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    var { strings, menuStyle, display, colors } = settings.state;
+    const { strings, menuStyle, display, colors } = settings.state;
     updateState({ strings, menuStyle, display, colors });
   }, [settings.state]);
 
   useEffect(() => {
-    var { dataType, data } = conversation.state.channel?.data?.channelDetail || {};
+    const { dataType, data } = conversation.state.channel?.data?.channelDetail || {};
     if (dataType === 'sealed') {
       try {
-        var { sealKey } = account.state;
-        var seals = getChannelSeals(data);
+        const { sealKey } = account.state;
+        const seals = getChannelSeals(data);
         if (isUnsealed(seals, sealKey)) {
-          var contentKey = getContentKey(seals, sealKey);
+          const contentKey = getContentKey(seals, sealKey);
           updateState({ sealed: true, wtf: true, contentKey });
         }
         else {
@@ -82,7 +82,7 @@ export function useConversation(cardId, channelId) {
     let uploadActive = { loaded: 0, total: 0 };
     let uploadActiveCount = 0;
 
-    var progress = upload.state.progress.get(`${cardId ? cardId : ''}:${channelId}`);
+    const progress = upload.state.progress.get(`${cardId ? cardId : ''}:${channelId}`);
 
     if (progress) {
       progress.forEach((entry) => {
@@ -105,9 +105,9 @@ export function useConversation(cardId, channelId) {
     updateState({ upload: active, uploadError, uploadPercent });
   }, [cardId, channelId, upload.state]);
   
-  var setChannel = async () => {
+  const setChannel = async () => {
     if (!loading.current && conversationId.current) {
-      var { card, channel } = conversationId.current;
+      const { card, channel } = conversationId.current;
       loading.current = true;
       conversationId.current = null;
       await conversation.actions.setChannel(card, channel);
@@ -123,8 +123,8 @@ export function useConversation(cardId, channelId) {
   }, [cardId, channelId]);
 
   useEffect(() => {
-    var key = `${conversation.state.channel?.id}::${conversation.state.card?.id}`
-    var topicRevision = conversation.state.channel?.data?.topicRevision; 
+    const key = `${conversation.state.channel?.id}::${conversation.state.card?.id}`
+    const topicRevision = conversation.state.channel?.data?.topicRevision; 
     store.actions.setValue(key, topicRevision);
 
     syncChannel();
@@ -137,21 +137,21 @@ export function useConversation(cardId, channelId) {
     // eslint-disable-next-line
   }, [state.contentKey]);
 
-  var clickableText = (text) => {
+  const clickableText = (text) => {
 
-      var urlPattern = new RegExp('(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)');
-      var hostPattern = new RegExp('^https?:\\/\\/', 'i');
+      const urlPattern = new RegExp('(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)');
+      const hostPattern = new RegExp('^https?:\\/\\/', 'i');
 
       let group = '';
       let clickable = [];
 
-      var words = !text ? [] : text.split(' ');
+      const words = !text ? [] : text.split(' ');
 
       words.forEach((word, index) => {
         if (!!urlPattern.test(word)) {
           clickable.push(<span key={index}>{ group }</span>);
           group = '';
-          var url = !!hostPattern.test(word) ? word : `https://${word}`;
+          const url = !!hostPattern.test(word) ? word : `https://${word}`;
           clickable.push(<a key={`link-${index}`} target="_blank" rel="noopener noreferrer" href={sanitizeUrl(url)}>{ word }</a>);
         }
         else {
@@ -163,15 +163,15 @@ export function useConversation(cardId, channelId) {
       return <p>{ clickable }</p>;
   };
 
-  var syncTopic = (item, value) => {
-    var revision = value.data?.detailRevision;
-    var detail = value.data?.topicDetail || {};
-    var identity = profile.state.identity || {};
+  const syncTopic = (item, value) => {
+    const revision = value.data?.detailRevision;
+    const detail = value.data?.topicDetail || {};
+    const identity = profile.state.identity || {};
     
     item.created = detail.created;
-    var date = new Date(detail.created * 1000);
-    var now = new Date();
-    var offset = now.getTime() - date.getTime();
+    const date = new Date(detail.created * 1000);
+    const now = new Date();
+    const offset = now.getTime() - date.getTime();
     if(offset < 86400000) {
       if (settings.state.timeFormat === '12h') {
         item.createdStr = date.toLocaleTimeString("en-US", {hour: 'numeric', minute:'2-digit'});
@@ -211,7 +211,7 @@ export function useConversation(cardId, channelId) {
     }
     else {
       item.creator = false;
-      var contact = getProfileByGuid(card.state.cards, detail.guid);
+      const contact = getProfileByGuid(card.state.cards, detail.guid);
       if (contact) {
         item.imageUrl = contact.imageSet ? card.actions.getCardImageUrl(contact.cardId) : null;
         if (contact.name) {
@@ -233,7 +233,7 @@ export function useConversation(cardId, channelId) {
     if (item.revision !== revision) {
       try {
         if (detail.dataType === 'superbasictopic') {
-          var message = JSON.parse(detail.data);
+          const message = JSON.parse(detail.data);
           item.assets = message.assets;
           item.text = message.text;
           item.clickable = clickableText(message.text);
@@ -241,7 +241,7 @@ export function useConversation(cardId, channelId) {
           item.textSize = message.textSize ? message.textSize : 14;
         }
         if (detail.dataType === 'sealedtopic' && state.contentKey) {
-          var subject = decryptTopicSubject(detail.data, state.contentKey);
+          const subject = decryptTopicSubject(detail.data, state.contentKey);
           item.assets = subject.message.assets;
           item.text = subject.message.text;
           item.clickable = clickableText(subject.message.text);
@@ -259,12 +259,12 @@ export function useConversation(cardId, channelId) {
     item.assetUrl = conversation.actions.getTopicAssetUrl;
   };
 
-  var syncChannel = () => { 
-    var messages = new Map();
+  const syncChannel = () => { 
+    const messages = new Map();
     conversation.state.topics.forEach((value, id) => {
-      var curCardId = conversation.state.card?.id;
-      var curChannelId = conversation.state.channel?.id;
-      var key = `${curCardId}:${curChannelId}:${id}`
+      const curCardId = conversation.state.card?.id;
+      const curChannelId = conversation.state.channel?.id;
+      const key = `${curCardId}:${curChannelId}:${id}`
       let item = topics.current.get(key);
       if (!item) {
         item = { id };
@@ -274,7 +274,7 @@ export function useConversation(cardId, channelId) {
     });
     topics.current = messages;
 
-    var sorted = Array.from(messages.values()).sort((a, b) => {
+    const sorted = Array.from(messages.values()).sort((a, b) => {
       if(a.created === b.created) {
         return 0;
       }
@@ -287,7 +287,7 @@ export function useConversation(cardId, channelId) {
     updateState({ topics: sorted });
   }
 
-  var actions = {
+  const actions = {
     more: () => {
       conversation.actions.loadMore();
     },
@@ -303,15 +303,15 @@ export function useConversation(cardId, channelId) {
       await conversation.actions.removeTopic(topicId);
     },
     updateTopic: async (topic, text) => {
-      var { assets, textSize, textColor } = topic;
-      var message = { text, textSize, textColor, assets };
+      const { assets, textSize, textColor } = topic;
+      const message = { text, textSize, textColor, assets };
       
       if (!state.busy) {
         updateState({ busy: true });
         try {
           if (state.sealed) {
             if (state.contentKey) {
-              var subject = encryptTopicSubject({ message }, state.contentKey);
+              const subject = encryptTopicSubject({ message }, state.contentKey);
               await conversation.actions.setTopicSubject(topic.id, 'sealedtopic', subject);
             }
           }
