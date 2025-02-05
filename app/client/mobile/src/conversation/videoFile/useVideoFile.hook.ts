@@ -1,19 +1,19 @@
 import {useState} from 'react';
 
 export function useVideoFile() {
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     loaded: false,
     ratio: 1,
     duration: 0,
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  const actions = {
+  let actions = {
     loaded: e => {
-      const {width, height} = e.naturalSize;
+      let {width, height} = e.naturalSize;
       updateState({loaded: true, ratio: width / height, duration: e.duration});
     },
   };
