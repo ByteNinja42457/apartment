@@ -6,7 +6,7 @@ import Resizer from "react-image-file-resizer";
 
 export function useAddTopic(contentKey) {
   
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     enableImage: null,
     enableAudio: null,
     enableVideo: null,
@@ -23,37 +23,37 @@ export function useAddTopic(contentKey) {
     menuStyle: {},
   });
 
-  let conversation = useContext(ConversationContext);
-  let settings = useContext(SettingsContext);
-  let objects = useRef([]);
+  const conversation = useContext(ConversationContext);
+  const settings = useContext(SettingsContext);
+  const objects = useRef([]);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   };
 
-  let addAsset = (value) => {
+  const addAsset = (value) => {
     setState((s) => {
-      let assets = [...s.assets, value];
+      const assets = [...s.assets, value];
       return { ...s, assets };
     });
   }
 
-  let updateAsset = (index, value) => {
+  const updateAsset = (index, value) => {
     setState((s) => {
       s.assets[index] = { ...s.assets[index], ...value };
       return { ...s };
     });
   }
 
-  let removeAsset = (index) => {
+  const removeAsset = (index) => {
     setState((s) => {
       s.assets.splice(index, 1);
-      let assets = [...s.assets];
+      const assets = [...s.assets];
       return { ...s, assets };
     });
   }
 
-  let clearObjects = () => {
+  const clearObjects = () => {
     objects.current.forEach(object => {
       URL.revokeObjectURL(object);
     });
@@ -66,24 +66,24 @@ export function useAddTopic(contentKey) {
   }, [contentKey]);
 
   useEffect(() => {
-    let { display, strings, menuStyle } = settings.state;
+    const { display, strings, menuStyle } = settings.state;
     updateState({ display, strings, menuStyle });
   }, [settings.state]);
 
   useEffect(() => {
-    let { enableImage, enableAudio, enableVideo, enableBinary } = conversation.state.channel?.data?.channelDetail || {};
+    const { enableImage, enableAudio, enableVideo, enableBinary } = conversation.state.channel?.data?.channelDetail || {};
     updateState({ enableImage, enableAudio, enableVideo, enableBinary });
   }, [conversation.state.channel?.data?.channelDetail]);
 
-  let loadFileData = (file) => {
+  const loadFileData = (file) => {
     return new Promise(resolve => {
-      let reader = new FileReader()
+      const reader = new FileReader()
       reader.onloadend = (res) => { resolve(reader.result) }
       reader.readAsArrayBuffer(file)
     })
   };
 
-  let arrayBufferToBase64 = (buffer) => {
+  const arrayBufferToBase64 = (buffer) => {
     var binary = '';
     var bytes = new Uint8Array( buffer );
     var len = bytes.byteLength;
@@ -93,17 +93,17 @@ export function useAddTopic(contentKey) {
     return window.btoa( binary );
   }
 
-  let setUrl = async (file) => {
-    let url = URL.createObjectURL(file);
+  const setUrl = async (file) => {
+    const url = URL.createObjectURL(file);
     objects.current.push(url);
     if (contentKey) {
-      let buffer = await loadFileData(file)
-      let getEncryptedBlock = (pos, len) => {
+      const buffer = await loadFileData(file)
+      const getEncryptedBlock = (pos, len) => {
         if (pos + len > buffer.byteLength) {
           return null;
         }
-        let slice = buffer.slice(pos, pos + len);
-        let block = arrayBufferToBase64(slice);
+        const slice = buffer.slice(pos, pos + len);
+        const block = arrayBufferToBase64(slice);
         return encryptBlock(block, contentKey);
       }
       return { url, encrypted: true, size: buffer.byteLength, getEncryptedBlock };
@@ -113,34 +113,34 @@ export function useAddTopic(contentKey) {
     }
   }
 
-  let actions = {
+  const actions = {
     addImage: async (image) => {
       if (image.type === 'image/gif' || image.type === 'image/webp') {
-        let asset = await setUrl(image);
+        const asset = await setUrl(image);
         asset.image = image;
         addAsset(asset);
       }
       else {
-        let scaled = await getResizedImage(image);
-        let asset = await setUrl(scaled);
+        const scaled = await getResizedImage(image);
+        const asset = await setUrl(scaled);
         asset.image = image;
         addAsset(asset);
       }
     },
     addVideo: async (video) => {
-      let asset = await setUrl(video);
+      const asset = await setUrl(video);
       asset.video = video;
       asset.position = 0;
       addAsset(asset);
     },
     addAudio: async (audio) => {
-      let asset = await setUrl(audio);
+      const asset = await setUrl(audio);
       asset.audio = audio;
       asset.label = '';
       addAsset(asset);
     },
     addBinary: async (binary) => {
-      let asset = await setUrl(binary);
+      const asset = await setUrl(binary);
       asset.binary = binary;
       asset.extension = binary.name.split('.').pop().toUpperCase();
       asset.label = binary.name.slice(0, -1 * (asset.extension.length + 1));
@@ -168,10 +168,10 @@ export function useAddTopic(contentKey) {
       if (!state.busy) {
         try {
           updateState({ busy: true });
-          let type = contentKey ? 'sealedtopic' : 'superbasictopic';
-          let message = (assets) => {
+          const type = contentKey ? 'sealedtopic' : 'superbasictopic';
+          const message = (assets) => {
             if (contentKey) {
-              let message = { 
+              const message = { 
                 assets: assets?.length ? assets : null,
                 text: state.messageText,
                 textColor: state.textColorSet ? state.textColor : null,
@@ -212,7 +212,7 @@ function getResizedImage(data) {
   return new Promise(resolve => {
     Resizer.imageFileResizer(data, 1024, 1024, 'JPEG', 90, 0,
     uri => {
-      let base64 = uri.split(';base64,').pop();
+      const base64 = uri.split(';base64,').pop();
       var binaryString = atob(base64);
       var bytes = new Uint8Array(binaryString.length);
       for (var i = 0; i < binaryString.length; i++) {
