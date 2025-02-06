@@ -21,8 +21,8 @@ jest.mock('react-router-dom', () => ({
 
 let appContext;
 function AccessView() {
-  const { state, actions } = useAccess();
-  const app = useContext(AppContext);
+  var { state, actions } = useAccess();
+  var app = useContext(AppContext);
   appContext = app;
   return (<div></div>);
 }
@@ -51,10 +51,10 @@ function AccessTestApp() {
   );
 }
 
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     return Promise.resolve({
       json: () => Promise.resolve({
         guid: '123',
