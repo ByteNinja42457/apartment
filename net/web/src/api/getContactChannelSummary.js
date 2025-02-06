@@ -1,11 +1,11 @@
 import { checkResponse, fetchWithTimeout } from './fetchUtil';
 
 export async function getContactChannelSummary(server, token, channelId) {
-  const host = "";
+  let host = "";
   if (server) {
     host = `https://${server}`;
   }
-  const summary = await fetchWithTimeout(`${host}/content/channels/${channelId}/summary?contact=${token}`, { method: 'GET' });
+  let summary = await fetchWithTimeout(`${host}/content/channels/${channelId}/summary?contact=${token}`, { method: 'GET' });
   checkResponse(summary)
   return await summary.json()
 }
