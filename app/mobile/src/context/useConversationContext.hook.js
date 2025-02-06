@@ -7,42 +7,42 @@ import { ProfileContext } from 'context/ProfileContext';
 import CryptoJS from 'crypto-js';
 
 export function useConversationContext() {
-  var COUNT = 32;
+  const COUNT = 32;
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     loaded: false,
     offsync: false,
     topics: new Map(),
     card: null,
     channel: null,
   });
-  var card = useContext(CardContext);
-  var channel = useContext(ChannelContext);
+  const card = useContext(CardContext);
+  const channel = useContext(ChannelContext);
 
-  var reset = useRef(false);
-  var more = useRef(false);
-  var force = useRef(false);
-  var syncing = useRef(false);
-  var update = useRef(false);
-  var loaded = useRef(false);
-  var stored = useRef([]);
-  var conversationId = useRef(null);
-  var topics = useRef(new Map());
+  const reset = useRef(false);
+  const more = useRef(false);
+  const force = useRef(false);
+  const syncing = useRef(false);
+  const update = useRef(false);
+  const loaded = useRef(false);
+  const stored = useRef([]);
+  const conversationId = useRef(null);
+  const topics = useRef(new Map());
 
-  var curSyncRevision = useRef();
-  var curTopicMarker = useRef();
+  const curSyncRevision = useRef();
+  const curTopicMarker = useRef();
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var sync = async () => {
+  const sync = async () => {
 
     if (!syncing.current && (reset.current || update.current || force.current || more.current)) {
 
-      var loadMore = more.current;
-      var ignoreRevision = force.current;
-      var conversation = conversationId.current;
+      const loadMore = more.current;
+      const ignoreRevision = force.current;
+      const conversation = conversationId.current;
 
       syncing.current = true;
       update.current = false;
@@ -57,10 +57,10 @@ export function useConversationContext() {
       }
 
       if (conversation) {
-        var { cardId, channelId } = conversation;
-        var cardValue = cardId ? card.state.cards.get(cardId) : null;
-        var channelValue = cardId ? cardValue?.channels.get(channelId) : channel.state.channels.get(channelId);
-        var { topicRevision } = channelValue || {};
+        const { cardId, channelId } = conversation;
+        const cardValue = cardId ? card.state.cards.get(cardId) : null;
+        const channelValue = cardId ? cardValue?.channels.get(channelId) : channel.state.channels.get(channelId);
+        const { topicRevision } = channelValue || {};
 
         if (channelValue) {
           if (!loaded.current) {
@@ -76,19 +76,19 @@ export function useConversationContext() {
               return 0;
             });
 
-            var ids = [];
+            const ids = [];
             for (let i = 0; i < COUNT; i++) {
               if (stored.current.length > 0) {
                 ids.push(stored.current.shift().topicId);
               }
             }
 
-            var topicItems = await getTopicItemsById(cardId, channelId, ids);
+            const topicItems = await getTopicItemsById(cardId, channelId, ids);
             for (let topic of topicItems) {
               topics.current.set(topic.topicId, topic);
             }
 
-            var { syncRevision, topicMarker } = channelValue;
+            const { syncRevision, topicMarker } = channelValue;
             curSyncRevision.current = syncRevision;
             curTopicMarker.current = topicMarker;
             loaded.current = true;
@@ -105,9 +105,9 @@ export function useConversationContext() {
 
         try {
           if (!curTopicMarker.current) {
-            var delta = await getTopicDelta(cardId, channelId, null, COUNT, null, null);
+            const delta = await getTopicDelta(cardId, channelId, null, COUNT, null, null);
             await setTopicDelta(cardId, channelId, delta.topics);
-            var marker = delta.marker ? delta.marker : 1;
+            const marker = delta.marker ? delta.marker : 1;
             await setMarkerAndSync(cardId, channelId, marker, delta.revision);
             curTopicMarker.current = marker;
             curSyncRevision.current = delta.revision;
@@ -115,21 +115,21 @@ export function useConversationContext() {
           }
           else if (loadMore) {
             if (stored.current.length > 0) {
-              var ids = [];
+              const ids = [];
               for (let i = 0; i < COUNT; i++) {
                 if (stored.current.length > 0) {
                   ids.push(stored.current.shift().topicId);
                 }
               }
-              var topicItems = await getTopicItemsById(cardId, channelId, ids);
+              const topicItems = await getTopicItemsById(cardId, channelId, ids);
               for (let topic of topicItems) {
                 topics.current.set(topic.topicId, topic);
               }
               updateState({ loaded: true, topics: topics.current, card: cardValue, channel: channelValue });
             }
             else {
-              var delta = await getTopicDelta(cardId, channelId, null, COUNT, null, curTopicMarker.current);
-              var marker = delta.marker ? delta.marker : 1;
+              const delta = await getTopicDelta(cardId, channelId, null, COUNT, null, curTopicMarker.current);
+              const marker = delta.marker ? delta.marker : 1;
               await setTopicDelta(cardId, channelId, delta.topics);
               await setTopicMarker(cardId, channelId, marker);
               curTopicMarker.current = marker;
@@ -137,7 +137,7 @@ export function useConversationContext() {
             }
           }
           else if (ignoreRevision || topicRevision > curSyncRevision.current) {
-            var delta = await getTopicDelta(cardId, channelId, curSyncRevision.current, null, curTopicMarker.current, null);
+            const delta = await getTopicDelta(cardId, channelId, curSyncRevision.current, null, curTopicMarker.current, null);
             if (topicRevision > delta.revision) {
               throw new Error("invalid topic revision");
             }
@@ -163,18 +163,18 @@ export function useConversationContext() {
     }
   }
 
-  var setTopicDelta = async (cardId, channelId, entries) => {
+  const setTopicDelta = async (cardId, channelId, entries) => {
 
     for (let entry of entries) {
       if (entry.data) {
         if (entry.data.topicDetail) {
-          var item = mapTopicEntry(entry);
+          const item = mapTopicEntry(entry);
           await setTopicItem(cardId, channelId, item);
           topics.current.set(item.topicId, item);
         }
         else {
-          var topic = await getTopic(cardId, channelId, entry.id);
-          var item = mapTopicEntry(topic);
+          const topic = await getTopic(cardId, channelId, entry.id);
+          const item = mapTopicEntry(topic);
           await setTopicItem(cardId, channelId, item);
           topics.current.set(item.topicId, item);
         }
@@ -192,7 +192,7 @@ export function useConversationContext() {
     // eslint-disable-next-line
   }, [card.state, channel.state]);
 
-  var actions = {
+  const actions = {
     setConversation: async (cardId, channelId) => {
       conversationId.current = { cardId, channelId };
       reset.current = true;
@@ -204,7 +204,7 @@ export function useConversationContext() {
       await sync();
     },
     setChannelSubject: async (type, subject) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         throw new Error("can only set hosted channel subjects");
       }
@@ -213,7 +213,7 @@ export function useConversationContext() {
       }
     },
     removeChannel: async () => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.removeChannel(cardId, channelId); 
       }
@@ -222,7 +222,7 @@ export function useConversationContext() {
       }
     },
     getNotifications: async () => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         return await card.actions.getChannelNotifications(cardId, channelId);
       }
@@ -231,7 +231,7 @@ export function useConversationContext() {
       }
     },
     setNotifications: async (notification) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.setChannelNotifications(cardId, channelId, notification);
       }
@@ -241,7 +241,7 @@ export function useConversationContext() {
       updateState({ notification });
     },
     setChannelCard: async (id) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         throw new Error("can only set members on hosted channel");
       }
@@ -250,7 +250,7 @@ export function useConversationContext() {
       }
     },
     clearChannelCard: async (id) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         throw new Error("can only clear members on hosted channel");
       }
@@ -259,7 +259,7 @@ export function useConversationContext() {
       }
     },
     setChannelReadRevision: async (revision) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.setChannelReadRevision(cardId, channelId, revision);
       }
@@ -268,7 +268,7 @@ export function useConversationContext() {
       }
     },
     addChannelAlert: async () => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         return await card.actions.addChannelAlert(cardId, channelId);
       }
@@ -277,7 +277,7 @@ export function useConversationContext() {
       }
     },
     setChannelFlag: async () => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.setChannelFlag(cardId, channelId);
       }
@@ -286,7 +286,7 @@ export function useConversationContext() {
       }
     },
     clearChannelFlag: async () => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardid) {
         await card.actions.clearChannelFlag(cardId, channelId);
       }
@@ -295,7 +295,7 @@ export function useConversationContext() {
       }
     },
     addTopic: async (type, message, files) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.addTopic(cardId, channelId, type, message, files);
       }
@@ -306,7 +306,7 @@ export function useConversationContext() {
       await sync();
     },
     removeTopic: async (topicId) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.removeTopic(cardId, channelId, topicId);
       }
@@ -317,7 +317,7 @@ export function useConversationContext() {
       await sync();
     },
     unsealTopic: async (topicId, revision, unsealed) => {
-      var { cardId, channelId } = conversationId.current || {}
+      const { cardId, channelId } = conversationId.current || {}
       if (cardId) {
         await card.actions.setUnsealedTopicSubject(cardId, channelId, topicId, revision, unsealed);
       }
@@ -327,7 +327,7 @@ export function useConversationContext() {
       setTopicField(topicId, 'unsealedDetail', unsealed);
     },
     setTopicSubject: async (topicId, type, subject) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         await card.actions.setTopicSubject(cardId, channelId, topicId, type, subject);
       }
@@ -338,7 +338,7 @@ export function useConversationContext() {
       await sync();
     },
     addTopicAlert: async (topicId) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         return await card.actions.addTopicAlert(cardId, channelId, topicId);
       }
@@ -347,7 +347,7 @@ export function useConversationContext() {
       }
     },
     setTopicFlag: async (topicId) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         card.actions.setTopicFlag(cardId, channelId, topicId);
       }
@@ -358,7 +358,7 @@ export function useConversationContext() {
       updateState({ topics: topics.current });
     },
     clearTopicFlag: async (topicId) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       if (cardId) {
         card.actions.clearTopicFlag(cardId, channelId, topicId);
       }
@@ -369,7 +369,7 @@ export function useConversationContext() {
       updateState({ topics: topics.current });
     },
     getTopicAssetUrl: (topicId, assetId) => {
-      var { cardId, channelId } = conversationId.current || {};
+      const { cardId, channelId } = conversationId.current || {};
       return getTopicAssetUrl(cardId, channelId, topicId, assetId);
     },
     loadMore: async () => {
@@ -382,84 +382,84 @@ export function useConversationContext() {
     },
   }
 
-  var getTopicItemsId = async (cardId, channelId) => {
+  const getTopicItemsId = async (cardId, channelId) => {
     if (cardId) {
       return await card.actions.getTopicItemsId(cardId, channelId);
     }
     return await channel.actions.getTopicItemsId(channelId);
   }
 
-  var getTopicItemsById = async (cardId, channelId, topics) => {
+  const getTopicItemsById = async (cardId, channelId, topics) => {
     if (cardId) {
       return await card.actions.getTopicItemsById(cardId, channelId, topics);
     }
     return await channel.actions.getTopicItemsById(channelId, topics);
   }
 
-  var getTopicItems = async (cardId, channelId) => {
+  const getTopicItems = async (cardId, channelId) => {
     if (cardId) {
       return await card.actions.getTopicItems(cardId, channelId);
     }
     return await channel.actions.getTopicItems(channelId);
   }
 
-  var setTopicItem = async (cardId, channelId, topic) => {
+  const setTopicItem = async (cardId, channelId, topic) => {
     if (cardId) {
       return await card.actions.setTopicItem(cardId, channelId, topic);
     }
     return await channel.actions.setTopicItem(channelId, topic);
   }
 
-  var clearTopicItem = async (cardId, channelId, topicId) => {
+  const clearTopicItem = async (cardId, channelId, topicId) => {
     if (cardId) {
       return await card.actions.clearTopicItem(cardId, channelId, topicId);
     }
     return await channel.actions.clearTopicItem(channelId, topicId);
   }
 
-  var setTopicMarker = async (cardId, channelId, marker) => {
+  const setTopicMarker = async (cardId, channelId, marker) => {
     if (cardId) {
       return await card.actions.setChannelTopicMarker(cardId, channelId, marker);
     }
     return await channel.actions.setTopicMarker(channelId, marker);
   }
 
-  var setSyncRevision = async (cardId, channelId, revision) => {
+  const setSyncRevision = async (cardId, channelId, revision) => {
     if (cardId) {
       return await card.actions.setChannelSyncRevision(cardId, channelId, revision);
     }
     return await channel.actions.setSyncRevision(channelId, revision);
   }
 
-  var setMarkerAndSync = async (cardId, channelId, marker, revision) => {
+  const setMarkerAndSync = async (cardId, channelId, marker, revision) => {
     if (cardId) {
       return await card.actions.setChannelMarkerAndSync(cardId, channelId, marker, revision);
     }
     return await channel.actions.setMarkerAndSync(channelId, marker, revision);
   }
 
-  var getTopicDelta = async (cardId, channelId, revision, count, begin, end) => {
+  const getTopicDelta = async (cardId, channelId, revision, count, begin, end) => {
     if (cardId) {
       return await card.actions.getTopics(cardId, channelId, revision, count, begin, end);
     }
     return await channel.actions.getTopics(channelId, revision, count, begin, end);
   }
 
-  var getTopic = async (cardId, channelId, topicId) => {
+  const getTopic = async (cardId, channelId, topicId) => {
     if (cardId) {
       return await card.actions.getTopic(cardId, channelId, topicId);
     }
     return await channel.actions.getTopic(channelId, topicId);
   }
 
-  var getTopicAssetUrl = (cardId, channelId, topicId, assetId) => {
+  const getTopicAssetUrl = (cardId, channelId, topicId, assetId) => {
     if (cardId) {
       return card.actions.getTopicAssetUrl(cardId, channelId, topicId, assetId);
     }
     return channel.actions.getTopicAssetUrl(channelId, topicId, assetId);
   }
 
-  var mapTopicEntry = (entry) => {
+  const mapTopicEntry = (entry) => {
     return {
       topicId: entry.id,
       revision: entry.revision,
@@ -468,8 +468,8 @@ export function useConversationContext() {
     };
   };
 
-  var setTopicField = (topicId, field, value) => {
-    var topic = topics.current.get(topicId);
+  const setTopicField = (topicId, field, value) => {
+    const topic = topics.current.get(topicId);
     if (topic) {
       topic[field] = value;
     }
