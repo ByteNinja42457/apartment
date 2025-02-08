@@ -9,7 +9,7 @@ import { decryptChannelSubject, updateChannelSubject, getContentKey, getChannelS
 
 export function useDetails() {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     logo: null,
     img: null,
     started: null,
@@ -33,29 +33,29 @@ export function useDetails() {
     seals: null,
   });
 
-  const conversation = useContext(ConversationContext);
-  const card = useContext(CardContext);
-  const account = useContext(AccountContext);
-  const settings = useContext(SettingsContext);
-  const profile = useContext(ProfileContext);
+  var conversation = useContext(ConversationContext);
+  var card = useContext(CardContext);
+  var account = useContext(AccountContext);
+  var settings = useContext(SettingsContext);
+  var profile = useContext(ProfileContext);
 
-  const cardId = useRef();
-  const channelId = useRef();
-  const key = useRef();
-  const detailRevision = useRef();
+  var cardId = useRef();
+  var channelId = useRef();
+  var key = useRef();
+  var detailRevision = useRef();
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { dataType, data } = conversation.state.channel?.data?.channelDetail || {};
+    var { dataType, data } = conversation.state.channel?.data?.channelDetail || {};
     if (dataType === 'sealed') {
       try {
-        const { sealKey } = account.state;
-        const seals = getChannelSeals(data);
+        var { sealKey } = account.state;
+        var seals = getChannelSeals(data);
         if (isUnsealed(seals, sealKey)) {
-          const decKey = getContentKey(seals, sealKey);
+          var decKey = getContentKey(seals, sealKey);
           updateState({ sealed: true, contentKey: decKey, seals });
         }
         else {
@@ -74,20 +74,20 @@ export function useDetails() {
   }, [account.state.sealKey, conversation.state.channel?.data?.channelDetail]);
 
   useEffect(() => {
-    const { menuStyle, strings, display } = settings.state;
+    var { menuStyle, strings, display } = settings.state;
     updateState({ menuStyle, strings, display });
   }, [settings.state]);
 
   useEffect(() => {
 
-    const cardValue = conversation.state.card;
-    const channelValue = conversation.state.channel;
+    var cardValue = conversation.state.card;
+    var channelValue = conversation.state.channel;
 
     // extract channel created info
     let started;
     let host;
-    const date = new Date(channelValue?.data?.channelDetail?.created * 1000);
-    const now = new Date();
+    var date = new Date(channelValue?.data?.channelDetail?.created * 1000);
+    var now = new Date();
     if(now.getTime() - date.getTime() < 86400000) {
       if (settings.state.timeFormat === '12h') {
         started = date.toLocaleTimeString("en-US", {hour: 'numeric', minute:'2-digit'});
@@ -120,7 +120,7 @@ export function useDetails() {
     let unknown = 0;
     if (cardValue) {
       members.push(cardValue.id);
-      const profile = cardValue.data?.cardProfile;
+      var profile = cardValue.data?.cardProfile;
       if (profile?.name) {
         names.push(profile.name);
       }
@@ -137,7 +137,7 @@ export function useDetails() {
     if (channelValue?.data?.channelDetail?.members) {
       for (let guid of channelValue.data.channelDetail.members) {
         if (guid !== profile.state.identity.guid) {
-          const contact = getCardByGuid(card.state.cards, guid);
+          var contact = getCardByGuid(card.state.cards, guid);
           if (contact) {
             members.push(contact.id);
           }
@@ -145,7 +145,7 @@ export function useDetails() {
             unknown++;
           }
     
-          const profile = contact?.data?.cardProfile;
+          var profile = contact?.data?.cardProfile;
           if (profile?.name) {
             names.push(profile.name);
           }
@@ -179,10 +179,10 @@ export function useDetails() {
         detailRevision.current !== channelValue?.data?.detailRevision || key.current !== state.contentKey) {
       let title;
       try {
-        const detail = channelValue?.data?.channelDetail;
+        var detail = channelValue?.data?.channelDetail;
         if (detail?.dataType === 'sealed') {
           if (state.contentKey) {
-            const unsealed = decryptChannelSubject(detail.data, state.contentKey);
+            var unsealed = decryptChannelSubject(detail.data, state.contentKey);
             title = unsealed.subject;
           }
           else {
@@ -190,7 +190,7 @@ export function useDetails() {
           }
         }
         else if (detail?.dataType === 'superbasic') {
-          const data = JSON.parse(detail.data);
+          var data = JSON.parse(detail.data);
           title = data.subject;
         }
       }
@@ -211,7 +211,7 @@ export function useDetails() {
     // eslint-disable-next-line
   }, [conversation.state, card.state, state.strings, state.contentKey]);
 
-  const actions = {
+  var actions = {
     setEditSubject: () => {
       updateState({ showEditSubject: true });
     },
@@ -224,13 +224,13 @@ export function useDetails() {
     setSubject: async () => {
       if (state.sealed) {
         if (state.contentKey) {
-          const updated = updateChannelSubject(state.editSubject, state.contentKey);
+          var updated = updateChannelSubject(state.editSubject, state.contentKey);
           updated.seals = state.seals;
           await conversation.actions.setChannelSubject('sealed', updated);
         }
       }
       else {
-        const subject = { subject: state.editSubject };
+        var subject = { subject: state.editSubject };
         await conversation.actions.setChannelSubject('superbasic', subject);
       }
     },
