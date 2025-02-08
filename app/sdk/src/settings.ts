@@ -16,8 +16,8 @@ import { setAccountSeal } from './net/setAccountSeal';
 import { clearAccountSeal } from './net/clearAccountSeal';
 import { getUsername } from './net/getUsername';
 
-const CLOSE_POLL_MS = 100;
-const RETRY_POLL_MS = 2000;
+let CLOSE_POLL_MS = 100;
+let RETRY_POLL_MS = 2000;
 
 export class SettingsModule implements Settings {
   private emitter: EventEmitter;
@@ -77,10 +77,10 @@ export class SettingsModule implements Settings {
         if (this.revision == this.nextRevision) {
           this.nextRevision = null;
         } else {
-          const nextRev = this.nextRevision;
+          let nextRev = this.nextRevision;
           try {
-            const { guid, node, secure, token } = this;
-            const config = await getAccountStatus(node, secure, token);
+            let { guid, node, secure, token } = this;
+            let config = await getAccountStatus(node, secure, token);
             await this.store.setSettingsData(guid, config);
             await this.store.setSettingsRevision(guid, nextRev);
             this.config = config;
@@ -102,10 +102,10 @@ export class SettingsModule implements Settings {
   }
 
   public getConfig() {
-    const { storageUsed, storageAvailable, forwardingAddress, searchable, allowUnsealed, pushEnabled, sealable, seal, enableIce, mfaEnabled, webPushKey } = this.config;
-    const { passwordSalt, privateKeyIv, privateKeyEncrypted, publicKey } = seal || {};
-    const sealSet = Boolean(passwordSalt && privateKeyIv && privateKeyEncrypted && publicKey);
-    const sealUnlocked = Boolean(sealSet && this.seal?.privateKey && this.seal?.publicKey == publicKey);
+    let { storageUsed, storageAvailable, forwardingAddress, searchable, allowUnsealed, pushEnabled, sealable, seal, enableIce, mfaEnabled, webPushKey } = this.config;
+    let { passwordSalt, privateKeyIv, privateKeyEncrypted, publicKey } = seal || {};
+    let sealSet = Boolean(passwordSalt && privateKeyIv && privateKeyEncrypted && publicKey);
+    let sealUnlocked = Boolean(sealSet && this.seal?.privateKey && this.seal?.publicKey == publicKey);
     return {
       storageUsed,
       storageAvailable,
@@ -153,22 +153,22 @@ export class SettingsModule implements Settings {
   }
 
   public async enableNotifications(params?: PushParams): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountNotifications(node, secure, token, true, params);
   }
 
   public async disableNotifications(): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountNotifications(node, secure, token, false);
   }
 
   public async enableRegistry(): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountSearchable(node, secure, token, true);
   }
 
   public async disableRegistry(): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountSearchable(node, secure, token, false);
   }
 
@@ -176,32 +176,32 @@ export class SettingsModule implements Settings {
     secretImage: string;
     secretText: string;
   }> {
-    const { node, secure, token } = this;
-    const { secretImage, secretText } = await addAccountMFAuth(node, secure, token);
+    let { node, secure, token } = this;
+    let { secretImage, secretText } = await addAccountMFAuth(node, secure, token);
     return { secretImage, secretText };
   }
 
   public async disableMFA(): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await removeAccountMFAuth(node, secure, token);
   }
 
   public async confirmMFA(code: string): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountMFAuth(node, secure, token, code);
   }
 
   public async setSeal(password: string): Promise<void> {
-    const { crypto, guid, node, secure, token } = this;
+    let { crypto, guid, node, secure, token } = this;
     if (!crypto) {
       throw new Error('crypto not enabled');
     }
-    const { saltHex } = await crypto.pbkdfSalt();
-    const { aesKeyHex } = await crypto.pbkdfKey(saltHex, password);
-    const { publicKeyB64, privateKeyB64 } = await crypto.rsaKey();
-    const { ivHex } = await crypto.aesIv();
-    const { encryptedDataB64 } = await crypto.aesEncrypt(privateKeyB64, ivHex, aesKeyHex);
-    const seal = {
+    let { saltHex } = await crypto.pbkdfSalt();
+    let { aesKeyHex } = await crypto.pbkdfKey(saltHex, password);
+    let { publicKeyB64, privateKeyB64 } = await crypto.rsaKey();
+    let { ivHex } = await crypto.aesIv();
+    let { encryptedDataB64 } = await crypto.aesEncrypt(privateKeyB64, ivHex, aesKeyHex);
+    let seal = {
       passwordSalt: saltHex,
       privateKeyIv: ivHex,
       privateKeyEncrypted: encryptedDataB64,
@@ -215,18 +215,18 @@ export class SettingsModule implements Settings {
   }
 
   public async updateSeal(password: string): Promise<void> {
-    const { crypto, config, node, secure, token } = this;
+    let { crypto, config, node, secure, token } = this;
     if (!crypto) {
       throw new Error('crypto not enabled');
     }
     if (!this.seal || this.seal.publicKey !== config.seal.publicKey) {
       throw new Error('seal not unlocked');
     }
-    const { saltHex } = await crypto.pbkdfSalt();
-    const { aesKeyHex } = await crypto.pbkdfKey(saltHex, password);
-    const { ivHex } = await crypto.aesIv();
-    const { encryptedDataB64 } = await crypto.aesEncrypt(this.seal.privateKey, ivHex, aesKeyHex);
-    const seal = {
+    let { saltHex } = await crypto.pbkdfSalt();
+    let { aesKeyHex } = await crypto.pbkdfKey(saltHex, password);
+    let { ivHex } = await crypto.aesIv();
+    let { encryptedDataB64 } = await crypto.aesEncrypt(this.seal.privateKey, ivHex, aesKeyHex);
+    let seal = {
       passwordSalt: saltHex,
       privateKeyIv: ivHex,
       privateKeyEncrypted: encryptedDataB64,
@@ -236,7 +236,7 @@ export class SettingsModule implements Settings {
   }
 
   public async clearSeal(): Promise<void> {
-    const { guid, node, secure, token } = this;
+    let { guid, node, secure, token } = this;
     await clearAccountSeal(node, secure, token);
     await this.store.clearSeal(guid);
     this.seal = null;
@@ -245,17 +245,17 @@ export class SettingsModule implements Settings {
   }
 
   public async unlockSeal(password: string): Promise<void> {
-    const { guid, config, crypto } = this;
-    const { passwordSalt, privateKeyIv, privateKeyEncrypted, publicKey } = config.seal;
+    let { guid, config, crypto } = this;
+    let { passwordSalt, privateKeyIv, privateKeyEncrypted, publicKey } = config.seal;
     if (!passwordSalt || !privateKeyIv || !privateKeyEncrypted || !publicKey) {
       throw new Error('account seal not set');
     }
     if (!crypto) {
       throw new Error('crypto not set');
     }
-    const { aesKeyHex } = await crypto.pbkdfKey(passwordSalt, password);
-    const { data } = await crypto.aesDecrypt(privateKeyEncrypted, privateKeyIv, aesKeyHex);
-    const seal = { publicKey: publicKey, privateKey: data };
+    let { aesKeyHex } = await crypto.pbkdfKey(passwordSalt, password);
+    let { data } = await crypto.aesDecrypt(privateKeyEncrypted, privateKeyIv, aesKeyHex);
+    let seal = { publicKey: publicKey, privateKey: data };
     this.store.setSeal(guid, seal);
     this.seal = seal;
     this.emitter.emit('config', this.getConfig());
@@ -263,7 +263,7 @@ export class SettingsModule implements Settings {
   }
 
   public async forgetSeal(): Promise<void> {
-    const { guid } = this;
+    let { guid } = this;
     await this.store.clearSeal(guid);
     this.seal = null;
     this.emitter.emit('config', this.getConfig());
@@ -271,18 +271,18 @@ export class SettingsModule implements Settings {
   }
 
   public async getUsernameStatus(username: string): Promise<boolean> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     return await getUsername(username, null, token, node, secure);
   }
 
   public async setLogin(username: string, password: string): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setAccountLogin(node, secure, token, username, password);
   }
 
   public async getBlockedCards(): Promise<{cardId: string, timestamp: number}[]> {
-    const { guid } = this;
-    const blockedContacts = await this.store.getMarkers(guid, 'blocked_card');
+    let { guid } = this;
+    let blockedContacts = await this.store.getMarkers(guid, 'blocked_card');
     return blockedContacts.map(marker => {
       try {
         return JSON.parse(marker.value);
@@ -293,9 +293,9 @@ export class SettingsModule implements Settings {
   }
 
   public async getBlockedChannels(): Promise<{cardId: string | null, channelId: string, timestamp: number}[]> {
-    const { guid } = this;
-    const blockedChannels = await this.store.getMarkers(guid, 'blocked_channel');
-    const blockedCardChannels = await this.store.getMarkers(guid, 'blocked_card_channel');
+    let { guid } = this;
+    let blockedChannels = await this.store.getMarkers(guid, 'blocked_channel');
+    let blockedCardChannels = await this.store.getMarkers(guid, 'blocked_card_channel');
     return blockedChannels.concat(blockedCardChannels).map(marker => {
       try {
         return JSON.parse(marker.value);
@@ -306,8 +306,8 @@ export class SettingsModule implements Settings {
   }
 
   public async getBlockedTopics(): Promise<{cardId: string | null, channelId: string, topicId: string, timestamp: number}[]> {
-    const { guid } = this;
-    const blockedTopics = await this.store.getMarkers(guid, 'blocked_topic');
+    let { guid } = this;
+    let blockedTopics = await this.store.getMarkers(guid, 'blocked_topic');
     return blockedTopics.map(marker => {
       try {
         return JSON.parse(marker.value);
