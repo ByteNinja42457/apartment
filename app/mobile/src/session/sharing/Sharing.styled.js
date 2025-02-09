@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from 'constants/Colors';
 
-export let styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   sharingBase: {
     display: 'flex',
     width: '100%',
