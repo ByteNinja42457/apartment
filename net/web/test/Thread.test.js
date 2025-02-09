@@ -15,16 +15,16 @@ import * as fetchUtil from 'api/fetchUtil';
 let conversation = null;
 let card = null;
 function ThreadView() {
-  const { state, actions } = useConversation('card01', 'channel01');
-  const [renderCount, setRenderCount] = useState(0);
-  const [topics, setTopics] = useState([]);
+  var { state, actions } = useConversation('card01', 'channel01');
+  var [renderCount, setRenderCount] = useState(0);
+  var [topics, setTopics] = useState([]);
 
   conversation = actions;
   card = useContext(CardContext);
 
   useEffect(() => {
-    const rendered = [];
-    const entries = Array.from(state.topics.values());
+    var rendered = [];
+    var entries = Array.from(state.topics.values());
     entries.forEach(entry => {
       rendered.push(
         <div key={entry.id} data-testid={entry.id}>{ entry.text }</div>
@@ -65,15 +65,15 @@ let fetchCards;
 let fetchChannels;
 let fetchTopics;
 let fetchDetail;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
   fetchCards = [];
   fetchChannels = [];
   fetchTopics = [];
   fetchDetail = {};
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
 
     if (url.startsWith('/contact/cards?agent')) {
       return Promise.resolve({
@@ -86,7 +86,7 @@ beforeEach(() => {
       });
     }
     if (url.startsWith('https://test.org/content/channels/channel01/topics?contact')) {
-      const headers = new Map();
+      var headers = new Map();
       headers.set('topic-marker', 48);
       headers.set('topic-revision', 55);
       return Promise.resolve({
