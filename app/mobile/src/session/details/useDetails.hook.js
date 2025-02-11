@@ -13,7 +13,7 @@ import moment from 'moment';
 
 export function useDetails(clear) {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     strings: getLanguageStrings(),
     subject: null,
     timestamp: null,
@@ -35,19 +35,19 @@ export function useDetails(clear) {
     notification: null,
   });
 
-  const card = useContext(CardContext);
-  const account = useContext(AccountContext);
-  const conversation = useContext(ConversationContext);
-  const profile = useContext(ProfileContext);
-  const display = useContext(DisplayContext);
+  var card = useContext(CardContext);
+  var account = useContext(AccountContext);
+  var conversation = useContext(ConversationContext);
+  var profile = useContext(ProfileContext);
+  var display = useContext(DisplayContext);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
     (async () => {
-      const notification = await conversation.actions.getNotifications();
+      var notification = await conversation.actions.getNotifications();
       updateState({ notification });
     })();
   }, [conversation.state.card, conversation.state.channel]);
@@ -57,7 +57,7 @@ export function useDetails(clear) {
     let unlocked;
     let seals;
     let sealKey;
-    const { channel } = conversation.state;
+    var { channel } = conversation.state;
     if (channel?.detail?.dataType === 'sealed') {
       locked = true;
       try {
@@ -77,7 +77,7 @@ export function useDetails(clear) {
     updateState({ locked, unlocked, seals, sealKey });
   }, [account.state, conversation.state]);
 
-  const setMemberItem = (contact, guids) => {
+  var setMemberItem = (contact, guids) => {
     return {
       cardId: contact?.cardId,
       name: contact?.profile?.name,
@@ -91,14 +91,14 @@ export function useDetails(clear) {
   useEffect(() => {
     let unknown = 0;
     let members = new Map();
-    const host = conversation.state.card;
+    var host = conversation.state.card;
     if (host) {
       members.set(host.card?.cardId, setMemberItem(host.card, []));
     }
-    const guids = conversation.state.channel?.detail?.members || [];
+    var guids = conversation.state.channel?.detail?.members || [];
     guids.forEach(guid => {
       if (guid !== profile.state.identity?.guid) {
-        const contact = getCardByGuid(card.state.cards, guid);
+        var contact = getCardByGuid(card.state.cards, guid);
         if (contact) {
           members.set(contact.card?.cardId, setMemberItem(contact.card, []));
         }
@@ -108,7 +108,7 @@ export function useDetails(clear) {
       }
     });
 
-    const connected = new Map();
+    var connected = new Map();
     card.state.cards.forEach(contact => {
       if (contact?.card?.detail?.status === 'connected') {
         connected.set(contact.card?.cardId, setMemberItem(contact.card, guids));
@@ -119,19 +119,19 @@ export function useDetails(clear) {
   }, [card.state, conversation.state, profile.state]);
 
   useEffect(() => {
-    const hostId = conversation.state.card?.card.cardId;
-    const profileGuid = profile.state.identity?.guid;
-    const channel = conversation.state.channel;
-    const cards = card.state.cards;
-    const cardImageUrl = card.actions.getCardImageUrl;
-    const { logo, subject } = getChannelSubjectLogo(hostId, profileGuid, channel, cards, cardImageUrl, state.strings);
+    var hostId = conversation.state.card?.card.cardId;
+    var profileGuid = profile.state.identity?.guid;
+    var channel = conversation.state.channel;
+    var cards = card.state.cards;
+    var cardImageUrl = card.actions.getCardImageUrl;
+    var { logo, subject } = getChannelSubjectLogo(hostId, profileGuid, channel, cards, cardImageUrl, state.strings);
 
     let timestamp;
-    const { timeFull, monthLast } = profile.state || {};
-    const { created, data, dataType } = conversation.state.channel?.detail || {}
-    const date = new Date(created * 1000);
-    const now = new Date();
-    const offset = now.getTime() - date.getTime();
+    var { timeFull, monthLast } = profile.state || {};
+    var { created, data, dataType } = conversation.state.channel?.detail || {}
+    var date = new Date(created * 1000);
+    var now = new Date();
+    var offset = now.getTime() - date.getTime();
     if(offset < 86400000) {
       if (timeFull) {
         timestamp = moment(date).format('H:mm');
@@ -172,7 +172,7 @@ export function useDetails(clear) {
     updateState({ hostId, logo, subject, timestamp, subjectUpdate });
   }, [conversation.state, profile.state]);
 
-  const actions = {
+  var actions = {
     showEditMembers: () => {
       updateState({ editMembers: true });
     },
@@ -208,13 +208,13 @@ export function useDetails(clear) {
     },
     saveSubject: async () => {
       if (state.locked) {
-        const contentKey = await getContentKey(state.seals, state.sealKey);
-        const sealed = updateChannelSubject(state.subjectUpdate, contentKey);
+        var contentKey = await getContentKey(state.seals, state.sealKey);
+        var sealed = updateChannelSubject(state.subjectUpdate, contentKey);
         sealed.seals = state.seals;
         await conversation.actions.setChannelSubject('sealed', sealed);
       }
       else {
-        const subject = { subject: state.subjectUpdate };
+        var subject = { subject: state.subjectUpdate };
         await conversation.actions.setChannelSubject('superbasic', subject);
       }
     },
