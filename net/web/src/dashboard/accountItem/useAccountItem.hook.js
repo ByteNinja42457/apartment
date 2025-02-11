@@ -7,7 +7,7 @@ import { AppContext } from 'context/AppContext';
 
 export function useAccountItem(item, remove) {
   
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     statusBusy: false,
     removeBusy: false,
     accessBusy: false,
@@ -17,10 +17,10 @@ export function useAccountItem(item, remove) {
     strings: {},
   });
  
-  let app = useContext(AppContext);
-  let settings = useContext(SettingsContext); 
+  const app = useContext(AppContext);
+  const settings = useContext(SettingsContext); 
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -40,16 +40,16 @@ export function useAccountItem(item, remove) {
   }, [app.state.adminToken, item, state.strings]); 
 
   useEffect(() => {
-    let { display, menuStyle, strings } = settings.state;
+    const { display, menuStyle, strings } = settings.state;
     updateState({ display, menuStyle, strings });
   }, [settings.state]);
 
-  let actions = {
+  const actions = {
     setAccessLink: async () => {
       if (!state.accessBusy) {
         updateState({ accessBusy: true });
         try {
-          let access = await addAccountAccess(app.state.adminToken, item.accountId);
+          const access = await addAccountAccess(app.state.adminToken, item.accountId);
           updateState({ accessToken: access, showAccess: true, accessBusy: false });
         }
         catch (err) {
