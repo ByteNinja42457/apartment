@@ -1,5 +1,5 @@
 export function getContactChannelTopicAssetUrl(server, token, channelId, topicId, assetId) {
-  const host = "";
+  let host = "";
   if (server) {
     host = `https://${server}`;
   }
