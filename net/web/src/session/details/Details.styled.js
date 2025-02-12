@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let DetailsWrapper = styled.div`
+export const DetailsWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
