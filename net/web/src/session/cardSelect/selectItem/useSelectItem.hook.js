@@ -3,7 +3,7 @@ import { CardContext } from 'context/CardContext';
 
 export function useSelectItem(item, selected, markup) {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     logo: null,
     logoSet: false,
     selected: false,
@@ -12,9 +12,9 @@ export function useSelectItem(item, selected, markup) {
     markup: false,
   });
 
-  const card = useContext(CardContext);
+  let card = useContext(CardContext);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -29,7 +29,7 @@ export function useSelectItem(item, selected, markup) {
   }, [selected, item]);
 
   useEffect(() => {
-    const contact = card.state.cards.get(item.id);
+    let contact = card.state.cards.get(item.id);
     if (contact?.data?.cardProfile?.imageSet) {
       updateState({ logoSet: true, logo: card.actions.getCardImageUrl(item.id) });
     }
@@ -38,7 +38,7 @@ export function useSelectItem(item, selected, markup) {
     }
   }, [card, item]);
 
-  const actions = {
+  let actions = {
   };
 
   return { state, actions };
