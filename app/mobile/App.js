@@ -29,7 +29,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 
 export default function App() {
 
-  let [sharing, setSharing] = useState();
+  const [sharing, setSharing] = useState();
 
   useEffect(() => {
    
@@ -48,7 +48,7 @@ export default function App() {
     );
   }, []);
 
-  let clearSharing = () => {
+  const clearSharing = () => {
     setSharing(null);
   };
 
