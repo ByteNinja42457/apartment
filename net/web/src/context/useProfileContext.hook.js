@@ -6,29 +6,29 @@ import { setProfileImage } from 'api/setProfileImage';
 import { getProfileImageUrl } from 'api/getProfileImageUrl';
 
 export function useProfileContext() {
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     offsync: false,
     identity: {},
     imageUrl: null,
   });
-  const access = useRef(null);
-  const curRevision = useRef(null);
-  const setRevision = useRef(null);
-  const syncing = useRef(false);
+  let access = useRef(null);
+  let curRevision = useRef(null);
+  let setRevision = useRef(null);
+  let syncing = useRef(false);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const sync = async () => {
+  let sync = async () => {
     if (!syncing.current && setRevision.current !== curRevision.current) {
       syncing.current = true;
 
       try {
-        const token = access.current;
-        const revision = curRevision.current;
-        const identity = await getProfile(access.current);
-        const imageUrl = identity.image ? getProfileImageUrl(token, identity.revision) : null;
+        let token = access.current;
+        let revision = curRevision.current;
+        let identity = await getProfile(access.current);
+        let imageUrl = identity.image ? getProfileImageUrl(token, identity.revision) : null;
         setRevision.current = revision;
         updateState({ offsync: false, identity, imageUrl });
       }
@@ -44,7 +44,7 @@ export function useProfileContext() {
     }
   }
 
-  const actions = {
+  let actions = {
     setToken: (token) => {
       if (access.current || syncing.current) {
         throw new Error("invalid profile session state");
