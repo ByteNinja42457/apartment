@@ -10,7 +10,7 @@ import { getChannelSubjectLogo } from 'context/channelUtil';
 import { getLanguageStrings } from 'constants/Strings';
 
 export function useChannels() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     strings: getLanguageStrings(),
     filter: null,
     channels: [],
@@ -24,36 +24,36 @@ export function useChannels() {
     busy: false,
   });
 
-  const channel = useContext(ChannelContext);
-  const card = useContext(CardContext);
-  const account = useContext(AccountContext);
-  const profile = useContext(ProfileContext);
-  const app = useContext(AppContext);
+  var channel = useContext(ChannelContext);
+  var card = useContext(CardContext);
+  var account = useContext(AccountContext);
+  var profile = useContext(ProfileContext);
+  var app = useContext(AppContext);
   
-  const filter = useRef();
-  const syncing = useRef(false);
-  const resync = useRef(false);
+  var filter = useRef();
+  var syncing = useRef(false);
+  var resync = useRef(false);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const setChannelItem = async (loginTimestamp, cardId, channelId, item) => {
-    const timestamp = item.summary.lastTopic.created;
-    const { readRevision, topicRevision, blocked } = item;
+  var setChannelItem = async (loginTimestamp, cardId, channelId, item) => {
+    var timestamp = item.summary.lastTopic.created;
+    var { readRevision, topicRevision, blocked } = item;
 
     // decrypt subject and message
     let locked = false;
     let unlocked = false;
     if (item.detail.dataType === 'sealed') {
       locked = true;
-      const seals = getChannelSeals(item.detail.data);
+      var seals = getChannelSeals(item.detail.data);
       if (isUnsealed(seals, account.state.sealKey)) {
         unlocked = true;
         if (!item.unsealedDetail) {
           try {
-            const contentKey = await getContentKey(seals, account.state.sealKey);
-            const unsealed = decryptChannelSubject(item.detail.data, contentKey);
+            var contentKey = await getContentKey(seals, account.state.sealKey);
+            var unsealed = decryptChannelSubject(item.detail.data, contentKey);
             if (unsealed) {
               if (cardId) {
                 await card.actions.setUnsealedChannelSubject(cardId, channelId, item.detailRevision, unsealed);
@@ -70,8 +70,8 @@ export function useChannels() {
         if (item.summary.lastTopic.dataType === 'sealedtopic') {
           if (!item.unsealedSummary) {
             try {
-              const contentKey = await getContentKey(seals, account.state.sealKey);
-              const unsealed = decryptTopicSubject(item.summary.lastTopic.data, contentKey);
+              var contentKey = await getContentKey(seals, account.state.sealKey);
+              var unsealed = decryptTopicSubject(item.summary.lastTopic.data, contentKey);
               if (unsealed) {
                 if (cardId) {
                   await card.actions.setUnsealedChannelSummary(cardId, channelId, item.topicRevision, unsealed);
@@ -98,7 +98,7 @@ export function useChannels() {
     if (item.detail.dataType === 'superbasic') {
       if (item.summary.lastTopic.dataType === 'superbasictopic') {
         try {
-          const data = JSON.parse(item.summary.lastTopic.data);
+          var data = JSON.parse(item.summary.lastTopic.data);
           if (typeof data.text === 'string') {
             message = data.text;
           }
@@ -109,17 +109,17 @@ export function useChannels() {
       }
     }
 
-    const profileGuid = profile.state?.identity?.guid;
-    const { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl, state.strings);
+    var profileGuid = profile.state?.identity?.guid;
+    var { logo, subject } = getChannelSubjectLogo(cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl, state.strings);
 
-    const updated = (loginTimestamp < timestamp) && (readRevision < topicRevision);
+    var updated = (loginTimestamp < timestamp) && (readRevision < topicRevision);
 
     return { cardId, channelId, subject, message, logo, timestamp, updated, locked, unlocked, blocked };
   }
 
   useEffect(() => {
-    const allowUnsealed = account.state.status?.allowUnsealed;
-    const { status, sealKey } = account.state;
+    var allowUnsealed = account.state.status?.allowUnsealed;
+    var { status, sealKey } = account.state;
     if (status?.seal?.publicKey && sealKey?.public && sealKey?.private && sealKey?.public === status.seal.publicKey) {
       updateState({ sealable: true, allowUnsealed });
     }
@@ -129,11 +129,11 @@ export function useChannels() {
   }, [account.state]);
 
   useEffect(() => {
-    const contacts = [];
+    var contacts = [];
     card.state.cards.forEach(entry => {
       contacts.push(entry.card);
     });
-    const filtered = contacts.filter(contact => {
+    var filtered = contacts.filter(contact => {
       if (contact == null) {
         return false;
       }
@@ -145,9 +145,9 @@ export function useChannels() {
       }
       return true;
     });
-    const sorted = filtered.sort((a, b) => {
-      const aName = a?.profile?.name;
-      const bName = b?.profile?.name;
+    var sorted = filtered.sort((a, b) => {
+      var aName = a?.profile?.name;
+      var bName = b?.profile?.name;
       if (aName === bName) {
         return 0;
       }
@@ -156,7 +156,7 @@ export function useChannels() {
       }
       return 1;
     });
-    const addMembers = state.addMembers.filter(item => sorted.some(contact => contact.cardId === item));
+    var addMembers = state.addMembers.filter(item => sorted.some(contact => contact.cardId === item));
     updateState({ contacts: sorted, addMembers });
   }, [card.state, state.sealed, state.allowUnsealed]);
 
@@ -165,15 +165,15 @@ export function useChannels() {
     filter.current = state.filter;
   }, [app.state, card.state, channel.state, state.filter, state.sealable]);
 
-  const syncChannels = async () => {
+  var syncChannels = async () => {
     if (syncing.current) {
       resync.current = true;
     }
     else {
       syncing.current = true;
 
-      const { loginTimestamp } = app.state;
-      const items = [];
+      var { loginTimestamp } = app.state;
+      var items = [];
       channel.state.channels.forEach((item, channelId) => {
         items.push({ loginTimestamp, channelId, channelItem: item });
       });
@@ -182,25 +182,25 @@ export function useChannels() {
           items.push({ loginTimestamp, cardId, channelId, channelItem });
         });
       });
-      const channels = [];
+      var channels = [];
       for (let i = 0; i < items.length; i++) {
-        const { loginTimestamp, cardId, channelId, channelItem } = items[i];
+        var { loginTimestamp, cardId, channelId, channelItem } = items[i];
         channels.push(await setChannelItem(loginTimestamp, cardId, channelId, channelItem));
       }
-      const filtered = channels.filter(item => {
+      var filtered = channels.filter(item => {
         if (item.blocked) {
           return false;
         }
         if (!filter.current) {
           return true;
         }
-        const filterCase = filter.current.toUpperCase();
-        const subjectCase = item.subject.toUpperCase();
+        var filterCase = filter.current.toUpperCase();
+        var subjectCase = item.subject.toUpperCase();
         return subjectCase.includes(filterCase);
       });
-      const sorted = filtered.sort((a, b) => {
-        const aCreated = a?.timestamp;
-        const bCreated = b?.timestamp;
+      var sorted = filtered.sort((a, b) => {
+        var aCreated = a?.timestamp;
+        var bCreated = b?.timestamp;
         if (aCreated === bCreated) {
           return 0;
         }
@@ -219,7 +219,7 @@ export function useChannels() {
     }
   };
 
-  const actions = {
+  var actions = {
     setSealed: (sealed) => {
       updateState({ sealed });
     },
@@ -247,16 +247,16 @@ export function useChannels() {
         try {
           updateState({ busy: true });
           if (state.sealed || !state.allowUnsealed) {
-            const keys = [ account.state.sealKey.public ];
+            var keys = [ account.state.sealKey.public ];
             state.addMembers.forEach(id => {
-              const contact = card.state.cards.get(id);
+              var contact = card.state.cards.get(id);
               keys.push(contact.card.profile.seal);
             });
-            const sealed = encryptChannelSubject(state.addSubject, keys);
+            var sealed = encryptChannelSubject(state.addSubject, keys);
             conversation = await channel.actions.addChannel('sealed', sealed, state.addMembers);
           }
           else {
-            const subject = { subject: state.addSubject };
+            var subject = { subject: state.addSubject };
             conversation = await channel.actions.addChannel('superbasic', subject, state.addMembers);
           }
           updateState({ busy: false });
