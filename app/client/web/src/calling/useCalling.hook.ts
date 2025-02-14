@@ -5,10 +5,10 @@ import { ContextType } from '../context/ContextType'
 import { Card } from 'databag-client-sdk'
 
 export function useCalling() {
-  let ring = useContext(RingContext) as ContextType
-  let display = useContext(DisplayContext) as ContextType
+  const ring = useContext(RingContext) as ContextType
+  const display = useContext(DisplayContext) as ContextType
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     strings: display.state.strings,
     calls: [] as { callId: string; card: Card }[],
     calling: null as null | Card,
@@ -23,15 +23,15 @@ export function useCalling() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    let { calls, calling, localStream, remoteStream, localVideo, remoteVideo, audioEnabled, videoEnabled, connected, failed } = ring.state
+    const { calls, calling, localStream, remoteStream, localVideo, remoteVideo, audioEnabled, videoEnabled, connected, failed } = ring.state
     updateState({ calls, calling, localStream, remoteStream, localVideo, remoteVideo, audioEnabled, videoEnabled, connected, failed })
   }, [ring.state])
 
-  let actions = ring.actions
+  const actions = ring.actions
   return { state, actions }
 }
