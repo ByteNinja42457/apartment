@@ -6,10 +6,10 @@ import { removeContactCall } from './net/removeContactCall';
 import { addContactRing } from './net/addContactRing';
 import { keepCall } from './net/keepCall';
 
-const CLOSE_POLL_MS = 1000;
-const RETRY_INTERVAL = 1000;
-const PING_INTERVAL = 5000;
-const RING_INTERVAL = 2000;
+let CLOSE_POLL_MS = 1000;
+let RETRY_INTERVAL = 1000;
+let PING_INTERVAL = 5000;
+let RING_INTERVAL = 2000;
 
 export class LinkModule implements Link {
   private log: Logging;
@@ -51,7 +51,7 @@ export class LinkModule implements Link {
   }
 
   public async call(node: string, secure: boolean, token: string, cardId: string, contactNode: string, contactSecure: boolean, contactGuid: string, contactToken: string) {
-    const call = await addCall(node, secure, token, cardId);
+    let call = await addCall(node, secure, token, cardId);
     this.cleanup = async () => {
       try {
         await removeCall(node, secure, token, call.id)
@@ -60,8 +60,8 @@ export class LinkModule implements Link {
       }
     }
 
-    const { id, keepAlive, calleeToken, callerToken, ice } = call;
-    const ring = { index: 0, callId: id, calleeToken, ice: JSON.parse(JSON.stringify(ice))};
+    let { id, keepAlive, calleeToken, callerToken, ice } = call;
+    let ring = { index: 0, callId: id, calleeToken, ice: JSON.parse(JSON.stringify(ice))};
     await addContactRing(contactNode, contactSecure, contactGuid, contactToken, ring);
 
     this.aliveInterval = setInterval(async () => {
@@ -87,7 +87,7 @@ export class LinkModule implements Link {
 
   public async join(server: string, secure: boolean, token: string, ice: { urls: string; username: string; credential: string }[], endCall: ()=>Promise<void>) {
     this.ice = ice;
-    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
     this.cleanup = async () => { 
       try { 
         await endCall();
@@ -155,10 +155,10 @@ export class LinkModule implements Link {
     if (!this.notifying && !this.closed) {
       this.notifying = true;
       while(this.messages.length > 0 && !this.error) {
-        const data = this.messages.shift();
+        let data = this.messages.shift();
         if (data) {
           try {
-            const message = JSON.parse(data);
+            let message = JSON.parse(data);
             if (message.status) {
               await this.notifyStatus(message.status);
             } else {
@@ -212,8 +212,8 @@ export class LinkModule implements Link {
   }
 
   private setWebSocket(token: string, node: string, secure: boolean): WebSocket {
-    const wsUrl = `ws${secure ? 's' : ''}://${node}/signal`;
-    const ws = new WebSocket(wsUrl);
+    let wsUrl = `ws${secure ? 's' : ''}://${node}/signal`;
+    let ws = new WebSocket(wsUrl);
     ws.onmessage = (e) => {
       this.messages.push(e.data);
       this.notify();
