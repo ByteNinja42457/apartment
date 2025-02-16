@@ -3,23 +3,23 @@ import { SettingsContext } from 'context/SettingsContext';
 
 export function useWelcome() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     scheme: null,
     strings: {},
   });
 
-  let settings = useContext(SettingsContext);
+  const settings = useContext(SettingsContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let { scheme, strings } = settings.state;
+    const { scheme, strings } = settings.state;
     updateState({ scheme, strings });
   }, [settings.state]);
 
-  let actions = {};
+  const actions = {};
 
   return { state, actions };
 }
