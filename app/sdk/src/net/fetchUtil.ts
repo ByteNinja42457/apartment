@@ -1,4 +1,4 @@
-let TIMEOUT = 15000;
+const TIMEOUT = 15000;
 
 //await new Promise(r => setTimeout(r, 2000));
 
