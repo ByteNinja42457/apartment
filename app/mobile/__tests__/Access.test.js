@@ -21,9 +21,9 @@ jest.mock('react-router-dom', () => ({
 }));
 
 function AccessView({ mode }) {
-  const { state, actions } = (mode === 'login') ? useLogin() : useCreate();
-  const app = useContext(AppContext);
-  const [session, setSession] = useState();
+  var { state, actions } = (mode === 'login') ? useLogin() : useCreate();
+  var app = useContext(AppContext);
+  var [session, setSession] = useState();
   
   useEffect(() => {
     setSession(app.state.session);
@@ -75,17 +75,17 @@ jest.mock('react-native-device-info', () => ({
   getDeviceId: () => '##',
 }));
 
-const realUseContext = React.useContext;
-const realCreateWebsocket = fetchUtil.createWebsocket;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realUseContext = React.useContext;
+var realCreateWebsocket = fetchUtil.createWebsocket;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
-  const mockCreateWebsocket = jest.fn().mockImplementation((url) => {
+  var mockCreateWebsocket = jest.fn().mockImplementation((url) => {
     mockWebsocket = new MockWebsocket(url);
     return mockWebsocket;
   });
 
-  const mockUseContext = jest.fn().mockImplementation((ctx) => {
+  var mockUseContext = jest.fn().mockImplementation((ctx) => {
     if (ctx === StoreContext) {
       return useTestStoreContext();
     }
@@ -93,7 +93,7 @@ beforeEach(() => {
   });
   React.useContext = mockUseContext;
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     return Promise.resolve({
       json: () => Promise.resolve({
         guid: '123',
@@ -123,7 +123,7 @@ test('nav to session after create', async () => {
     });
 
     await act(async () => {
-      const app = screen.getByTestId('access').props.app;
+      var app = screen.getByTestId('access').props.app;
       await app.actions.create('test.org', 'testusername', 'testpassword', 'secret');
     });
 
@@ -145,7 +145,7 @@ test('nav to session after login', async () => {
     });
 
     await act(async () => {
-      const app = screen.getByTestId('access').props.app;
+      var app = screen.getByTestId('access').props.app;
       await app.actions.login('testusername', 'testpassword');
     });
 
