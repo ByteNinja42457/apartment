@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let ListingWrapper = styled.div`
+export const ListingWrapper = styled.div`
   height: 100%;
   width: 100%;
 
