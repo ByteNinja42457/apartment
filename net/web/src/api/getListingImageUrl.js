@@ -1,5 +1,5 @@
 export function getListingImageUrl(server, guid) {
-  let host = "";
+  const host = "";
   if (server) {
     host = `https://${server}`;
   }
