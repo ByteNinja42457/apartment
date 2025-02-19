@@ -10,15 +10,15 @@ import { ChannelContextProvider, ChannelContext } from 'context/ChannelContext';
 import * as fetchUtil from 'api/fetchUtil';
 
 function ConversationView() {
-  var [renderCount, setRenderCount] = useState(0);
-  var conversation = useContext(ConversationContext);
-  var channel = useContext(ChannelContext);
-  var card = useContext(CardContext);
-  var [topics, setTopics] = useState([]);
+  const [renderCount, setRenderCount] = useState(0);
+  const conversation = useContext(ConversationContext);
+  const channel = useContext(ChannelContext);
+  const card = useContext(CardContext);
+  const [topics, setTopics] = useState([]);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
-    var rendered = [];
+    const rendered = [];
     conversation.state.topics.forEach((value) => {
 
       rendered.push(<Text key={value.topicId} testID={value.topicId}>{ value.detail.data }</Text>);
@@ -53,9 +53,9 @@ let fetchCardChannels;
 let fetchTopics;
 let fetchTopic;
 
-var realUseContext = React.useContext;
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realUseContext = React.useContext;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
 
   fetchCards = [];
@@ -64,7 +64,7 @@ beforeEach(() => {
   fetchTopic = {};
   revision = 0;
 
-  var mockUseContext = jest.fn().mockImplementation((ctx) => {
+  const mockUseContext = jest.fn().mockImplementation((ctx) => {
     if (ctx === StoreContext) {
       return useTestStoreContext();
     }
@@ -72,7 +72,7 @@ beforeEach(() => {
   });
   React.useContext = mockUseContext;
 
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
 
     if (url.startsWith('https://test.org/content/channels?agent')) {
       return Promise.resolve({
@@ -103,7 +103,7 @@ beforeEach(() => {
     else if (url.startsWith('https://test.org/content/channels/aabb/topics?contact') ||
         url.startsWith('https://test.org/content/channels/123/topics?agent')) {
 
-      var headers = new Map();
+      const headers = new Map();
       headers.set('topic-marker', 1);
       headers.set('topic-revision', revision);
       return Promise.resolve({
@@ -134,14 +134,14 @@ test('add, update, remove card channel topic', async () => {
   render(<ConversationTestApp />)
 
   await act(async () => {
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await channel.actions.setRevision(1);
 
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await card.actions.setRevision(1);
-    //var conversation = screen.getByTestId('conversation').props.conversation;
+    //const conversation = screen.getByTestId('conversation').props.conversation;
   });
 
   await waitFor(async () => {
@@ -203,12 +203,12 @@ test('add, update, remove card channel topic', async () => {
   ];
 
   await act(async () => {
-    var conversation = screen.getByTestId('conversation').props.conversation;
+    const conversation = screen.getByTestId('conversation').props.conversation;
     conversation.actions.setConversation('000a', 'aabb');
 
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setRevision(2);
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setRevision(2);
   });
 
@@ -257,7 +257,7 @@ test('add, update, remove card channel topic', async () => {
   ];
 
   await act(async () => {
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setRevision(3);
   });
 
@@ -309,7 +309,7 @@ test('add, update, remove card channel topic', async () => {
   }
 
   await act(async () => {
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setRevision(4);
   });
 
@@ -340,7 +340,7 @@ test('add, update, remove card channel topic', async () => {
   ];
 
   await act(async () => {
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setRevision(5);
   });
 
@@ -356,14 +356,14 @@ test('add, update, remove channel topic', async () => {
   render(<ConversationTestApp />)
 
   await act(async () => {
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await channel.actions.setRevision(1);
 
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await card.actions.setRevision(1);
-    //var conversation = screen.getByTestId('conversation').props.conversation;
+    //const conversation = screen.getByTestId('conversation').props.conversation;
   });
 
   await waitFor(async () => {
@@ -425,12 +425,12 @@ test('add, update, remove channel topic', async () => {
   ];
 
   await act(async () => {
-    var conversation = screen.getByTestId('conversation').props.conversation;
+    const conversation = screen.getByTestId('conversation').props.conversation;
     conversation.actions.setConversation(null, '123');
 
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setRevision(2);
-    var card = screen.getByTestId('conversation').props.card;
+    const card = screen.getByTestId('conversation').props.card;
     await card.actions.setRevision(2);
   });
 
@@ -466,7 +466,7 @@ test('add, update, remove channel topic', async () => {
   ];
 
   await act(async () => {
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setRevision(3);
   });
 
@@ -504,7 +504,7 @@ test('add, update, remove channel topic', async () => {
   };
 
   await act(async () => {
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setRevision(4);
   });
 
@@ -522,7 +522,7 @@ test('add, update, remove channel topic', async () => {
   ];
 
   await act(async () => {
-    var channel = screen.getByTestId('conversation').props.channel;
+    const channel = screen.getByTestId('conversation').props.channel;
     await channel.actions.setRevision(5);
   });
 
