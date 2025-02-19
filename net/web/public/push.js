@@ -3,13 +3,13 @@ self.addEventListener('push', function(event) {
         return;
     }
 
-    const data = {};
+    let data = {};
     if (event.data) {
         data = event.data.json();
     }
-    const title = data.title;
-    const message = data.message;
-    const icon = "favicon.ico";
+    let title = data.title;
+    let message = data.message;
+    let icon = "favicon.ico";
 
     self.clickTarget = self.location.origin;
 
