@@ -3,13 +3,13 @@ import { useWindowDimensions } from 'react-native';
 
 export function useRegistryItem(item) {
 
-  let [state, setState] = useState({});
+  const [state, setState] = useState({});
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  let actions = {
+  const actions = {
   };
 
   return { state, actions };
