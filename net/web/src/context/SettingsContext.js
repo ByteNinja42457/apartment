@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { useSettingsContext } from './useSettingsContext.hook';
 
-export let SettingsContext = createContext({});
+export const SettingsContext = createContext({});
 
 export function SettingsContextProvider({ children }) {
-  let { state, actions } = useSettingsContext();
+  const { state, actions } = useSettingsContext();
   return (
     <SettingsContext.Provider value={{ state, actions }}>
       {children}
