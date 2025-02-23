@@ -3,13 +3,13 @@ import { CardContext } from 'context/CardContext';
 
 export function useCardSelect(filter) {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     cards: [],
   });
 
-  var card = useContext(CardContext);
+  const card = useContext(CardContext);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -19,7 +19,7 @@ export function useCardSelect(filter) {
     updateState({ cards: filtered });
   }, [card, filter]);
 
-  var actions = {
+  const actions = {
   };
 
   return { state, actions };
