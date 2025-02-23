@@ -18,10 +18,10 @@ type ChannelParams = {
 };
 
 export function useContent() {
-  let cardChannels = useRef(new Map<string | null, Channel[]>());
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
-  let [state, setState] = useState({
+  const cardChannels = useRef(new Map<string | null, Channel[]>());
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const [state, setState] = useState({
     strings: display.state.strings,
     layout: null,
     guid: '',
@@ -37,9 +37,9 @@ export function useContent() {
     focused: null as null | {cardId: null | string; channelId: string},
   });
 
-  let compare = (a: Card, b: Card) => {
-    let aval = `${a.handle}/${a.node}`;
-    let bval = `${b.handle}/${b.node}`;
+  const compare = (a: Card, b: Card) => {
+    const aval = `${a.handle}/${a.node}`;
+    const bval = `${b.handle}/${b.node}`;
     if (aval < bval) {
       return 1;
     } else if (aval > bval) {
@@ -48,27 +48,27 @@ export function useContent() {
     return 0;
   };
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    let {layout} = display.state;
+    const {layout} = display.state;
     updateState({layout});
   }, [display.state]);
 
   useEffect(() => {
-    let channels = state.sorted.map(channel => {
-      let {cardId, channelId, unread, sealed, members, data, lastTopic} = channel;
-      let contacts = [] as (Card | undefined)[];
+    const channels = state.sorted.map(channel => {
+      const {cardId, channelId, unread, sealed, members, data, lastTopic} = channel;
+      const contacts = [] as (Card | undefined)[];
       if (cardId) {
-        let card = state.cards.find(contact => contact.cardId === cardId);
+        const card = state.cards.find(contact => contact.cardId === cardId);
         if (card) {
           contacts.push(card);
         }
       }
-      let guests = members.filter(contact => contact.guid !== state.guid);
-      let guestCards = guests
+      const guests = members.filter(contact => contact.guid !== state.guid);
+      const guestCards = guests
         .map(contact => state.cards.find(card => card.guid === contact.guid))
         .sort((a, b) => {
           if (!a && !b) {
@@ -85,14 +85,14 @@ export function useContent() {
         });
       contacts.push(...guestCards);
 
-      let buildSubject = () => {
+      const buildSubject = () => {
         if (contacts.length === 0) {
           return [];
         }
         return contacts.map(contact => (contact ? contact.handle : null));
       };
 
-      let selectImage = () => {
+      const selectImage = () => {
         if (contacts.length === 0) {
           return notes;
         } else if (contacts.length === 1) {
@@ -112,7 +112,7 @@ export function useContent() {
         }
       };
 
-      let getMessage = () => {
+      const getMessage = () => {
         if (!lastTopic || !lastTopic.status) {
           return '';
         }
@@ -135,17 +135,17 @@ export function useContent() {
         }
       };
 
-      let focused = state.focused?.cardId === cardId && state.focused?.channelId === channelId;
-      let hosted = cardId == null;
-      let subject = data?.subject ? [data.subject] : buildSubject();
-      let message = getMessage();
-      let imageUrl = selectImage();
+      const focused = state.focused?.cardId === cardId && state.focused?.channelId === channelId;
+      const hosted = cardId == null;
+      const subject = data?.subject ? [data.subject] : buildSubject();
+      const message = getMessage();
+      const imageUrl = selectImage();
 
       return {cardId, channelId, focused, sealed, hosted, unread, imageUrl, subject, message};
     });
 
-    let search = state.filter?.toLowerCase();
-    let filtered = channels.filter(item => {
+    const search = state.filter?.toLowerCase();
+    const filtered = channels.filter(item => {
       if (search) {
         if (item.subject?.find(value => value?.toLowerCase().includes(search))) {
           return true;
@@ -163,7 +163,7 @@ export function useContent() {
 
   useEffect(() => {
     if (app.state.focus) {
-      let focused = app.state.focus.getFocused();
+      const focused = app.state.focus.getFocused();
       updateState({focused});
     } else {
       updateState({focused: null});
@@ -171,18 +171,18 @@ export function useContent() {
   }, [app.state.focus]);
 
   useEffect(() => {
-    let setConfig = (config: Config) => {
-      let {sealSet, sealUnlocked} = config;
+    const setConfig = (config: Config) => {
+      const {sealSet, sealUnlocked} = config;
       updateState({sealSet: sealSet && sealUnlocked});
     };
-    let setProfile = (profile: Profile) => {
-      let {guid} = profile;
+    const setProfile = (profile: Profile) => {
+      const {guid} = profile;
       updateState({guid});
     };
-    let setCards = (cards: Card[]) => {
-      let sorted = cards.sort(compare);
-      let connected = [] as Card[];
-      let sealable = [] as Card[];
+    const setCards = (cards: Card[]) => {
+      const sorted = cards.sort(compare);
+      const connected = [] as Card[];
+      const sealable = [] as Card[];
       sorted.forEach(card => {
         if (card.status === 'connected') {
           connected.push(card);
@@ -193,16 +193,16 @@ export function useContent() {
       });
       updateState({cards, connected, sealable});
     };
-    let setChannels = ({channels, cardId}: {channels: Channel[]; cardId: string | null}) => {
+    const setChannels = ({channels, cardId}: {channels: Channel[]; cardId: string | null}) => {
       cardChannels.current.set(cardId, channels);
-      let merged = [] as Channel[];
+      const merged = [] as Channel[];
       cardChannels.current.forEach(values => {
         merged.push(...values);
       });
-      let filtered = merged.filter(channel => !channel.blocked);
-      let sorted = filtered.sort((a, b) => {
-        let aUpdated = a?.lastTopic?.created;
-        let bUpdated = b?.lastTopic?.created;
+      const filtered = merged.filter(channel => !channel.blocked);
+      const sorted = filtered.sort((a, b) => {
+        const aUpdated = a?.lastTopic?.created;
+        const bUpdated = b?.lastTopic?.created;
         if (aUpdated === bUpdated) {
           return 0;
         } else if (!aUpdated) {
@@ -219,7 +219,7 @@ export function useContent() {
     };
 
     if (app.state.session) {
-      let {identity, contact, content, settings} = app.state.session;
+      const {identity, contact, content, settings} = app.state.session;
       identity.addProfileListener(setProfile);
       contact.addCardListener(setCards);
       content.addChannelListener(setChannels);
@@ -234,7 +234,7 @@ export function useContent() {
     }
   }, [app.state.session]);
 
-  let actions = {
+  const actions = {
     setSharing: app.actions.setSharing,
     setFilter: (filter: string) => {
       updateState({filter});
@@ -246,12 +246,12 @@ export function useContent() {
       await app.actions.setFocus(cardId, channelId);
     },
     openTopic: async (contactId: string) => {
-      let content = app.state.session.getContent();
-      let card = state.cards.find(member => member.cardId === contactId);
+      const content = app.state.session.getContent();
+      const card = state.cards.find(member => member.cardId === contactId);
       if (card) {
-        let sealable = card.sealable && state.sealSet;
-        let thread = state.sorted.find(channel => {
-          let {sealed, cardId, members} = channel;
+        const sealable = card.sealable && state.sealSet;
+        const thread = state.sorted.find(channel => {
+          const {sealed, cardId, members} = channel;
           if (sealed === sealable && cardId == null && members.length === 1 && members[0].guid === card.guid) {
             return true;
           }
@@ -260,18 +260,18 @@ export function useContent() {
         if (thread) {
           return thread.channelId;
         } else {
-          let topic = await content.addChannel(sealable, sealable ? 'sealed' : 'superbasic', {}, [cardId]);
+          const topic = await content.addChannel(sealable, sealable ? 'sealed' : 'superbasic', {}, [cardId]);
           return topic.id;
         }
       }
     },
     addTopic: async (sealed: boolean, subject: string, contacts: string[]) => {
-      let content = app.state.session.getContent();
+      const content = app.state.session.getContent();
       if (sealed) {
-        let topic = await content.addChannel(true, 'sealed', {subject}, contacts);
+        const topic = await content.addChannel(true, 'sealed', {subject}, contacts);
         return topic.id;
       } else {
-        let topic = await content.addChannel(false, 'superbasic', {subject}, contacts);
+        const topic = await content.addChannel(false, 'superbasic', {subject}, contacts);
         return topic.id;
       }
     },
