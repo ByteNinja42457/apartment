@@ -2,10 +2,10 @@ import { useState, useRef } from 'react';
 
 export function useImageAsset(asset) {
 
-  let revoke = useRef();
-  let index = useRef(0);
+  const revoke = useRef();
+  const index = useRef(0);
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     popout: false,
     width: 0,
     height: 0,
@@ -16,18 +16,18 @@ export function useImageAsset(asset) {
     total: 0,
   });
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  let actions = {
+  const actions = {
     setPopout: async (width, height) => {
       if (asset.encrypted) {
         try {
-          let view = index.current;
+          const view = index.current;
           updateState({ popout: true, width, height, error: false, loading: true, url: null });
-          let blob = await asset.getDecryptedBlob(() => view !== index.current, (block, total) => updateState({ block, total }));
-          let url = URL.createObjectURL(blob);
+          const blob = await asset.getDecryptedBlob(() => view !== index.current, (block, total) => updateState({ block, total }));
+          const url = URL.createObjectURL(blob);
           updateState({ loading: false, url });
           revoke.current = url;
         }
