@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ContactWrapper = styled.div`
+export let ContactWrapper = styled.div`
   height: 100%;
   width: 100%;
 
@@ -248,42 +248,42 @@ export const ContactWrapper = styled.div`
   }
 `
 
-export const StatusConnected = styled.div`
+export let StatusConnected = styled.div`
   background-color: ${props => props.theme.connected};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusConnecting = styled.div`
+export let StatusConnecting = styled.div`
   background-color: ${props => props.theme.connecting};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusRequested = styled.div`
+export let StatusRequested = styled.div`
   background-color: ${props => props.theme.requested};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusPending = styled.div`
+export let StatusPending = styled.div`
   background-color: ${props => props.theme.pending};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusConfirmed = styled.div`
+export let StatusConfirmed = styled.div`
   background-color: ${props => props.theme.confirmed};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusUnsaved = styled.div`
+export let StatusUnsaved = styled.div`
   background-color: ${props => props.theme.unsaved};
   border-radius: 8px;
   width: 8px;
