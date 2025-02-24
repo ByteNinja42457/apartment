@@ -4,14 +4,14 @@ import {DisplayContext} from '../context/DisplayContext';
 import {ContextType} from '../context/ContextType';
 
 export function useSelector() {
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
 
-  let state = {
+  const state = {
     strings: display.state.strings,
   };
 
-  let actions = {
+  const actions = {
     clearFocus: app.actions.clearFocus,
   };
 
