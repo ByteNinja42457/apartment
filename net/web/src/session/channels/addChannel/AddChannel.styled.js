@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let AddChannelWrapper = styled.div`
+export const AddChannelWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +43,7 @@ export let AddChannelWrapper = styled.div`
   }
 `;
 
-export let AddFooter = styled.div`
+export const AddFooter = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
