@@ -20,8 +20,8 @@ function MockWebsocket(url) {
 
 let appContext = null;
 function AppView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const app = useContext(AppContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var app = useContext(AppContext);
   appContext = app;
 
   useEffect(() => {
@@ -60,18 +60,18 @@ function AppTestApp() {
   );
 }
 
-const realCreateWebsocket = fetchUtil.createWebsocket;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realCreateWebsocket = fetchUtil.createWebsocket;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
 
-  const mockCreateWebsocket = jest.fn().mockImplementation((url) => {
+  var mockCreateWebsocket = jest.fn().mockImplementation((url) => {
     mockWebsocket = new MockWebsocket(url);
     return mockWebsocket;
   });
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
-    const params = url.split('/');
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
+    var params = url.split('/');
     if (params[1] === 'account' && options.method === 'POST') {
       return Promise.resolve({
         json: () => Promise.resolve({ guid: '01ab', appToken: 'aacc', created: 2, pushSupported: false })
