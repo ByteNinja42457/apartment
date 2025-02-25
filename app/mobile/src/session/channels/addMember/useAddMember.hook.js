@@ -3,7 +3,7 @@ import { CardContext } from 'context/CardContext';
 
 export function useAddMember(item, members) {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     name: null,
     handle: null,
     logo: null,
@@ -11,26 +11,26 @@ export function useAddMember(item, members) {
     member: false,
   });
 
-  let card = useContext(CardContext);
+  const card = useContext(CardContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let member = members.filter(contact => item.cardId === contact);
+    const member = members.filter(contact => item.cardId === contact);
     updateState({ member: member.length > 0 });
   }, [members]);
 
   useEffect(() => {
-    let { cardId, revision, profile } = item;
-    let { name, handle, node } = profile;
-    let username = node ? `${handle}/${node}` : handle;
+    const { cardId, revision, profile } = item;
+    const { name, handle, node } = profile;
+    const username = node ? `${handle}/${node}` : handle;
     updateState({ cardId, name, handle: username,
       logo: profile.imageSet ? card.actions.getCardImageUrl(cardId) : 'avatar' });
   }, [card.state]);
 
-  let actions = {
+  const actions = {
   };
 
   return { state, actions };
