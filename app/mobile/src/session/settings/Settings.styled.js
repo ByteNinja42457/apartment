@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from 'constants/Colors';
 
-export const styles = StyleSheet.create({
+export let styles = StyleSheet.create({
   drawerDivider: {
     width: '80%',
     borderWidth: 1,
