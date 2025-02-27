@@ -16,8 +16,8 @@ export async function setAccess(
   created: number;
   pushSupported: boolean;
 }> {
-  const endpoint = `http${secure ? 's' : ''}://${node}/account/access?token=${token}&appName=${appName}&appVersion=${appVersion}&platform=${platform}&deviceToken=${deviceToken}&pushType=${pushType}`;
-  const access = await fetchWithTimeout(endpoint, {
+  let endpoint = `http${secure ? 's' : ''}://${node}/account/access?token=${token}&appName=${appName}&appVersion=${appVersion}&platform=${platform}&deviceToken=${deviceToken}&pushType=${pushType}`;
+  let access = await fetchWithTimeout(endpoint, {
     method: 'PUT',
     body: JSON.stringify(notifications),
   });
