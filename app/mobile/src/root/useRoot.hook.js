@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 
 export function useRoot() {
 
-  let [state, setState] = useState({});
-  let app = useContext(AppContext);
-  let navigate = useNavigate();
+  const [state, setState] = useState({});
+  const app = useContext(AppContext);
+  const navigate = useNavigate();
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -21,7 +21,7 @@ export function useRoot() {
     }
   }, [app.state]);
 
-  let actions = {
+  const actions = {
   };
 
   return { state, actions };
