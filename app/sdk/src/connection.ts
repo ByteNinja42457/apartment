@@ -3,7 +3,7 @@ import { Logging } from './logging';
 import { Revision } from './entities';
 import { Call } from './types';
 
-const PING_INTERVAL = 5000;
+let PING_INTERVAL = 5000;
 
 export class Connection {
   private log: Logging;
@@ -20,7 +20,7 @@ export class Connection {
 
     this.stale = setInterval(() => {
       if (this.websocket?.readyState == 1) {
-        const ws: any = this.websocket;
+        let ws: any = this.websocket;
         ws.ping?.(); // not defined in browser
       }
     }, PING_INTERVAL);
@@ -65,20 +65,20 @@ export class Connection {
     }
 
     this.emitter.emit('status', 'connecting');
-    const wsUrl = `ws${secure ? 's' : ''}://${node}/status?mode=ring`;
-    const ws = new WebSocket(wsUrl);
+    let wsUrl = `ws${secure ? 's' : ''}://${node}/status?mode=ring`;
+    let ws = new WebSocket(wsUrl);
     ws.onmessage = (e) => {
       try {
         if (e.data === '') {
           this.close();
         }
-        const activity = JSON.parse(e.data);
+        let activity = JSON.parse(e.data);
         this.emitter.emit('status', 'connected');
         if (activity.revision) {
           this.emitter.emit('revision', activity.revision as Revision);
         } else if (activity.ring) {
-          const { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
-          const call: Call = {
+          let { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
+          let call: Call = {
             cardId,
             callId,
             calleeToken,
