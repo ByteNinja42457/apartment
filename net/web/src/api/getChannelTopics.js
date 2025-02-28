@@ -1,23 +1,23 @@
 import { checkResponse, fetchWithTimeout } from './fetchUtil';
 
 export async function getChannelTopics(token, channelId, revision, count, begin, end) {
-  let rev = ''
+  const rev = ''
   if (revision != null) {
     rev = `&revision=${revision}`
   }
-  let cnt = ''
+  const cnt = ''
   if (count != null) {
     cnt = `&count=${count}`
   }
-  let bgn = ''
+  const bgn = ''
   if (begin != null) {
     bgn = `&begin=${begin}`
   }
-  let edn = ''
+  const edn = ''
   if (end != null) {
     edn = `&end=${end}`
   }
-  let topics = await fetchWithTimeout(`/content/channels/${channelId}/topics?agent=${token}${rev}${cnt}${bgn}${edn}`, 
+  const topics = await fetchWithTimeout(`/content/channels/${channelId}/topics?agent=${token}${rev}${cnt}${bgn}${edn}`, 
     { method: 'GET' });
   checkResponse(topics)
   return { 
