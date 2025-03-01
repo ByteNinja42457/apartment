@@ -5,15 +5,15 @@ import { getListingImageUrl } from 'api/getListingImageUrl';
 
 export function useRegistry(search, handle, server) {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     accounts: [],
     searching: false,
   });
 
-  const profile = useContext(ProfileContext);
-  const debounce = useRef();
+  let profile = useContext(ProfileContext);
+  let debounce = useRef();
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -26,14 +26,14 @@ export function useRegistry(search, handle, server) {
       debounce.current = null;
 
       try {
-        const accounts = handle ? await getListing(server, handle) : await getListing(server);
-        const filtered = accounts.filter(item => {
+        let accounts = handle ? await getListing(server, handle) : await getListing(server);
+        let filtered = accounts.filter(item => {
           if (item.guid === profile.state.identity.guid) {
             return false;
           }
           return true;
         });
-        const items = filtered.map(setAccountItem);
+        let items = filtered.map(setAccountItem);
         updateState({ searching: false, accounts: items });
       }
       catch (err) {
@@ -43,15 +43,15 @@ export function useRegistry(search, handle, server) {
     }, 1000);
   }, [handle, server]);
 
-  const setAccountItem = (item) => {
-    const { guid, name, handle, node, location, description, imageSet } = item;
-    const server = node ? node : profile.state.server;
-    const logo = imageSet ? getListingImageUrl(server, guid) : 'avatar';
-    const username = node ? `${handle}/${node}` : handle;
+  let setAccountItem = (item) => {
+    let { guid, name, handle, node, location, description, imageSet } = item;
+    let server = node ? node : profile.state.server;
+    let logo = imageSet ? getListingImageUrl(server, guid) : 'avatar';
+    let username = node ? `${handle}/${node}` : handle;
     return { guid, name, handle, username, node: server, location, description, guid, imageSet, logo };
   };
 
-  const actions = {};
+  let actions = {};
 
   return { state, actions };
 }
