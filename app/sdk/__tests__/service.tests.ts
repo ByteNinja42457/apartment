@@ -36,11 +36,11 @@ function getAccount(id: number) {
 }
 
 jest.mock('../src/net/fetchUtil', () => {
-  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     if (url === 'http://test.node/admin/access?token=test.token') {
       return Promise.resolve({ state: 200, json: () => ('admin.token') });
     } else if (url === 'http://test.node/admin/accounts?token=admin.token') {
-      const accounts = [ getAccount(1), getAccount(2), getAccount(3) ];
+      var accounts = [ getAccount(1), getAccount(2), getAccount(3) ];
       return Promise.resolve({ state: 200, json: () => (accounts) });
     }
   });
@@ -53,8 +53,8 @@ jest.mock('../src/net/fetchUtil', () => {
 
 test('allocates service correctly', async () => {
   let status: string = '';
-  const sdk = new DatabagSDK({ channelTypes: []});
-  const service = await sdk.configure('test.node', false, 'test.token', null);
-  const members = await service.getMembers();
+  var sdk = new DatabagSDK({ channelTypes: []});
+  var service = await sdk.configure('test.node', false, 'test.token', null);
+  var members = await service.getMembers();
   expect(members.length === 3).toBe(true);
 });
