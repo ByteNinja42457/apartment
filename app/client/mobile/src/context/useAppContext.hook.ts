@@ -7,8 +7,8 @@ import {LocalStore} from '../LocalStore';
 import {StagingFiles} from '../StagingFiles';
 import messaging from '@react-native-firebase/messaging';
 
-let DATABAG_DB = 'db_v244.db';
-let SETTINGS_DB = 'ls_v001.db';
+const DATABAG_DB = 'db_v244.db';
+const SETTINGS_DB = 'ls_v001.db';
 
 async function requestUserPermission() {
   if (Platform.OS === 'ios') {
@@ -18,7 +18,7 @@ async function requestUserPermission() {
   }
 }
 
-let databag = new DatabagSDK(
+const databag = new DatabagSDK(
   {
     channelTypes: ['sealed', 'superbasic'],
   },
@@ -26,7 +26,7 @@ let databag = new DatabagSDK(
   new StagingFiles(),
 );
 
-let notifications = [
+const notifications = [
   {event: 'contact.addCard', messageTitle: 'New Contact Request'},
   {event: 'contact.updateCard', messageTitle: 'Contact Update'},
   {event: 'content.addChannel.superbasic', messageTitle: 'New Topic'},
@@ -37,9 +37,9 @@ let notifications = [
 ];
 
 export function useAppContext() {
-  let local = useRef(new LocalStore());
-  let sdk = useRef(databag);
-  let [state, setState] = useState({
+  const local = useRef(new LocalStore());
+  const sdk = useRef(databag);
+  const [state, setState] = useState({
     service: null as null | Service,
     session: null as null | Session,
     focus: null as null | Focus,
@@ -50,19 +50,19 @@ export function useAppContext() {
     sharing: null as null | {cardId: string; channelId: string; filePath: string; mimeType: string},
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let setup = async () => {
+  const setup = async () => {
     await local.current.open(SETTINGS_DB);
-    let fullDayTime = (await local.current.get('time_format', '12h')) === '24h';
-    let monthFirstDate = (await local.current.get('date_format', 'month_first')) === 'month_first';
-    let showWelcome = (await local.current.get('show_welcome', 'show')) !== 'hide';
+    const fullDayTime = (await local.current.get('time_format', '12h')) === '24h';
+    const monthFirstDate = (await local.current.get('date_format', 'month_first')) === 'month_first';
+    const showWelcome = (await local.current.get('show_welcome', 'show')) !== 'hide';
 
-    let store = new SessionStore();
+    const store = new SessionStore();
     await store.open(DATABAG_DB);
-    let session: Session | null = await sdk.current.initOfflineStore(store);
+    const session: Session | null = await sdk.current.initOfflineStore(store);
     if (session) {
       updateState({session, fullDayTime, monthFirstDate, showWelcome, initialized: true});
     } else {
@@ -77,9 +77,9 @@ export function useAppContext() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let getToken = async () => {
+  const getToken = async () => {
     try {
-      let token = await messaging().getToken();
+      const token = await messaging().getToken();
       return {token, type: 'fcm'};
     } catch (err) {
       console.log(err);
@@ -87,7 +87,7 @@ export function useAppContext() {
     }
   };
 
-  let actions = {
+  const actions = {
     setMonthFirstDate: async (monthFirstDate: boolean) => {
       updateState({monthFirstDate});
       await local.current.set('date_format', monthFirstDate ? 'month_first' : 'day_first');
@@ -101,9 +101,9 @@ export function useAppContext() {
       await local.current.set('show_welcome', showWelcome ? 'show' : 'hide');
     },
     accountLogin: async (username: string, password: string, node: string, secure: boolean, code: string) => {
-      let deviceToken = await getToken();
+      const deviceToken = await getToken();
 
-      let params = {
+      const params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -115,7 +115,7 @@ export function useAppContext() {
         appName: 'databag',
       };
 
-      let login = await sdk.current.login(username, password, node, secure, code, params);
+      const login = await sdk.current.login(username, password, node, secure, code, params);
       updateState({session: login});
     },
     accountLogout: async (all: boolean) => {
@@ -131,9 +131,9 @@ export function useAppContext() {
       }
     },
     accountCreate: async (handle: string, password: string, node: string, secure: boolean, token: string) => {
-      let deviceToken = await getToken();
+      const deviceToken = await getToken();
 
-      let params = {
+      const params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -144,13 +144,13 @@ export function useAppContext() {
         version: '0.0.1',
         appName: 'databag',
       };
-      let session = await sdk.current.create(handle, password, node, secure, token, params);
+      const session = await sdk.current.create(handle, password, node, secure, token, params);
       updateState({session});
     },
     accountAccess: async (node: string, secure: boolean, token: string) => {
-      let deviceToken = await getToken();
+      const deviceToken = await getToken();
 
-      let params = {
+      const params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -161,12 +161,12 @@ export function useAppContext() {
         version: '0.0.1',
         appName: 'databag',
       };
-      let session = await sdk.current.access(node, secure, token, params);
+      const session = await sdk.current.access(node, secure, token, params);
       updateState({session});
     },
     setFocus: async (cardId: string | null, channelId: string) => {
       if (state.session) {
-        let focus = await state.session.setFocus(cardId, channelId);
+        const focus = await state.session.setFocus(cardId, channelId);
         updateState({focus});
       }
     },
@@ -183,7 +183,7 @@ export function useAppContext() {
       return await sdk.current.username(username, token, node, secure);
     },
     adminLogin: async (token: string, node: string, secure: boolean, code: string) => {
-      let service = await sdk.current.configure(node, secure, token, code);
+      const service = await sdk.current.configure(node, secure, token, code);
       updateState({service});
     },
     adminLogout: async () => {
