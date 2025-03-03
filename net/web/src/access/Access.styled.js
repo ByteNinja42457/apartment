@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AccessWrapper = styled.div`
+export let AccessWrapper = styled.div`
   height: 100%;
   color: ${props => props.theme.hintText};
 
