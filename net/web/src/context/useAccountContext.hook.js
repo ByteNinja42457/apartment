@@ -10,13 +10,13 @@ import { removeAccountMFA } from 'api/removeAccountMFA';
 import { StoreContext } from './StoreContext';
 
 function urlB64ToUint8Array(base64String) {
-  let padding = '='.repeat((4 - base64String.length % 4) % 4);
-  let base64 = (base64String + padding)
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
       .replace(/-/g, '+')
       .replace(/_/g, '/');
 
-  let rawData = window.atob(base64);
-  let outputArray = new Uint8Array(rawData.length);
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
 
   for (var i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i);
@@ -25,22 +25,22 @@ function urlB64ToUint8Array(base64String) {
 }
 
 export function useAccountContext() {
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     offsync: false,
     status: null,
     seal: null,
     sealKey: null,
     webPushKey: null,
   });
-  let access = useRef(null);
-  let setRevision = useRef(null);
-  let curRevision = useRef(null);
-  let syncing = useRef(false);
-  let force = useRef(false); 
+  const access = useRef(null);
+  const setRevision = useRef(null);
+  const curRevision = useRef(null);
+  const syncing = useRef(false);
+  const force = useRef(false); 
 
-  let storeContext = useContext(StoreContext);
+  const storeContext = useContext(StoreContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
@@ -48,16 +48,16 @@ export function useAccountContext() {
     updateState({ sealKey: storeContext.state.sealKey });
   }, [storeContext.state]);
 
-  let sync = async () => {
+  const sync = async () => {
     if (!syncing.current && (setRevision.current !== curRevision.current || force.current)) {
       syncing.current = true;
       force.current = false;
 
       try {
-        let token = access.current;
-        let revision = curRevision.current;
-        let status = await getAccountStatus(token);
-        let { seal, webPushKey } = status || {};
+        const token = access.current;
+        const revision = curRevision.current;
+        const status = await getAccountStatus(token);
+        const { seal, webPushKey } = status || {};
 
         setRevision.current = revision;
         updateState({ offsync: false, status, seal, webPushKey });
@@ -74,7 +74,7 @@ export function useAccountContext() {
     }
   }
 
-  let actions = {
+  const actions = {
     setToken: (token) => {
       if (access.current || syncing.current) {
         throw new Error("invalid account session state");
@@ -96,28 +96,28 @@ export function useAccountContext() {
     },
     setPushEnabled: async (flag) => {
       if (flag) {
-        let status = await Notification.requestPermission();
+        const status = await Notification.requestPermission();
         if (status === 'granted') {
-          let registration = await navigator.serviceWorker.register('push.js');
+          const registration = await navigator.serviceWorker.register('push.js');
           await navigator.serviceWorker.ready;
-          let params = { userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(state.webPushKey) };
-          let subscription = await registration.pushManager.subscribe(params);
+          const params = { userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(state.webPushKey) };
+          const subscription = await registration.pushManager.subscribe(params);
 
-          let endpoint = subscription.endpoint;
-          let binPublicKey = subscription.getKey('p256dh');
-          let binAuth = subscription.getKey('auth');
+          const endpoint = subscription.endpoint;
+          const binPublicKey = subscription.getKey('p256dh');
+          const binAuth = subscription.getKey('auth');
 
           if (endpoint && binPublicKey && binAuth) {
-            let numPublicKey = [];
+            const numPublicKey = [];
             (new Uint8Array(binPublicKey)).forEach(val => {
               numPublicKey.push(val);
             });
-            let numAuth = [];
+            const numAuth = [];
             (new Uint8Array(binAuth)).forEach(val => {
               numAuth.push(val);
             });
-            let publicKey = btoa(String.fromCharCode.apply(null, numPublicKey));
-            let auth = btoa(String.fromCharCode.apply(null, numAuth));
+            const publicKey = btoa(String.fromCharCode.apply(null, numPublicKey));
+            const auth = btoa(String.fromCharCode.apply(null, numAuth));
 
             await setAccountNotifications(access.current, endpoint, publicKey, auth, true);
           }
@@ -128,7 +128,7 @@ export function useAccountContext() {
       }
     },
     enableMFA: async () => {
-      let secret = await addAccountMFA(access.current);
+      const secret = await addAccountMFA(access.current);
       return secret;
     },
     disableMFA: async () => {
