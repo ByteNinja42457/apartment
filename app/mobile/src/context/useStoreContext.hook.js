@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef, useContext } from 'react';
 import SQLite from "react-native-sqlite-storage";
 
-var DATABAG_DB = 'db_v135.db';
+const DATABAG_DB = 'db_v135.db';
 
 export function useStoreContext() {
-  var [state, setState] = useState({});
-  var db = useRef(null);
+  const [state, setState] = useState({});
+  const db = useRef(null);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var initSession = async (guid) => {
+  const initSession = async (guid) => {
     await db.current.executeSql(`CREATE TABLE IF NOT EXISTS channel_${guid} (channel_id text, revision integer, detail_revision integer, topic_revision integer, topic_marker integer, blocked integer, sync_revision integer, detail text, unsealed_detail text, summary text, unsealed_summary text, offsync integer, read_revision integer, unique(channel_id))`);
     await db.current.executeSql(`CREATE TABLE IF NOT EXISTS channel_topic_${guid} (channel_id text, topic_id text, revision integer, created integer, detail_revision integer, blocked integer, detail text, unsealed_detail text, unique(channel_id, topic_id))`);
     await db.current.executeSql(`CREATE TABLE IF NOT EXISTS card_${guid} (card_id text, revision integer, detail_revision integer, profile_revision integer, detail text, profile text, notified_view integer, notified_article integer, notified_profile integer, notified_channel integer, offsync integer, blocked integer, unique(card_id))`);
@@ -19,11 +19,11 @@ export function useStoreContext() {
     await db.current.executeSql(`CREATE TABLE IF NOT EXISTS card_channel_topic_${guid} (card_id text, channel_id text, topic_id text, revision integer, created integer, detail_revision integer, blocked integer, detail text, unsealed_detail text, unique(card_id, channel_id, topic_id))`);
   }
 
-  var hasColumn = async (table, column) => {
-    var pragma = await db.current.executeSql(`PRAGMA table_info(${table})`);
+  const hasColumn = async (table, column) => {
+    const pragma = await db.current.executeSql(`PRAGMA table_info(${table})`);
     if (pragma?.length === 1) {
       for (let i = 0; i < pragma[0].rows.length; i++) {
-        var col = pragma[0].rows.item(i);
+        const col = pragma[0].rows.item(i);
         if (col.name === column) {
           return true;
         }
@@ -32,7 +32,7 @@ export function useStoreContext() {
     return false
   }
 
-  var actions = {
+  const actions = {
     init: async () => {
       SQLite.DEBUG(false);
       SQLite.enablePromise(true);
@@ -42,11 +42,11 @@ export function useStoreContext() {
       return await getAppValue(db.current, 'session');
     },
     updateDb: async (guid) => {
-      var hasChannel = await hasColumn(`channel_topic_${guid}`, 'created');
+      const hasChannel = await hasColumn(`channel_topic_${guid}`, 'created');
       if (!hasChannel) {
         await db.current.executeSql(`ALTER TABLE channel_topic_${guid} ADD COLUMN created integer default 0`);
       }
-      var hasCardChannel = await hasColumn(`card_channel_topic_${guid}`, 'created');
+      const hasCardChannel = await hasColumn(`card_channel_topic_${guid}`, 'created');
       if (!hasCardChannel) {
         await db.current.executeSql(`ALTER TABLE card_channel_topic_${guid} ADD COLUMN created integer default 0`);
       }
@@ -60,15 +60,15 @@ export function useStoreContext() {
     },
 
     getProfile: async (guid) => {
-      var dataId = `${guid}_profile`;
+      const dataId = `${guid}_profile`;
       return await getAppValue(db.current, dataId, {});
     },
     setProfile: async (guid, profile) => {
-      var dataId = `${guid}_profile`;
+      const dataId = `${guid}_profile`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(profile)]);
     },
     getFirstRun: async () => {
-      var firstRun = await getAppValue(db.current, `firstrun`, { set: true });
+      const firstRun = await getAppValue(db.current, `firstrun`, { set: true });
       return firstRun.set;
     },
     setFirstRun: async () => {
@@ -78,65 +78,65 @@ export function useStoreContext() {
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [`firstrun`, encodeObject({ set: true })]);
     },
     getAppValue: async(guid, key) => {
-      var dataId = `${guid}_user_${key}`;
+      const dataId = `${guid}_user_${key}`;
       return await getAppValue(db.current, dataId, {});
     },
     setAppValue: async(guid, key, value) => {
-      var dataId = `${guid}_user_${key}`;
+      const dataId = `${guid}_user_${key}`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(value)]);
     },
     getCardRequestStatus: async (guid) => {
-      var dataId = `${guid}_card_status`;
+      const dataId = `${guid}_card_status`;
       return await getAppValue(db.current, dataId, {});
     },
     setCardRequestStatus: async (guid, status) => {
-      var dataId = `${guid}_card_status`;
+      const dataId = `${guid}_card_status`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(status)]);
     },
     getProfileRevision: async (guid) => {
-      var dataId = `${guid}_profileRevision`;
+      const dataId = `${guid}_profileRevision`;
       return await getAppValue(db.current, dataId, null);
     },
     setProfileRevision: async (guid, revision) => {
-      var dataId = `${guid}_profileRevision`;
+      const dataId = `${guid}_profileRevision`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(revision)]);
     },
 
     getAccountStatus: async (guid) => {
-      var dataId = `${guid}_status`;  
+      const dataId = `${guid}_status`;  
       return await getAppValue(db.current, dataId, {});
     },
     setAccountStatus: async (guid, status) => {
-      var dataId = `${guid}_status`;
+      const dataId = `${guid}_status`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(status)]);
     },
     getAccountSealKey: async (guid) => {
-      var dataId = `${guid}_sealkey`;
+      const dataId = `${guid}_sealkey`;
       return await getAppValue(db.current, dataId, {});
     },
     setAccountSealKey: async (guid, key) => {
-      var dataId = `${guid}_sealkey`;
+      const dataId = `${guid}_sealkey`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(key)]);
     },
     getAccountRevision: async (guid) => {
-      var dataId = `${guid}_accountRevision`;
+      const dataId = `${guid}_accountRevision`;
       return await getAppValue(db.current, dataId, null);
     },
     setAccountRevision: async (guid, revision) => {
-      var dataId = `${guid}_accountRevision`;
+      const dataId = `${guid}_accountRevision`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(revision)]);
     }, 
 
     getCardRevision: async (guid) => {
-      var dataId = `${guid}_cardRevision`;
+      const dataId = `${guid}_cardRevision`;
       return await getAppValue(db.current, dataId, null);
     },
     setCardRevision: async (guid, revision) => {
-      var dataId = `${guid}_cardRevision`;
+      const dataId = `${guid}_cardRevision`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(revision)]);
     },
     setCardItem: async (guid, card) => {
-      var { cardId, revision, detailRevision, profileRevision, detail, profile } = card;
+      const { cardId, revision, detailRevision, profileRevision, detail, profile } = card;
       await db.current.executeSql(`INSERT OR REPLACE INTO card_${guid} (card_id, revision, detail_revision, profile_revision, detail, profile, notified_view, notified_profile, notified_article, notified_channel) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`, [cardId, revision, detailRevision, profileRevision, encodeObject(detail), encodeObject(profile), null, null, null, null]);
     },
     clearCardItem: async (guid, cardId) => {
@@ -176,7 +176,7 @@ export function useStoreContext() {
       await db.current.executeSql(`UPDATE card_${guid} set profile_revision=?, profile=? where card_id=?`, [revision, encodeObject(profile), cardId]);
     },
     getCardItems: async (guid) => {
-      var values = await getAppValues(db.current, `SELECT card_id, revision, detail_revision, profile_revision, detail, profile, offsync, blocked, notified_view, notified_profile, notified_article, notified_channel FROM card_${guid}`, []);
+      const values = await getAppValues(db.current, `SELECT card_id, revision, detail_revision, profile_revision, detail, profile, offsync, blocked, notified_view, notified_profile, notified_article, notified_channel FROM card_${guid}`, []);
       return values.map(card => ({
         cardId: card.card_id,
         revision: card.revision,
@@ -194,15 +194,15 @@ export function useStoreContext() {
     },
 
     getChannelRevision: async (guid) => {
-      var dataId = `${guid}_channelRevision`;
+      const dataId = `${guid}_channelRevision`;
       return await getAppValue(db.current, dataId, null);
     },
     setChannelRevision: async (guid, revision) => {
-      var dataId = `${guid}_channelRevision`;
+      const dataId = `${guid}_channelRevision`;
       await db.current.executeSql("INSERT OR REPLACE INTO app (key, value) values (?, ?);", [dataId, encodeObject(revision)]);
     }, 
     setChannelItem: async (guid, channel) => {
-      var { channelId, revision, detailRevision, topicRevision, detail, summary } = channel;
+      const { channelId, revision, detailRevision, topicRevision, detail, summary } = channel;
       await db.current.executeSql(`INSERT OR REPLACE INTO channel_${guid} (channel_id, revision, detail_revision, topic_revision, detail, summary, unsealed_detail, unsealed_summary) values (?, ?, ?, ?, ?, ?, null, null);`, [channelId, revision, detailRevision, topicRevision, encodeObject(detail), encodeObject(summary)]);
     },
     clearChannelItem: async (guid, channelId) => {
@@ -242,7 +242,7 @@ export function useStoreContext() {
       await db.current.executeSql(`UPDATE channel_${guid} set unsealed_summary=? where topic_revision=? AND channel_id=?`, [encodeObject(unsealed), revision, channelId]);
     },
     getChannelItems: async (guid) => {
-      var values = await getAppValues(db.current, `SELECT channel_id, read_revision, revision, sync_revision, blocked, detail_revision, topic_revision, topic_marker, detail, unsealed_detail, summary, unsealed_summary FROM channel_${guid}`, []);
+      const values = await getAppValues(db.current, `SELECT channel_id, read_revision, revision, sync_revision, blocked, detail_revision, topic_revision, topic_marker, detail, unsealed_detail, summary, unsealed_summary FROM channel_${guid}`, []);
       return values.map(channel => ({
         channelId: channel.channel_id,
         revision: channel.revision,
@@ -261,7 +261,7 @@ export function useStoreContext() {
 
 
     getChannelTopicItems: async (guid, channelId) => {
-      var values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM channel_topic_${guid} WHERE channel_id=?`, [channelId]);
+      const values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM channel_topic_${guid} WHERE channel_id=?`, [channelId]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         revision: topic.revision,
@@ -272,15 +272,15 @@ export function useStoreContext() {
       }));  
     },
     getChannelTopicItemsId: async (guid, channelId) => {
-      var values = await getAppValues(db.current, `SELECT topic_id, created FROM channel_topic_${guid} WHERE channel_id=?`, [channelId]);
+      const values = await getAppValues(db.current, `SELECT topic_id, created FROM channel_topic_${guid} WHERE channel_id=?`, [channelId]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         created: topic.created,
       }));
     },
     getChannelTopicItemsById: async (guid, channelId, topics) => {
-      var q = topics.map(() => '?');
-      var values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM channel_topic_${guid} WHERE channel_id=? AND topic_id in (${q.join(',')})`, [channelId, ...topics]);
+      const q = topics.map(() => '?');
+      const values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM channel_topic_${guid} WHERE channel_id=? AND topic_id in (${q.join(',')})`, [channelId, ...topics]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         revision: topic.revision,
@@ -291,7 +291,7 @@ export function useStoreContext() {
       }));  
     },
     setChannelTopicItem: async (guid, channelId, topic) => { 
-      var { topicId, revision, detailRevision, detail } = topic;
+      const { topicId, revision, detailRevision, detail } = topic;
       await db.current.executeSql(`INSERT OR REPLACE INTO channel_topic_${guid} (channel_id, topic_id, revision, created, detail_revision, blocked, detail, unsealed_detail) values (?, ?, ?, ?, ?, ?, ?, null);`, [channelId, topicId, revision, detail?.created, detailRevision, false, encodeObject(detail)]);
     },
     setChannelTopicItemUnsealedDetail: async (guid, channelId, topicId, revision, unsealed) => {
@@ -307,7 +307,7 @@ export function useStoreContext() {
       await db.current.executeSql(`UPDATE channel_topic_${guid} set blocked=? WHERE channel_id=? and topic_id=?`, [blocked, channelId, topicId]);
     },
     getChannelTopicBlocked: async (guid) => {
-      var values = await getAppValues(db.current, `SELECT channel_id, topic_id, detail FROM channel_topic_${guid} WHERE blocked=?`, [1]);
+      const values = await getAppValues(db.current, `SELECT channel_id, topic_id, detail FROM channel_topic_${guid} WHERE blocked=?`, [1]);
       return values.map(topic => ({
         channelId: topic.channel_id,
         topicId: topic.topic_id,
@@ -316,7 +316,7 @@ export function useStoreContext() {
     },
 
     setCardChannelItem: async (guid, cardId, channel) => {
-      var { channelId, revision, detailRevision, topicRevision, detail, summary } = channel;
+      const { channelId, revision, detailRevision, topicRevision, detail, summary } = channel;
       await db.current.executeSql(`INSERT OR REPLACE INTO card_channel_${guid} (card_id, channel_id, revision, detail_revision, topic_revision, detail, summary, unsealed_detail, unsealed_summary) values (?, ?, ?, ?, ?, ?, ?, null, null);`, [cardId, channelId, revision, detailRevision, topicRevision, encodeObject(detail), encodeObject(summary)]);
     },
     clearCardChannelItem: async (guid, cardId, channelId) => {
@@ -356,7 +356,7 @@ export function useStoreContext() {
       await db.current.executeSql(`UPDATE card_channel_${guid} set unsealed_summary=? where topic_revision=? AND card_id=? AND channel_id=?`, [encodeObject(unsealed), revision, cardId, channelId]);
     },
     getCardChannelItems: async (guid, cardId) => {
-      var values = await getAppValues(db.current, `SELECT channel_id, read_revision, sync_revision, revision, blocked, detail_revision, topic_revision, topic_marker, detail, unsealed_detail, summary, unsealed_summary FROM card_channel_${guid} where card_id=?`, [cardId]);
+      const values = await getAppValues(db.current, `SELECT channel_id, read_revision, sync_revision, revision, blocked, detail_revision, topic_revision, topic_marker, detail, unsealed_detail, summary, unsealed_summary FROM card_channel_${guid} where card_id=?`, [cardId]);
       return values.map(channel => ({
         channelId: channel.channel_id,
         revision: channel.revision,
@@ -377,7 +377,7 @@ export function useStoreContext() {
     },
 
     getCardChannelTopicItems: async (guid, cardId, channelId) => {
-      var values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=?`, [cardId, channelId]);
+      const values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=?`, [cardId, channelId]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         revision: topic.revision,
@@ -388,15 +388,15 @@ export function useStoreContext() {
       })); 
     },
     getCardChannelTopicItemsId: async (guid, cardId, channelId) => {
-      var values = await getAppValues(db.current, `SELECT topic_id, created FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=?`, [cardId, channelId]);
+      const values = await getAppValues(db.current, `SELECT topic_id, created FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=?`, [cardId, channelId]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         created: topic.created,
       }));
     },
     getCardChannelTopicItemsById: async (guid, cardId, channelId, topics) => {
-      var q = topics.map(() => '?');
-      var values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=? AND topic_id in (${q.join(',')})`, [cardId, channelId, ...topics]);
+      const q = topics.map(() => '?');
+      const values = await getAppValues(db.current, `SELECT topic_id, revision, blocked, detail_revision, detail, unsealed_detail FROM card_channel_topic_${guid} WHERE card_id=? AND channel_id=? AND topic_id in (${q.join(',')})`, [cardId, channelId, ...topics]);
       return values.map(topic => ({
         topicId: topic.topic_id,
         revision: topic.revision,
@@ -407,7 +407,7 @@ export function useStoreContext() {
       }));
     },
     setCardChannelTopicItem: async (guid, cardId, channelId, topic) => {
-      var { topicId, revision, detailRevision, detail } = topic;
+      const { topicId, revision, detailRevision, detail } = topic;
       await db.current.executeSql(`INSERT OR REPLACE INTO card_channel_topic_${guid} (card_id, channel_id, topic_id, revision, created, detail_revision, detail, unsealed_detail) values (?, ?, ?, ?, ?, ?, ?, null);`, [cardId, channelId, topicId, revision, detail?.created, detailRevision, encodeObject(detail)]);
     },
     setCardChannelTopicItemUnsealedDetail: async (guid, cardId, channelId, topicId, revision, unsealed) => {
@@ -423,7 +423,7 @@ export function useStoreContext() {
       await db.current.executeSql(`UPDATE card_channel_topic_${guid} set blocked=? WHERE card_id=? and channel_id=? and topic_id=?`, [blocked ? 1 : 0, cardId, channelId, topicId]);
     },
     getCardChannelTopicBlocked: async (guid) => {
-      var values = await getAppValues(db.current, `SELECT card_id, channel_id, topic_id, detail FROM card_channel_topic_${guid} WHERE blocked=?`, [1]);
+      const values = await getAppValues(db.current, `SELECT card_id, channel_id, topic_id, detail FROM card_channel_topic_${guid} WHERE blocked=?`, [1]);
       return values.map(topic => ({
         cardId: topic.card_id,
         channelId: topic.channel_id,
@@ -465,7 +465,7 @@ function executeSql(sql: SQLite.SQLiteDatabase, query, params, uset) {
 }
 
 async function getAppValue(sql: SQLite.SQLiteDatabase, id: string, unset) {
-  var res = await sql.executeSql(`SELECT * FROM app WHERE key='${id}';`);
+  const res = await sql.executeSql(`SELECT * FROM app WHERE key='${id}';`);
   if (hasResult(res)) {
     return decodeObject(res[0].rows.item(0).value);
   }
@@ -473,11 +473,11 @@ async function getAppValue(sql: SQLite.SQLiteDatabase, id: string, unset) {
 }
 
 async function getAppValues(sql: SQLite.SQLiteDatabase, query: string, params) {
-  var res = await sql.executeSql(query, params);
+  const res = await sql.executeSql(query, params);
   if (!hasResult(res)) {
     return [];
   }
-  var values = [];
+  const values = [];
   for (let i = 0; i < res[0].rows.length; i++) {
     values.push(res[0].rows.item(i));
   }
