@@ -4,24 +4,24 @@ import {DisplayContext} from '../context/DisplayContext';
 import {ContextType} from '../context/ContextType';
 
 export function useService() {
-  let display = useContext(DisplayContext) as ContextType;
-  let app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const app = useContext(AppContext) as ContextType;
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     layout: null,
     strings: {},
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    let {layout, strings} = display.state;
+    const {layout, strings} = display.state;
     updateState({layout, strings});
   }, [display.state]);
 
-  let actions = {
+  const actions = {
     logout: async () => {
       await app.actions.adminLogout();
     },
