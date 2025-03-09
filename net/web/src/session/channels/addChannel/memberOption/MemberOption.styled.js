@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const MemberOptionWrapper = styled.div`
+export let MemberOptionWrapper = styled.div`
   height: 48px;
   width: 100%;
   display: flex;
