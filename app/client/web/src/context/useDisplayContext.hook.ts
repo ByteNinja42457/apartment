@@ -3,7 +3,7 @@ import { LightTheme, DarkTheme } from '../constants/Colors'
 import { en, fr, sp, pt, de, ru, el } from '../constants/Strings'
 
 export function useDisplayContext() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     layout: null,
     themes: [
       { value: 'dark', label: 'Dark' },
@@ -32,14 +32,14 @@ export function useDisplayContext() {
     videoInputs: [],
   })
 
-  const SMALL_LARGE = 650
+  var SMALL_LARGE = 650
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  var updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const handleResize = () => {
+  var handleResize = () => {
     if (window.innerWidth < SMALL_LARGE) {
       updateState({
         layout: 'small',
@@ -55,19 +55,19 @@ export function useDisplayContext() {
     }
   }
 
-  const getDevices = async (type: string) => {
+  var getDevices = async (type: string) => {
     if (!navigator || !navigator.mediaDevices) {
       return []
     }
 
-    const filtered = new Map()
-    const devices = await navigator.mediaDevices.enumerateDevices()
+    var filtered = new Map()
+    var devices = await navigator.mediaDevices.enumerateDevices()
     devices
       .filter((item) => item.deviceId !== '' && item.kind === type + 'input')
       .forEach((item) => {
         if (item) {
-          const label = item.label ? item.label : state.strings.integrated
-          const entry = filtered.get(item.groupId)
+          var label = item.label ? item.label : state.strings.integrated
+          var entry = filtered.get(item.groupId)
           if (entry) {
             if (item.label && label.length < entry.label.length) {
               filtered.set(item.groupId, {
@@ -103,7 +103,7 @@ export function useDisplayContext() {
     window.addEventListener('resize', handleResize)
     window.addEventListener('orientationchange', handleResize)
 
-    const scheme = localStorage.getItem('color_scheme')
+    var scheme = localStorage.getItem('color_scheme')
     if (scheme === 'dark') {
       updateState({
         theme: scheme,
@@ -148,21 +148,21 @@ export function useDisplayContext() {
       }
     }
 
-    const timeFormat = localStorage.getItem('time_format')
+    var timeFormat = localStorage.getItem('time_format')
     if (timeFormat === '24h') {
       updateState({ timeFormat })
     } else {
       updateState({ timeFormat: '12h' })
     }
 
-    const dateFormat = localStorage.getItem('date_format')
+    var dateFormat = localStorage.getItem('date_format')
     if (dateFormat === 'dd/mm') {
       updateState({ dateFormat })
     } else {
       updateState({ dateFormat: 'mm/dd' })
     }
 
-    const language = localStorage.getItem('language')
+    var language = localStorage.getItem('language')
     if (language && language.startsWith('fr')) {
       updateState({
         language: 'fr',
@@ -227,7 +227,7 @@ export function useDisplayContext() {
         ],
       })
     } else {
-      const browser = navigator.language
+      var browser = navigator.language
       if (browser && browser.startsWith('fr')) {
         updateState({
           language: 'fr',
@@ -294,8 +294,8 @@ export function useDisplayContext() {
       }
     }
 
-    const audioId = localStorage.getItem('audio_input')
-    const videoId = localStorage.getItem('video_input')
+    var audioId = localStorage.getItem('audio_input')
+    var videoId = localStorage.getItem('video_input')
     updateState({ audioId, videoId })
 
     return () => {
@@ -304,7 +304,7 @@ export function useDisplayContext() {
     }
   }, [])
 
-  const actions = {
+  var actions = {
     setTheme: (theme: string) => {
       if (theme === 'dark') {
         localStorage.setItem('color_scheme', 'dark')
@@ -426,7 +426,7 @@ export function useDisplayContext() {
         })
       } else {
         localStorage.removeItem('language')
-        const browser = navigator.language
+        var browser = navigator.language
         if (browser && browser.startsWith('fr')) {
           updateState({
             language: 'fr',
