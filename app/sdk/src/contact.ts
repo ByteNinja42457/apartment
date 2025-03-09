@@ -38,8 +38,8 @@ import { setCardCloseMessage } from './net/setCardCloseMessage';
 import { getLegacyData } from './legacy';
 import { removeContactCall } from './net/removeContactCall';
 
-let CLOSE_POLL_MS = 100;
-let RETRY_POLL_MS = 2000;
+const CLOSE_POLL_MS = 100;
+const RETRY_POLL_MS = 2000;
 
 export class ContactModule implements Contact {
   private log: Logging;
@@ -119,43 +119,43 @@ export class ContactModule implements Contact {
   }
 
   private async init() {
-    let { guid } = this;
+    const { guid } = this;
     this.revision = await this.store.getContactRevision(guid);
 
-    let offsyncProfileCardMarkers = await this.store.getMarkers(guid, 'offsync_profile_card');
+    const offsyncProfileCardMarkers = await this.store.getMarkers(guid, 'offsync_profile_card');
     offsyncProfileCardMarkers.forEach((marker) => {
       this.offsyncProfileCard.set(marker.id, parseInt(marker.value));
     });
-    let offsyncChannelCardMarkers = await this.store.getMarkers(guid, 'offsync_channel_card');
+    const offsyncChannelCardMarkers = await this.store.getMarkers(guid, 'offsync_channel_card');
     offsyncChannelCardMarkers.forEach((marker) => {
       this.offsyncChannelCard.set(marker.id, parseInt(marker.value));
     });
-    let offsyncArticleCardMarkers = await this.store.getMarkers(guid, 'offsync_article_card');
+    const offsyncArticleCardMarkers = await this.store.getMarkers(guid, 'offsync_article_card');
     offsyncArticleCardMarkers.forEach((marker) => {
       this.offsyncArticleCard.set(marker.id, parseInt(marker.value));
     });
-    let blockedCardMarkers = await this.store.getMarkers(guid, 'blocked_card');
+    const blockedCardMarkers = await this.store.getMarkers(guid, 'blocked_card');
     blockedCardMarkers.forEach((marker) => {
       this.blockedCard.add(marker.id);
     });
-    let blockedCardChannelMarkers = await this.store.getMarkers(guid, 'blocked_card_channel');
+    const blockedCardChannelMarkers = await this.store.getMarkers(guid, 'blocked_card_channel');
     blockedCardChannelMarkers.forEach((marker) => {
       this.blockedCardChannel.add(marker.id);
     });
-    let readMarkers = await this.store.getMarkers(guid, 'read_card_channel');
+    const readMarkers = await this.store.getMarkers(guid, 'read_card_channel');
     readMarkers.forEach((marker) => {
       this.read.set(marker.id, parseInt(marker.value));
     });
-    let hasSyncedMarkers = await this.store.getMarkers(guid, 'first_sync_complete');
+    const hasSyncedMarkers = await this.store.getMarkers(guid, 'first_sync_complete');
     this.hasSynced = hasSyncedMarkers.filter((marker) => (marker.id === 'contact')).length !== 0;
 
     // load map of articles
-    let articles = await this.store.getContactCardArticles(guid);
+    const articles = await this.store.getContactCardArticles(guid);
     articles.forEach(({ cardId, articleId, item }) => {
-      let articles = this.articleEntries.get(cardId);
-      let article = this.setArticle(cardId, articleId, item);
+      const articles = this.articleEntries.get(cardId);
+      const article = this.setArticle(cardId, articleId, item);
       if (!articles) {
-        let entries = new Map<string, { item: ArticleItem; article: Article }>();
+        const entries = new Map<string, { item: ArticleItem; article: Article }>();
         this.articleEntries.set(cardId, entries);
         entries.set(articleId, { item, article });
       } else {
@@ -164,12 +164,12 @@ export class ContactModule implements Contact {
     });
 
     // load map of channels
-    let channels = await this.store.getContactCardChannels(guid);
+    const channels = await this.store.getContactCardChannels(guid);
     channels.forEach(({ cardId, channelId, item }) => {
-      let channels = this.channelEntries.get(cardId);
-      let channel = this.setChannel(cardId, channelId, item);
+      const channels = this.channelEntries.get(cardId);
+      const channel = this.setChannel(cardId, channelId, item);
       if (!channels) {
-        let entries = new Map<string, { item: ChannelItem; channel: Channel }>();
+        const entries = new Map<string, { item: ChannelItem; channel: Channel }>();
         this.channelEntries.set(cardId, entries);
         entries.set(channelId, { item, channel });
       } else {
@@ -178,9 +178,9 @@ export class ContactModule implements Contact {
     });
 
     // load map of cards
-    let cards = await this.store.getContacts(guid);
+    const cards = await this.store.getContacts(guid);
     cards.forEach(({ cardId, item }) => {
-      let card = this.setCard(cardId, item);
+      const card = this.setCard(cardId, item);
       this.cardEntries.set(cardId, { item, card });
       this.emitArticles(cardId);
       this.emitChannels(cardId);
@@ -214,19 +214,19 @@ export class ContactModule implements Contact {
   }
 
   private async setCardBlocked(cardId: string) {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (!entry) {
       throw new Error('card not found');
     }
     this.blockedCard.add(cardId);
     entry.card = this.setCard(cardId, entry.item);
     this.emitCards();
-    let timestamp = Math.floor(Date.now() / 1000);
+    const timestamp = Math.floor(Date.now() / 1000);
     await this.store.setMarker(this.guid, 'blocked_card', cardId, JSON.stringify({cardId, timestamp}));
   }
   
   private async clearCardBlocked(cardId: string) {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (!entry) {
       throw new Error('card not found');
     }
@@ -237,37 +237,37 @@ export class ContactModule implements Contact {
   }
 
   private isChannelBlocked(cardId: string, channelId: string): boolean {
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     return this.blockedCardChannel.has(id);
   }
 
   private async setChannelBlocked(cardId: string, channelId: string) {
-    let channelsEntry = this.channelEntries.get(cardId);
+    const channelsEntry = this.channelEntries.get(cardId);
     if (!channelsEntry) {
       throw new Error('card not found');
     }
-    let channelEntry = channelsEntry.get(channelId);
+    const channelEntry = channelsEntry.get(channelId);
     if (!channelEntry) {
       throw new Error('channel not found');
     }
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     this.blockedCardChannel.add(id);
     channelEntry.channel = this.setChannel(cardId, channelId, channelEntry.item); 
     this.emitChannels(cardId);
-    let timestamp = Math.floor(Date.now() / 1000);
+    const timestamp = Math.floor(Date.now() / 1000);
     await this.store.setMarker(this.guid, 'blocked_card_channel', id, JSON.stringify({ cardId, channelId, timestamp }));
   }
 
   private async clearChannelBlocked(cardId: string, channelId: string) {
-    let channelsEntry = this.channelEntries.get(cardId);
+    const channelsEntry = this.channelEntries.get(cardId);
     if (!channelsEntry) {
       throw new Error('card not found');
     }
-    let channelEntry = channelsEntry.get(channelId);
+    const channelEntry = channelsEntry.get(channelId);
     if (!channelEntry) {
       throw new Error('channel not found');
     }
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     this.blockedCardChannel.delete(id);
     channelEntry.channel = this.setChannel(cardId, channelId, channelEntry.item); 
     this.emitChannels(cardId);
@@ -285,7 +285,7 @@ export class ContactModule implements Contact {
   }
 
   private getCardProfileOffsync(cardId: string): number | null {
-    let offsync = this.offsyncProfileCard.get(cardId);
+    const offsync = this.offsyncProfileCard.get(cardId);
     if (offsync) {
       return offsync;
     } else {
@@ -306,7 +306,7 @@ export class ContactModule implements Contact {
   }
 
   private getCardChannelOffsync(cardId: string): number | null {
-    let offsync = this.offsyncChannelCard.get(cardId);
+    const offsync = this.offsyncChannelCard.get(cardId);
     if (offsync) {
       return offsync;
     } else {
@@ -327,7 +327,7 @@ export class ContactModule implements Contact {
   }
 
   private getCardArticleOffsync(cardId: string): number | null {
-    let offsync = this.offsyncArticleCard.get(cardId);
+    const offsync = this.offsyncArticleCard.get(cardId);
     if (offsync) {
       return offsync;
     } else {
@@ -348,9 +348,9 @@ export class ContactModule implements Contact {
   }
 
   private isChannelUnread(cardId: string, channelId: string, revision: number): boolean {
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     if (this.read.has(id)) {
-      let read = this.read.get(id);
+      const read = this.read.get(id);
       if (read && read >= revision) {
         return false;
       }
@@ -359,9 +359,9 @@ export class ContactModule implements Contact {
   }
 
   private async markChannelUnread(cardId: string, channelId: string, revision: number) {
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     if (!this.read.has(id)) {
-      let read = this.read.get(id);
+      const read = this.read.get(id);
       if (read && read < revision) {
         this.read.delete(id);
         await this.store.clearMarker(this.guid, 'read_card_channel', id);
@@ -370,8 +370,8 @@ export class ContactModule implements Contact {
   }
 
   private async markChannelRead(cardId: string, channelId: string, revision: number) {
-    let id = `${cardId}:${channelId}`;
-    let read = this.read.get(id);
+    const id = `${cardId}:${channelId}`;
+    const read = this.read.get(id);
     if (!read || read < revision) {
       this.read.set(id, revision);
       await this.store.setMarker(this.guid, 'read_card_channel', id, revision.toString());
@@ -386,17 +386,17 @@ export class ContactModule implements Contact {
   private async sync(): Promise<void> {
     if (!this.syncing) {
       this.syncing = true;
-      let { guid, node, secure, token } = this;
+      const { guid, node, secure, token } = this;
       while ((this.unsealAll || this.nextRevision || this.resync.size) && !this.closing) {
         if (this.resync.size) {
-          let entries = Array.from(this.cardEntries, ([key, value]) => ({ key, value }));
-          for (let entry of entries) {
-            let { key, value } = entry;
+          const entries = Array.from(this.cardEntries, ([key, value]) => ({ key, value }));
+          for (const entry of entries) {
+            const { key, value } = entry;
             if (this.resync.has(key)) {
-              let offsyncProfile = this.getCardProfileOffsync(key);
+              const offsyncProfile = this.getCardProfileOffsync(key);
               if (offsyncProfile) {
                 try {
-                  let { profile, detail, profileRevision } = value.item;
+                  const { profile, detail, profileRevision } = value.item;
                   await this.syncProfile(key, profile.node, profile.guid, detail.token, profileRevision);
                   value.item.profileRevision = offsyncProfile;
                   await this.store.setContactCardProfileRevision(guid, key, profileRevision);
@@ -407,10 +407,10 @@ export class ContactModule implements Contact {
                   this.log.warn(err);
                 }
               }
-              let offsyncArticle = this.getCardArticleOffsync(key);
+              const offsyncArticle = this.getCardArticleOffsync(key);
               if (offsyncArticle) {
                 try {
-                  let { profile, detail, articleRevision } = value.item;
+                  const { profile, detail, articleRevision } = value.item;
                   await this.syncArticles(key, profile.node, profile.guid, detail.token, articleRevision);
                   value.item.articleRevision = offsyncArticle;
                   await this.store.setContactCardArticleRevision(guid, key, articleRevision);
@@ -421,10 +421,10 @@ export class ContactModule implements Contact {
                   this.log.warn(err);
                 }
               }
-              let offsyncChannel = this.getCardChannelOffsync(key);
+              const offsyncChannel = this.getCardChannelOffsync(key);
               if (offsyncChannel) {
                 try {
-                  let { profile, detail, channelRevision } = value.item;
+                  const { profile, detail, channelRevision } = value.item;
                   await this.syncChannels(key, { guid: profile.guid, node: profile.node, token: detail.token }, channelRevision);
                   value.item.channelRevision = offsyncChannel;
                   await this.store.setContactCardChannelRevision(guid, key, value.item.channelRevision);
@@ -441,17 +441,17 @@ export class ContactModule implements Contact {
         }
 
         if (this.nextRevision && this.revision !== this.nextRevision) {
-          let nextRev = this.nextRevision;
+          const nextRev = this.nextRevision;
           try {
-            let delta = await getCards(node, secure, token, this.revision);
-            for (let entity of delta) {
-              let { id, revision, data } = entity;
+            const delta = await getCards(node, secure, token, this.revision);
+            for (const entity of delta) {
+              const { id, revision, data } = entity;
               if (data) {
-                let entry = await this.getCardEntry(id);
+                const entry = await this.getCardEntry(id);
 
                 if (data.detailRevision !== entry.item.detail.revison) {
-                  let detail = data.cardDetail ? data.cardDetail : await getCardDetail(node, secure, token, id);
-                  let { status, statusUpdated, token: cardToken } = detail;
+                  const detail = data.cardDetail ? data.cardDetail : await getCardDetail(node, secure, token, id);
+                  const { status, statusUpdated, token: cardToken } = detail;
                   entry.item.detail = {
                     revision: data.detailRevision,
                     status,
@@ -463,7 +463,7 @@ export class ContactModule implements Contact {
                 }
 
                 if (data.profileRevision !== entry.item.profile.revision) {
-                  let profile = data.cardProfile ? data.cardProfile : await getCardProfile(node, secure, token, id);
+                  const profile = data.cardProfile ? data.cardProfile : await getCardProfile(node, secure, token, id);
                   entry.item.profile = {
                     revision: data.profileRevision,
                     handle: profile.handle,
@@ -479,10 +479,10 @@ export class ContactModule implements Contact {
                   await this.store.setContactCardProfile(guid, id, entry.item.profile);
                 }
 
-                let { profileRevision, articleRevision, channelRevision } = entry.item;
+                const { profileRevision, articleRevision, channelRevision } = entry.item;
 
                 if (data.notifiedProfile > entry.item.profile.revision && data.notifiedProfile !== profileRevision) {
-                  let offsyncProfile = this.getCardProfileOffsync(id);
+                  const offsyncProfile = this.getCardProfileOffsync(id);
                   if (offsyncProfile) {
                     await this.setCardProfileOffsync(id, data.notifiedProfile);
                     entry.card = this.setCard(id, entry.item);
@@ -500,7 +500,7 @@ export class ContactModule implements Contact {
                 }
 
                 if (data.notifiedArticle !== articleRevision) {
-                  let offsyncArticle = this.getCardArticleOffsync(id);
+                  const offsyncArticle = this.getCardArticleOffsync(id);
                   if (offsyncArticle) {
                     await this.setCardArticleOffsync(id, data.notifiedArticle);
                     entry.card = this.setCard(id, entry.item);
@@ -519,13 +519,13 @@ export class ContactModule implements Contact {
                 }
 
                 if (data.notifiedChannel !== channelRevision) {
-                  let offsyncChannel = this.getCardChannelOffsync(id);
+                  const offsyncChannel = this.getCardChannelOffsync(id);
                   if (offsyncChannel) {
                     await this.setCardChannelOffsync(id, data.notifiedChannel);
                     entry.card = this.setCard(id, entry.item);
                   } else {
                     try {
-                      let { profile, detail } = entry.item;
+                      const { profile, detail } = entry.item;
                       await this.syncChannels(id, { guid: profile.guid, node: profile.node, token: detail.token }, entry.item.channelRevision);
                       entry.item.channelRevision = data.notifiedChannel;
                       await this.store.setContactCardChannelRevision(guid, id, data.notifiedChannel);
@@ -566,10 +566,10 @@ export class ContactModule implements Contact {
         }
 
         if (this.unsealAll) {
-          for (let [cardId, channels] of this.channelEntries.entries()) {
-            for (let [channelId, entry] of channels.entries()) {
+          for (const [cardId, channels] of this.channelEntries.entries()) {
+            for (const [channelId, entry] of channels.entries()) {
               try {
-                let { item } = entry;
+                const { item } = entry;
                 if (await this.unsealChannelDetail(cardId, channelId, item)) {
                   await this.store.setContactCardChannelUnsealedDetail(guid, cardId, channelId, item.unsealedDetail);
                 }
@@ -596,34 +596,34 @@ export class ContactModule implements Contact {
   }
 
   private async syncProfile(cardId: string, cardNode: string, cardGuid: string, cardToken: string, revision: number): Promise<void> {
-    let { node, secure, token } = this;
-    let server = cardNode ? cardNode : node;
-    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
-    let message = await getContactProfile(server, !insecure, cardGuid, cardToken);
+    const { node, secure, token } = this;
+    const server = cardNode ? cardNode : node;
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    const message = await getContactProfile(server, !insecure, cardGuid, cardToken);
     await setCardProfile(node, secure, token, cardId, message);
   }
 
   private async syncArticles(cardId: string, cardNode: string, cardGuid: string, cardToken: string, revision: number): Promise<void> {
-    let { node, secure, token } = this;
-    let server = cardNode ? cardNode : node;
-    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    const { node, secure, token } = this;
+    const server = cardNode ? cardNode : node;
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
   }
 
   private async syncChannels(cardId: string, card: { guid: string; node: string; token: string }, revision: number): Promise<void> {
-    let { guid, node, secure, token, channelTypes } = this;
-    let server = card.node ? card.node : node;
-    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
-    let delta = await getContactChannels(server, !insecure, card.guid, card.token, revision, channelTypes);
+    const { guid, node, secure, token, channelTypes } = this;
+    const server = card.node ? card.node : node;
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    const delta = await getContactChannels(server, !insecure, card.guid, card.token, revision, channelTypes);
 
-    for (let entity of delta) {
-      let { id, revision, data } = entity;
+    for (const entity of delta) {
+      const { id, revision, data } = entity;
       if (data) {
-        let { detailRevision, topicRevision, channelSummary, channelDetail } = data;
-        let entries = this.getChannelEntries(cardId);
-        let entry = await this.getChannelEntry(entries, cardId, id);
+        const { detailRevision, topicRevision, channelSummary, channelDetail } = data;
+        const entries = this.getChannelEntries(cardId);
+        const entry = await this.getChannelEntry(entries, cardId, id);
 
         if (detailRevision !== entry.item.detail.revision) {
-          let detail = channelDetail ? channelDetail : await getContactChannelDetail(server, !insecure, card.guid, card.token, id);
+          const detail = channelDetail ? channelDetail : await getContactChannelDetail(server, !insecure, card.guid, card.token, id);
           entry.item.detail = {
             revision: detailRevision,
             sealed: detail.dataType === 'sealed',
@@ -641,10 +641,10 @@ export class ContactModule implements Contact {
           entry.item.unsealedDetail = null;
           await this.unsealChannelDetail(cardId, id, entry.item);
           if (this.focus) {
-            let { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = detail;
-            let sealed = dataType === 'sealed';
-            let channelData = sealed ? entry.item.unsealedDetail : data;
-            let focusDetail = {
+            const { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = detail;
+            const sealed = dataType === 'sealed';
+            const channelData = sealed ? entry.item.unsealedDetail : data;
+            const focusDetail = {
               sealed,
               locked: sealed && (!this.seal || !entry.item.channelKey),
               dataType,
@@ -663,7 +663,7 @@ export class ContactModule implements Contact {
         }
 
         if (topicRevision !== entry.item.summary.revision) {
-          let summary = channelSummary ? channelSummary : await getContactChannelSummary(server, !insecure, card.guid, card.token, id);
+          const summary = channelSummary ? channelSummary : await getContactChannelSummary(server, !insecure, card.guid, card.token, id);
           entry.item.summary = {
             revision: topicRevision,
             sealed: summary.lastTopic.dataType === 'sealedtopic',
@@ -689,7 +689,7 @@ export class ContactModule implements Contact {
           }
         }
       } else {
-        let channels = this.getChannelEntries(cardId);
+        const channels = this.getChannelEntries(cardId);
         channels.delete(id);
         if (this.focus) {
           this.focus.disconnect(cardId, id);
@@ -701,7 +701,7 @@ export class ContactModule implements Contact {
 
   public addCardListener(ev: (cards: Card[]) => void): void {
     this.emitter.on('card', ev);
-    let cards = Array.from(this.cardEntries, ([cardId, entry]) => entry.card);
+    const cards = Array.from(this.cardEntries, ([cardId, entry]) => entry.card);
     ev(cards);
   }
 
@@ -710,21 +710,21 @@ export class ContactModule implements Contact {
   }
 
   private emitCards() {
-    let cards = Array.from(this.cardEntries, ([cardId, entry]) => entry.card);
+    const cards = Array.from(this.cardEntries, ([cardId, entry]) => entry.card);
     this.emitter.emit('card', cards);
   }
 
   public addArticleListener(id: string | null, ev: (arg: { cardId: string; articles: Article[] }) => void): void {
     if (id) {
-      let cardId = id as string;
+      const cardId = id as string;
       this.emitter.on(`article::${cardId}`, ev);
-      let entries = this.articleEntries.get(cardId);
-      let articles = entries ? Array.from(entries, ([articleId, entry]) => entry.article) : [];
+      const entries = this.articleEntries.get(cardId);
+      const articles = entries ? Array.from(entries, ([articleId, entry]) => entry.article) : [];
       ev({ cardId, articles });
     } else {
       this.emitter.on('article', ev);
       this.articleEntries.forEach((entries, cardId) => {
-        let articles = Array.from(entries, ([articleId, entry]) => entry.article);
+        const articles = Array.from(entries, ([articleId, entry]) => entry.article);
         ev({ cardId, articles });
       });
     }
@@ -732,7 +732,7 @@ export class ContactModule implements Contact {
 
   public removeArticleListener(id: string | null, ev: (arg: { cardId: string; articles: Article[] }) => void): void {
     if (id) {
-      let cardId = id as string;
+      const cardId = id as string;
       this.emitter.off(`article::${cardId}`, ev);
     } else {
       this.emitter.off('article', ev);
@@ -740,8 +740,8 @@ export class ContactModule implements Contact {
   }
 
   private emitArticles(cardId: string) {
-    let entries = this.articleEntries.get(cardId);
-    let articles = entries ? Array.from(entries, ([articleId, entry]) => entry.article) : [];
+    const entries = this.articleEntries.get(cardId);
+    const articles = entries ? Array.from(entries, ([articleId, entry]) => entry.article) : [];
     this.emitter.emit('article', { cardId, articles });
     this.emitter.emit(`article::${cardId}`, { cardId, articles });
   }
@@ -749,7 +749,7 @@ export class ContactModule implements Contact {
   public addChannelListener(ev: (arg: { cardId: string; channels: Channel[] }) => void): void {
     this.emitter.on('channel', ev);
     this.channelEntries.forEach((entries, cardId) => {
-      let channels = Array.from(entries, ([channelId, entry]) => entry.channel);
+      const channels = Array.from(entries, ([channelId, entry]) => entry.channel);
       ev({ cardId, channels });
     });
   }
@@ -759,8 +759,8 @@ export class ContactModule implements Contact {
   }
 
   private emitChannels(cardId: string) {
-    let entries = this.channelEntries.get(cardId);
-    let channels = entries ? Array.from(entries, ([channelId, entry]) => entry.channel) : [];
+    const entries = this.channelEntries.get(cardId);
+    const channels = entries ? Array.from(entries, ([channelId, entry]) => entry.channel) : [];
     this.emitter.emit('channel', { cardId, channels });
   }
 
@@ -785,7 +785,7 @@ export class ContactModule implements Contact {
       this.focus.close();
     }
 
-    let markRead = async () => {
+    const markRead = async () => {
       try {
         await this.setUnreadChannel(cardId, channelId, false);
       } catch (err) {
@@ -793,34 +793,34 @@ export class ContactModule implements Contact {
       }
     }
 
-    let flagTopic = async (topicId: string) => {
-      let entry = this.cardEntries.get(cardId);
+    const flagTopic = async (topicId: string) => {
+      const entry = this.cardEntries.get(cardId);
       if (entry) {
-        let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-        let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+        const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+        const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
         await addFlag(server, !insecure, entry.item.profile.guid, { channelId, topicId });
       }
     }
 
-    let cardEntry = this.cardEntries.get(cardId);
-    let channelsEntry = this.channelEntries.get(cardId);
-    let channelEntry = channelsEntry?.get(channelId);
+    const cardEntry = this.cardEntries.get(cardId);
+    const channelsEntry = this.channelEntries.get(cardId);
+    const channelEntry = channelsEntry?.get(channelId);
     if (cardEntry && channelEntry) {
       // allocate focus
-      let node = cardEntry.item.profile.node;
-      let guid = cardEntry.item.profile.guid;
-      let token = cardEntry.item.detail.token;
-      let revision = channelEntry.item.summary.revision;
-      let channelKey = await this.setChannelKey(channelEntry.item);
-      let sealEnabled = Boolean(this.seal);
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
+      const node = cardEntry.item.profile.node;
+      const guid = cardEntry.item.profile.guid;
+      const token = cardEntry.item.detail.token;
+      const revision = channelEntry.item.summary.revision;
+      const channelKey = await this.setChannelKey(channelEntry.item);
+      const sealEnabled = Boolean(this.seal);
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
       this.focus = new FocusModule(this.log, this.store, this.crypto, this.staging, cardId, channelId, this.guid, { node, secure: !insecure, token: `${guid}.${token}` }, channelKey, sealEnabled, revision, markRead, flagTopic);
 
       // set current detail
-      let { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = channelEntry.item.detail;
-      let sealed = dataType === 'sealed';
-      let channelData = sealed ? channelEntry.item.unsealedDetail : data;
-      let focusDetail = {
+      const { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = channelEntry.item.detail;
+      const sealed = dataType === 'sealed';
+      const channelData = sealed ? channelEntry.item.unsealedDetail : data;
+      const focusDetail = {
         sealed,
         locked: sealed && (!this.seal || !channelEntry.item.channelKey),
         dataType,
@@ -847,35 +847,35 @@ export class ContactModule implements Contact {
   }
 
   public async addCard(server: string | null, guid: string): Promise<string> {
-    let { node, secure, token } = this;
-    let insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
-    let message = server ? await getContactListing(server, !insecure, guid) : await getContactListing(node, secure, guid);
-    let added = await addCard(node, secure, token, message);
+    const { node, secure, token } = this;
+    const insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
+    const message = server ? await getContactListing(server, !insecure, guid) : await getContactListing(node, secure, guid);
+    const added = await addCard(node, secure, token, message);
     return added.id;
   }
 
   public async removeCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
+    const { node, secure, token } = this;
     await removeCard(node, secure, token, cardId);
   }
 
   public async confirmCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
+    const { node, secure, token } = this;
     await setCardConfirmed(node, secure, token, cardId);
   }
 
   public async connectCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
+    const { node, secure, token } = this;
     await setCardConnecting(node, secure, token, cardId);
     try {
-      let message = await getCardOpenMessage(node, secure, token, cardId);
-      let entry = this.cardEntries.get(cardId);
+      const message = await getCardOpenMessage(node, secure, token, cardId);
+      const entry = this.cardEntries.get(cardId);
       if (entry) {
-        let server = entry.item.profile.node ? entry.item.profile.node : node;
-        let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
-        let contact = await setCardOpenMessage(server, !insecure, message);
+        const server = entry.item.profile.node ? entry.item.profile.node : node;
+        const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+        const contact = await setCardOpenMessage(server, !insecure, message);
         if (contact.status === 'connected') {
-          let { token: contactToken, articleRevision, channelRevision, profileRevision } = contact;
+          const { token: contactToken, articleRevision, channelRevision, profileRevision } = contact;
           await setCardConnected(node, secure, token, cardId, contactToken, articleRevision, channelRevision, profileRevision);
         }
       }
@@ -885,18 +885,18 @@ export class ContactModule implements Contact {
   }
 
   public async addAndConnectCard(server: string | null, guid: string): Promise<void> {
-    let { node, secure, token } = this;
-    let insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
-    let message = server ? await getContactListing(server, !insecure, guid) : await getContactListing(node, secure, guid);
-    let added = await addCard(node, secure, token, message);
+    const { node, secure, token } = this;
+    const insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
+    const message = server ? await getContactListing(server, !insecure, guid) : await getContactListing(node, secure, guid);
+    const added = await addCard(node, secure, token, message);
     await setCardConnecting(node, secure, token, added.id);
     try {
-      let message = await getCardOpenMessage(node, secure, token, added.id);
-      let server = added.data.cardProfile.node ? added.data.cardProfile.node : node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
-      let contact = await setCardOpenMessage(server, !insecure, message);
+      const message = await getCardOpenMessage(node, secure, token, added.id);
+      const server = added.data.cardProfile.node ? added.data.cardProfile.node : node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const contact = await setCardOpenMessage(server, !insecure, message);
       if (contact.status === 'connected') {
-        let { token: contactToken, articleRevision, channelRevision, profileRevision } = contact;
+        const { token: contactToken, articleRevision, channelRevision, profileRevision } = contact;
         await setCardConnected(node, secure, token, added.id, contactToken, articleRevision, channelRevision, profileRevision);
       }
     } catch (err) {
@@ -905,14 +905,14 @@ export class ContactModule implements Contact {
   }
 
   public async disconnectCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
+    const { node, secure, token } = this;
     await setCardConfirmed(node, secure, token, cardId);
     try {
-      let message = await getCardCloseMessage(node, secure, token, cardId);
-      let entry = this.cardEntries.get(cardId);
+      const message = await getCardCloseMessage(node, secure, token, cardId);
+      const entry = this.cardEntries.get(cardId);
       if (entry) {
-        let server = entry.item.profile.node ? entry.item.profile.node : node;
-        let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+        const server = entry.item.profile.node ? entry.item.profile.node : node;
+        const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
         await setCardCloseMessage(server, !insecure, message);
       }
     } catch (err) {
@@ -921,13 +921,13 @@ export class ContactModule implements Contact {
   }
 
   public async denyCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
-    let entry = this.cardEntries.get(cardId);
+    const { node, secure, token } = this;
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
       try {
-        let message = await getCardCloseMessage(node, secure, token, cardId);
-        let server = entry.item.profile.node ? entry.item.profile.node : node;
-        let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+        const message = await getCardCloseMessage(node, secure, token, cardId);
+        const server = entry.item.profile.node ? entry.item.profile.node : node;
+        const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
         await setCardCloseMessage(server, !insecure, message);
       } catch (err) {
         this.log.warn('failed to deliver close message');
@@ -941,8 +941,8 @@ export class ContactModule implements Contact {
   }
 
   public async ignoreCard(cardId: string): Promise<void> {
-    let { node, secure, token } = this;
-    let entry = this.cardEntries.get(cardId);
+    const { node, secure, token } = this;
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
       if (entry.item.detail.status === 'pending') {
         await removeCard(node, secure, token, cardId);
@@ -955,52 +955,52 @@ export class ContactModule implements Contact {
   public async removeArticle(cardId: string, articleId: string): Promise<void> {}
 
   public async leaveChannel(cardId: string, channelId: string): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       await removeContactChannel(server, !insecure, entry.item.profile.guid, entry.item.detail.token, channelId);
     }
   }
 
   public async callCard(cardId: string): Promise<Link> {
-    let { node, secure, token } = this;
-    let entry = this.cardEntries.get(cardId);
+    const { node, secure, token } = this;
+    const entry = this.cardEntries.get(cardId);
     if (!entry || entry.item.detail.status !== 'connected') {
       throw new Error('invalid card for call');
     }
-    let { profile, detail } = entry.item;
-    let link = new LinkModule(this.log);
-    let server = profile.node ? profile.node : this.node;
-    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    const { profile, detail } = entry.item;
+    const link = new LinkModule(this.log);
+    const server = profile.node ? profile.node : this.node;
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
     await link.call(node, secure, token, cardId, server, !insecure, profile.guid, detail.token);
     return link;
   }
 
   // added to allow ring to end call (deprecate)
   public async endCall(cardId: string, callId: string): Promise<void> {
-    let { node, secure, token } = this;
-    let entry = this.cardEntries.get(cardId);
+    const { node, secure, token } = this;
+    const entry = this.cardEntries.get(cardId);
     if (!entry || entry.item.detail.status !== 'connected') {
       throw new Error('invalid card for call');
     }
-    let { profile, detail } = entry.item;
-    let server = profile.node ? profile.node : this.node;
-    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+    const { profile, detail } = entry.item;
+    const server = profile.node ? profile.node : this.node;
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
     await removeContactCall(server, !insecure, profile.guid, detail.token, callId);
   }
 
   public getCardToken(cardId: string): string {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (!entry || entry.item.detail.status !== 'connected') {
       throw new Error('invalid card for call');
     }
-    let { profile, detail } = entry.item;
+    const { profile, detail } = entry.item;
     return detail.token;
   }
 
   public async setBlockedCard(cardId: string, blocked: boolean): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
       if (blocked) {
         await this.setCardBlocked(cardId);
@@ -1013,9 +1013,9 @@ export class ContactModule implements Contact {
   }
 
   public async setBlockedChannel(cardId: string, channelId: string, blocked: boolean): Promise<void> {
-    let entries = this.channelEntries.get(cardId);
+    const entries = this.channelEntries.get(cardId);
     if (entries) {
-      let entry = entries.get(channelId);
+      const entry = entries.get(channelId);
       if (entry) {
         if (blocked) {
           await this.setChannelBlocked(cardId, channelId);
@@ -1029,7 +1029,7 @@ export class ContactModule implements Contact {
   }
 
   public async getBlockedChannels(): Promise<Channel[]> {
-    let channels = [] as Channel[];
+    const channels = [] as Channel[];
     this.channelEntries.forEach((card, cardId) => {
       card.forEach((entry, channelId) => {
         if (this.isChannelBlocked(cardId, channelId)) {
@@ -1041,8 +1041,8 @@ export class ContactModule implements Contact {
   }
 
   public async clearBlockedChannelTopic(cardId: string, channelId: string, topicId: string) {
-    let { guid } = this;
-    let id = `${cardId}:${channelId}:${topicId}`
+    const { guid } = this;
+    const id = `${cardId}:${channelId}:${topicId}`
     await this.store.clearMarker(guid, 'blocked_topic', id);
     if (this.focus) {
       await this.focus.clearBlockedChannelTopic(cardId, channelId, topicId);
@@ -1050,9 +1050,9 @@ export class ContactModule implements Contact {
   }
 
   public async setBlockedArticle(cardId: string, articleId: string, blocked: boolean): Promise<void> {
-    let entries = this.articleEntries.get(cardId);
+    const entries = this.articleEntries.get(cardId);
     if (entries) {
-      let entry = entries.get(articleId);
+      const entry = entries.get(articleId);
       if (entry) {
         if (blocked) {
           await this.setArticleBlocked(cardId, articleId);
@@ -1066,49 +1066,49 @@ export class ContactModule implements Contact {
   }
 
   public async flagCard(cardId: string): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       await addFlag(server, !insecure, entry.item.profile.guid, {});
     }
   }
 
   public async flagArticle(cardId: string, articleId: string): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       await addFlag(server, !insecure, entry.item.profile.guid, { articleId });
     }
   }
 
   public async flagChannel(cardId: string, channelId: string): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       await addFlag(server, !insecure, entry.item.profile.guid, { channelId });
     }
   }
 
   public async setUnreadChannel(cardId: string, channelId: string, unread: boolean): Promise<void> {
-    let channelsEntry = this.channelEntries.get(cardId);
+    const channelsEntry = this.channelEntries.get(cardId);
     if (!channelsEntry) {
       throw new Error('card not found');
     }
-    let channelEntry = channelsEntry.get(channelId);
+    const channelEntry = channelsEntry.get(channelId);
     if (!channelEntry) {
       throw new Error('channel not found');
     } 
-    let id = `${cardId}:${channelId}`;
+    const id = `${cardId}:${channelId}`;
     if (unread) {
       this.read.delete(id);
       channelEntry.channel = this.setChannel(cardId, channelId, channelEntry.item);
       this.emitChannels(cardId);
       await this.store.clearMarker(this.guid, 'read_card_channel', id);
     } else {
-      let revision = channelEntry.item.summary.revision;
+      const revision = channelEntry.item.summary.revision;
       this.read.set(id, revision);
       channelEntry.channel = this.setChannel(cardId, channelId, channelEntry.item);
       this.emitChannels(cardId);
@@ -1117,28 +1117,28 @@ export class ContactModule implements Contact {
   }
 
   public async getChannelNotifications(cardId: string, channelId: string): Promise<boolean> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       return await getContactChannelNotifications(server, !insecure, entry.item.profile.guid, entry.item.detail.token, channelId);
     }
     return false;
   }
 
   public async setChannelNotifications(cardId: string, channelId: string, enabled: boolean): Promise<void> {
-    let entry = this.cardEntries.get(cardId);
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
-      let server = entry.item.profile.node ? entry.item.profile.node : this.node;
-      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
+      const server = entry.item.profile.node ? entry.item.profile.node : this.node;
+      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
       await setContactChannelNotifications(server, !insecure, entry.item.profile.guid, entry.item.detail.token, channelId, enabled);
     }
   }
 
   public async getRegistry(handle: string | null, server: string | null): Promise<Profile[]> {
-    let { node, secure } = this;
-    let insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
-    let listing = server ? await getRegistryListing(handle, server, !insecure) : await getRegistryListing(handle, node, secure);
+    const { node, secure } = this;
+    const insecure = server ? /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server) : false;
+    const listing = server ? await getRegistryListing(handle, server, !insecure) : await getRegistryListing(handle, node, secure);
     return listing.map((entity) => {
       return {
         guid: entity.guid,
@@ -1156,11 +1156,11 @@ export class ContactModule implements Contact {
   }
 
   private setCard(cardId: string, item: CardItem): Card {
-    let { node, secure, token } = this;
-    let { profile, detail } = item;
-    let offsyncProfile = this.getCardProfileOffsync(cardId);
-    let offsyncArticle = this.getCardArticleOffsync(cardId);
-    let offsyncChannel = this.getCardChannelOffsync(cardId);
+    const { node, secure, token } = this;
+    const { profile, detail } = item;
+    const offsyncProfile = this.getCardProfileOffsync(cardId);
+    const offsyncArticle = this.getCardArticleOffsync(cardId);
+    const offsyncChannel = this.getCardChannelOffsync(cardId);
     return {
       cardId,
       offsync: Boolean(offsyncProfile || offsyncChannel || offsyncArticle),
@@ -1181,8 +1181,8 @@ export class ContactModule implements Contact {
   }
 
   private setArticle(cardId: string, articleId: string, item: ArticleItem): Article {
-    let { detail } = item;
-    let articleData = detail.sealed ? item.unsealedDetail : detail.data;
+    const { detail } = item;
+    const articleData = detail.sealed ? item.unsealedDetail : detail.data;
     return {
       cardId,
       articleId,
@@ -1196,11 +1196,11 @@ export class ContactModule implements Contact {
   }
 
   private setChannel(cardId: string, channelId: string, item: ChannelItem): Channel {
-    let { summary, detail } = item;
-    let channelData = detail.sealed ? item.unsealedDetail : detail.data || '{}';
-    let topicData = summary.sealed ? item.unsealedSummary : summary.data || '{}';
-    let parsed = this.parse(topicData);
-    let data = summary.sealed ? parsed?.message : parsed;
+    const { summary, detail } = item;
+    const channelData = detail.sealed ? item.unsealedDetail : detail.data || '{}';
+    const topicData = summary.sealed ? item.unsealedSummary : summary.data || '{}';
+    const parsed = this.parse(topicData);
+    const data = summary.sealed ? parsed?.message : parsed;
 
     return {
       channelId,
@@ -1244,23 +1244,23 @@ export class ContactModule implements Contact {
     if (!this.crypto) {
       throw new Error('crypto not set');
     }
-    let card = this.cardEntries.get(cardId);
+    const card = this.cardEntries.get(cardId);
     if (!card) {
       throw new Error('specified card not found');
     }
-    let publicKey = card.item.profile.seal;
+    const publicKey = card.item.profile.seal;
     if (!publicKey) {
       throw new Error('seal key not set for card');
     }
-    let sealed = await this.crypto.rsaEncrypt(keyData, publicKey);
-    let sealedKey = sealed.encryptedDataB64;
+    const sealed = await this.crypto.rsaEncrypt(keyData, publicKey);
+    const sealedKey = sealed.encryptedDataB64;
     return { publicKey, sealedKey };
   }
 
   private async getChannelKey(seals: [{ publicKey: string; sealedKey: string }]): Promise<string | null> {
-    let seal = seals.find(({ publicKey }) => this.seal && publicKey === this.seal.publicKey);
+    const seal = seals.find(({ publicKey }) => this.seal && publicKey === this.seal.publicKey);
     if (seal && this.crypto && this.seal) {
-      let key = await this.crypto.rsaDecrypt(seal.sealedKey, this.seal.privateKey);
+      const key = await this.crypto.rsaDecrypt(seal.sealedKey, this.seal.privateKey);
       return key.data;
     }
     return null;
@@ -1269,7 +1269,7 @@ export class ContactModule implements Contact {
   private async setChannelKey(item: ChannelItem) {
     if (!item.channelKey && item.detail.dataType === 'sealed' && this.seal && this.crypto) {
       try {
-        let { seals } = JSON.parse(item.detail.data);
+        const { seals } = JSON.parse(item.detail.data);
         item.channelKey = await this.getChannelKey(seals);
       } catch (err) {
         this.log.warn(err);
@@ -1281,7 +1281,7 @@ export class ContactModule implements Contact {
   private async unsealChannelDetail(cardId: string, channelId: string, item: ChannelItem): Promise<boolean> {
     if (item.unsealedDetail == null && item.detail.dataType === 'sealed' && this.seal && this.crypto) {
       try {
-        let { subjectEncrypted, subjectIv, seals } = JSON.parse(item.detail.data);
+        const { subjectEncrypted, subjectIv, seals } = JSON.parse(item.detail.data);
         if (!item.channelKey) {
           item.channelKey = await this.getChannelKey(seals);
           if (this.focus) {
@@ -1293,11 +1293,11 @@ export class ContactModule implements Contact {
           }
         }
         if (item.channelKey) {
-          let { data } = await this.crypto.aesDecrypt(subjectEncrypted, subjectIv, item.channelKey);
+          const { data } = await this.crypto.aesDecrypt(subjectEncrypted, subjectIv, item.channelKey);
           item.unsealedDetail = data;
           if (this.focus) {
-            let { dataType, enableImage, enableAudio, enableVideo, enableBinary, members, created } = item.detail;
-            let focusDetail = {
+            const { dataType, enableImage, enableAudio, enableVideo, enableBinary, members, created } = item.detail;
+            const focusDetail = {
               sealed: true,
               locked: false,
               dataType,
@@ -1324,7 +1324,7 @@ export class ContactModule implements Contact {
     if (item.unsealedSummary == null && item.summary.dataType === 'sealedtopic' && this.seal && this.crypto) {
       try {
         if (!item.channelKey) {
-          let { seals } = JSON.parse(item.detail.data);
+          const { seals } = JSON.parse(item.detail.data);
           item.channelKey = await this.getChannelKey(seals);
           if (this.focus) {
             try {
@@ -1335,11 +1335,11 @@ export class ContactModule implements Contact {
           }
         }
         if (item.channelKey) {
-          let { messageEncrypted, messageIv } = JSON.parse(item.summary.data);
+          const { messageEncrypted, messageIv } = JSON.parse(item.summary.data);
           if (!messageEncrypted || !messageIv) {
             this.log.warn('invalid sealed summary');
           } else {
-            let { data } = await this.crypto.aesDecrypt(messageEncrypted, messageIv, item.channelKey);
+            const { data } = await this.crypto.aesDecrypt(messageEncrypted, messageIv, item.channelKey);
             item.unsealedSummary = data;
             return true;
           }
@@ -1352,38 +1352,38 @@ export class ContactModule implements Contact {
   }
 
   private async getCardEntry(cardId: string) {
-    let { guid } = this;
-    let entry = this.cardEntries.get(cardId);
+    const { guid } = this;
+    const entry = this.cardEntries.get(cardId);
     if (entry) {
       return entry;
     }
-    let item = JSON.parse(JSON.stringify(defaultCardItem));
-    let card = this.setCard(cardId, item);
-    let cardEntry = { item, card };
+    const item = JSON.parse(JSON.stringify(defaultCardItem));
+    const card = this.setCard(cardId, item);
+    const cardEntry = { item, card };
     this.cardEntries.set(cardId, cardEntry);
     await this.store.addContactCard(guid, cardId, item);
     return cardEntry;
   }
 
   private getChannelEntries(cardId: string) {
-    let entries = this.channelEntries.get(cardId);
+    const entries = this.channelEntries.get(cardId);
     if (entries) {
       return entries;
     }
-    let channels = new Map<string, { item: ChannelItem; channel: Channel }>();
+    const channels = new Map<string, { item: ChannelItem; channel: Channel }>();
     this.channelEntries.set(cardId, channels);
     return channels;
   }
 
   private async getChannelEntry(channels: Map<string, { item: ChannelItem; channel: Channel }>, cardId: string, channelId: string) {
-    let { guid } = this;
-    let entry = channels.get(channelId);
+    const { guid } = this;
+    const entry = channels.get(channelId);
     if (entry) {
       return entry;
     }
-    let item = JSON.parse(JSON.stringify(defaultChannelItem));
-    let channel = this.setChannel(cardId, channelId, item);
-    let channelEntry = { item, channel };
+    const item = JSON.parse(JSON.stringify(defaultChannelItem));
+    const channel = this.setChannel(cardId, channelId, item);
+    const channelEntry = { item, channel };
     channels.set(channelId, channelEntry);
     await this.store.addContactCardChannel(guid, cardId, channelId, item);
     return channelEntry;
