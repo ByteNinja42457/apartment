@@ -16,7 +16,7 @@ export class LocalStore implements SqlStore {
 
   public async get(key: string, unset: string): Promise<string> {
     try {
-      var rows = await this.localStoreGet(`SELECT * FROM local_store WHERE key='${key}';`);
+      const rows = await this.localStoreGet(`SELECT * FROM local_store WHERE key='${key}';`);
       if (rows.length === 1 && rows[0].value != null) {
         return rows[0].value;
       }
@@ -39,8 +39,8 @@ export class LocalStore implements SqlStore {
   }
 
   private async localStoreGet(stmt: string, params: (string | number | null)[]): Promise<any[]> {
-    var res = await this.db.executeSql(stmt, params);
-    var rows = [];
+    const res = await this.db.executeSql(stmt, params);
+    const rows = [];
     if (res[0] && res[0].rows && res[0].rows.length > 0) {
       for (let i = 0; i < res[0].rows.length; i++) {
         rows.push(res[0].rows.item(i));
