@@ -13,15 +13,15 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let cardContext;
 function ContactsView() {
-  const { state, actions } = useCards();
+  var { state, actions } = useCards();
 
-  const [renderCount, setRenderCount] = useState(0);
-  const [cards, setCards] = useState([]);
-  const card = useContext(CardContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [cards, setCards] = useState([]);
+  var card = useContext(CardContext);
   cardContext = card;
 
   useEffect(() => {
-    const rendered = [];
+    var rendered = [];
     state.cards.forEach(c => {
       rendered.push(
         <div key={c.cardId} data-testid="card">
@@ -62,14 +62,14 @@ function ContactsTestApp() {
 
 let fetchCards;
 let fetchProfile;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
 
   fetchCards = [];
   fetchProfile = {};
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
 
     if (url.startsWith('/contact/cards?agent')) {
       return Promise.resolve({
