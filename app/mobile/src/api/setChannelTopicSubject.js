@@ -4,11 +4,11 @@ export async function setChannelTopicSubject(server, token, channelId, topicId, 
   var insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
   var protocol = insecure ? 'http' : 'https';
 
-  let subject = { data: JSON.stringify(data, (key, value) => {
+  const subject = { data: JSON.stringify(data, (key, value) => {
     if (value !== null) return value
   }), datatype: dataType };
 
-  let channel = await fetchWithTimeout(`${protocol}://${server}/content/channels/${channelId}/topics/${topicId}/subject?agent=${token}&confirm=true`,
+  const channel = await fetchWithTimeout(`${protocol}://${server}/content/channels/${channelId}/topics/${topicId}/subject?agent=${token}&confirm=true`,
     { method: 'PUT', body: JSON.stringify(subject) });
   checkResponse(channel);
 }
