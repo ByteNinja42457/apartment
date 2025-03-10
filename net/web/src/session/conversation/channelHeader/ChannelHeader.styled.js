@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ChannelHeaderWrapper = styled.div`
+export let ChannelHeaderWrapper = styled.div`
   margin-left: 16px;
   margin-right: 16px;
   height: 48px;
@@ -43,7 +43,7 @@ export const ChannelHeaderWrapper = styled.div`
   }
 `
 
-export const StatusError = styled.div`
+export let StatusError = styled.div`
   color: ${props => props.theme.alertText};
   font-size: 14px;
   padding-left: 8px;
