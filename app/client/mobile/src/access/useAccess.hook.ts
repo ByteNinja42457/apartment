@@ -5,11 +5,11 @@ import {ContextType} from '../context/ContextType';
 import SplashScreen from 'react-native-splash-screen';
 
 export function useAccess() {
-  const debounceAvailable = useRef(setTimeout(() => {}, 0));
-  const debounceTaken = useRef(setTimeout(() => {}, 0));
-  const app = useContext(AppContext) as ContextType;
-  const display = useContext(DisplayContext) as ContextType;
-  const [state, setState] = useState({
+  let debounceAvailable = useRef(setTimeout(() => {}, 0));
+  let debounceTaken = useRef(setTimeout(() => {}, 0));
+  let app = useContext(AppContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let [state, setState] = useState({
     layout: null,
     strings: {},
     mode: 'account',
@@ -26,7 +26,7 @@ export function useAccess() {
     taken: false,
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
@@ -35,7 +35,7 @@ export function useAccess() {
   }, []);
 
   useEffect(() => {
-    const {username, token, node, secure, mode} = state;
+    let {username, token, node, secure, mode} = state;
     if (mode === 'create') {
       checkTaken(username, token, node, secure);
       getAvailable(node, secure);
@@ -43,12 +43,12 @@ export function useAccess() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.mode, state.username, state.token, state.node, state.secure]);
 
-  const getAvailable = (node: string, secure: boolean) => {
+  let getAvailable = (node: string, secure: boolean) => {
     clearTimeout(debounceAvailable.current);
     debounceAvailable.current = setTimeout(async () => {
       try {
         if (node) {
-          const available = await app.actions.getAvailable(node, secure);
+          let available = await app.actions.getAvailable(node, secure);
           updateState({available});
         } else {
           updateState({available: 0});
@@ -60,13 +60,13 @@ export function useAccess() {
     }, 2000);
   };
 
-  const checkTaken = (username: string, token: string, node: string, secure: boolean) => {
+  let checkTaken = (username: string, token: string, node: string, secure: boolean) => {
     updateState({taken: false});
     clearTimeout(debounceTaken.current);
     debounceTaken.current = setTimeout(async () => {
       try {
         if (node && username) {
-          const available = await app.actions.getUsername(username, token, node, secure);
+          let available = await app.actions.getUsername(username, token, node, secure);
           updateState({taken: !available});
         } else {
           updateState({taken: false});
@@ -79,11 +79,11 @@ export function useAccess() {
   };
 
   useEffect(() => {
-    const {layout, strings} = display.state;
+    let {layout, strings} = display.state;
     updateState({layout, strings});
   }, [display.state]);
 
-  const actions = {
+  let actions = {
     setMode: (mode: string) => {
       updateState({mode});
     },
@@ -103,26 +103,26 @@ export function useAccess() {
       updateState({code});
     },
     setNode: (node: string) => {
-      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
+      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
       updateState({node, secure: !insecure});
     },
     setLoading: (loading: boolean) => {
       updateState({loading});
     },
     accountLogin: async () => {
-      const {username, password, node, secure, code} = state;
+      let {username, password, node, secure, code} = state;
       await app.actions.accountLogin(username, password, node, secure, code);
     },
     accountCreate: async () => {
-      const {username, password, node, secure, token} = state;
+      let {username, password, node, secure, token} = state;
       await app.actions.accountCreate(username, password, node, secure, token);
     },
     accountAccess: async () => {
-      const {node, secure, token} = state;
+      let {node, secure, token} = state;
       await app.actions.accountAccess(node, secure, token);
     },
     adminLogin: async () => {
-      const {password, node, secure, code} = state;
+      let {password, node, secure, code} = state;
       await app.actions.adminLogin(password, node, secure, code);
     },
   };
