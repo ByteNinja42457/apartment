@@ -6,38 +6,38 @@ import {ContextType} from '../context/ContextType';
 import SplashScreen from 'react-native-splash-screen';
 
 export function useSession() {
-  let display = useContext(DisplayContext) as ContextType;
-  let app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const app = useContext(AppContext) as ContextType;
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     layout: null,
     strings: {},
     appState: true,
     sdkState: true,
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    let setContentState = (loaded: boolean) => {
+    const setContentState = (loaded: boolean) => {
       if (loaded) {
         SplashScreen.hide();
       }
     };
-    let setSdkState = (sdkState: string) => {
+    const setSdkState = (sdkState: string) => {
       updateState({sdkState: sdkState === 'connected'});
     };
-    let setAppState = (appState: string) => {
+    const setAppState = (appState: string) => {
       updateState({appState: appState === 'active'});
     };
-    let session = app.state.session;
+    const session = app.state.session;
     if (session) {
-      let content = session.getContent();
+      const content = session.getContent();
       content.addLoadedListener(setContentState);
       session.addStatusListener(setSdkState);
-      let sub = AppState.addEventListener('change', setAppState);
+      const sub = AppState.addEventListener('change', setAppState);
       return () => {
         session.removeStatusListener(setSdkState);
         content.removeLoadedListener(setContentState);
@@ -47,11 +47,11 @@ export function useSession() {
   }, [app.state.session]);
 
   useEffect(() => {
-    let {layout, strings} = display.state;
+    const {layout, strings} = display.state;
     updateState({layout, strings});
   }, [display.state]);
 
-  let actions = {
+  const actions = {
     clearWelcome: async () => {
       await app.actions.setShowWelcome(false);
     },
