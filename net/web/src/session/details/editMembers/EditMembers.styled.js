@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const EditMembersWrapper = styled.div`
+export let EditMembersWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
