@@ -3,13 +3,13 @@ import { CardContext } from 'context/CardContext';
 
 export function useMemberOption(item) {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     logo: null,
   });
 
-  const card = useContext(CardContext);
+  let card = useContext(CardContext);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -17,7 +17,7 @@ export function useMemberOption(item) {
     updateState({ logo: card.actions.getImageUrl(item.id) });
   }, [card, item]);
 
-  const actions = {
+  let actions = {
   };
 
   return { state, actions };
