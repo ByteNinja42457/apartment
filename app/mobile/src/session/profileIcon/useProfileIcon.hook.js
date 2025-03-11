@@ -4,26 +4,26 @@ import { useNavigate } from 'react-router-dom';
 
 export function useProfileIcon() {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     disconnected: false,
   });
 
-  const navigate = useNavigate();
-  const app = useContext(AppContext);
+  let navigate = useNavigate();
+  let app = useContext(AppContext);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { status } = app.state
+    let { status } = app.state
     updateState({ disconnected: status === 'disconnected' });
     if (app.state.loggedOut) {
       navigate("/");
     }
   }, [app]);
 
-  const actions = {};
+  let actions = {};
 
   return { state, actions };
 }
