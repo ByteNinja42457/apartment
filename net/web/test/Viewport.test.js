@@ -4,8 +4,8 @@ import {render, act, screen, waitFor, fireEvent} from '@testing-library/react'
 import { SettingsContext, SettingsContextProvider } from 'context/SettingsContext';
 
 function ViewportView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const settings = useContext(SettingsContext);
+  let [renderCount, setRenderCount] = useState(0);
+  let settings = useContext(SettingsContext);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
