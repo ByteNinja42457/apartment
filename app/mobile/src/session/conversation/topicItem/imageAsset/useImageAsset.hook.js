@@ -7,7 +7,7 @@ import Share from 'react-native-share';
 
 export function useImageAsset(asset) {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     frameWidth: 1,
     frameHeight: 1,
     imageRatio: 1,
@@ -21,16 +21,16 @@ export function useImageAsset(asset) {
     showDownloaded: false,
   });
 
-  let conversation = useContext(ConversationContext);
-  let dimensions = useWindowDimensions();
-  let controls = useRef();
+  const conversation = useContext(ConversationContext);
+  const dimensions = useWindowDimensions();
+  const controls = useRef();
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  let getExtension = async (path) => {
-    let block = await RNFS.read(path, 8, 0, 'base64');
+  const getExtension = async (path) => {
+    const block = await RNFS.read(path, 8, 0, 'base64');
     if (block === '/9j/4AAQSkY=') {
       return 'jpg';
     }
@@ -52,18 +52,18 @@ export function useImageAsset(asset) {
 
   useEffect(() => {
     if (state.loaded) {
-      let frameRatio = state.frameWidth / state.frameHeight;
+      const frameRatio = state.frameWidth / state.frameHeight;
       if (frameRatio > state.imageRatio) {
         //height constrained
-        let height = Math.floor(0.9 * state.frameHeight);
-        let width = Math.floor(height * state.imageRatio);
+        const height = Math.floor(0.9 * state.frameHeight);
+        const width = Math.floor(height * state.imageRatio);
 
         updateState({ imageWidth: width, imageHeight: height }); 
       }
       else {
         //width constrained
-        let width = Math.floor(0.9 * state.frameWidth);
-        let height = Math.floor(width / state.imageRatio);
+        const width = Math.floor(0.9 * state.frameWidth);
+        const height = Math.floor(width / state.imageRatio);
         updateState({ imageWidth: width, imageHeight: height });
       }
     }
@@ -78,8 +78,8 @@ export function useImageAsset(asset) {
 
   useEffect(() => {
     if (asset.encrypted) {
-      let now = Date.now();
-      let url = asset.decrypted ? `file://${asset.decrypted}?now=${now}` : null
+      const now = Date.now();
+      const url = asset.decrypted ? `file://${asset.decrypted}?now=${now}` : null
       updateState({ url, failed: asset.error });
     }
     else {
@@ -87,14 +87,14 @@ export function useImageAsset(asset) {
     }
   }, [asset]);
 
-  let actions = {
+  const actions = {
     setRatio: (e) => {
-      let { width, height } = e.nativeEvent;
+      const { width, height } = e.nativeEvent;
       updateState({ imageRatio: width / height });
     },
     share: async () => {
-      let epoch = Math.ceil(Date.now() / 1000);
-      let path = RNFS.TemporaryDirectoryPath + epoch;
+      const epoch = Math.ceil(Date.now() / 1000);
+      const path = RNFS.TemporaryDirectoryPath + epoch;
       if (await RNFS.exists(path)) {
         await RNFS.unlink(path);
       }
@@ -104,8 +104,8 @@ export function useImageAsset(asset) {
       else {
         await RNFS.downloadFile({ fromUrl: state.url, toFile: path }).promise;
       }
-      let ext = await getExtension(path);
-      let fullPath = `${path}.${ext}`
+      const ext = await getExtension(path);
+      const fullPath = `${path}.${ext}`
       if (await RNFS.exists(fullPath)) {
         await RNFS.unlink(fullPath);
       }
@@ -115,16 +115,16 @@ export function useImageAsset(asset) {
     download: async () => {
       if (!state.downloaded) {
         updateState({ downloaded: true });
-        let epoch = Math.ceil(Date.now() / 1000);
-        let dir = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.DownloadDirectoryPath;
-        let path = `${dir}/databag_${epoch}`
+        const epoch = Math.ceil(Date.now() / 1000);
+        const dir = Platform.OS === 'ios' ? RNFS.DocumentDirectoryPath : RNFS.DownloadDirectoryPath;
+        const path = `${dir}/databag_${epoch}`
         if (state.url.substring(0, 7) === 'file://') {
           await RNFS.copyFile(state.url.substring(7).split('?')[0], path);
         }
         else {
           await RNFS.downloadFile({ fromUrl: state.url, toFile: path }).promise;
         }
-        let ext = await getExtension(path);
+        const ext = await getExtension(path);
         await RNFS.moveFile(path, `${path}.${ext}`);
         if (Platform.OS !== 'ios') {
           await RNFS.scanFile(`${path}.${ext}`);
