@@ -9,7 +9,7 @@ import { RingContext } from 'context/RingContext';
 
 export function useSession() {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     cardUpdated: false,
     contactGuid: null,
     contactListing: null,
@@ -37,47 +37,47 @@ export function useSession() {
     fullscreen: false,
   });
 
-  var app = useContext(AppContext);
-  var card = useContext(CardContext);
-  var store = useContext(StoreContext);
-  var ring = useContext(RingContext);
-  var settings = useContext(SettingsContext);
-  var profile = useContext(ProfileContext);
+  const app = useContext(AppContext);
+  const card = useContext(CardContext);
+  const store = useContext(StoreContext);
+  const ring = useContext(RingContext);
+  const settings = useContext(SettingsContext);
+  const profile = useContext(ProfileContext);
 
-  var navigate = useNavigate();
+  const navigate = useNavigate();
   
-  var storeStatus = useRef(null);
-  var cardStatus = useRef(0);
+  const storeStatus = useRef(null);
+  const cardStatus = useRef(0);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    var ringing = [];
-    var expired = Date.now(); 
+    const ringing = [];
+    const expired = Date.now(); 
     ring.state.ringing.forEach(call => {
       if (call.expires > expired && !call.status) {
-        var { callId, cardId, calleeToken, ice } = call;
-        var contact = card.state.cards.get(cardId);
+        const { callId, cardId, calleeToken, ice } = call;
+        const contact = card.state.cards.get(cardId);
         if (contact) {
-          var { imageSet, name, handle, node, guid } = contact.data.cardProfile || {};
-          var { token } = contact.data.cardDetail;
-          var contactToken = `${guid}.${token}`;
-          var img = imageSet ? card.actions.getCardImageUrl(cardId) : null;
+          const { imageSet, name, handle, node, guid } = contact.data.cardProfile || {};
+          const { token } = contact.data.cardDetail;
+          const contactToken = `${guid}.${token}`;
+          const img = imageSet ? card.actions.getCardImageUrl(cardId) : null;
           ringing.push({ cardId, img, name, handle, contactNode: node, callId, contactToken, calleeToken, ice });  
         }
       }
     });
 
     let callLogo = null;
-    var contact = card.state.cards.get(ring.state.cardId);
+    const contact = card.state.cards.get(ring.state.cardId);
     if (contact) {
-      var { imageSet } = contact.data.cardProfile || {};
+      const { imageSet } = contact.data.cardProfile || {};
       callLogo = imageSet ? card.actions.getCardImageUrl(ring.state.cardId) : null;  
     }
 
-    var { callStatus, localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio } = ring.state;
+    const { callStatus, localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio } = ring.state;
     updateState({ ringing, callStatus, callLogo, localStream, localVideo, localAudio, remoteStream, remoteVideo, remoteAudio });
 
     if (!callStatus && state.fullscreen) {
@@ -104,13 +104,13 @@ export function useSession() {
   }, [app.state]);
 
   useEffect(() => {
-    var { display, theme, audioId } = settings.state;
+    const { display, theme, audioId } = settings.state;
     updateState({ display, theme, audioId });
   }, [settings.state]);
 
   useEffect(() => {
     let updated;
-    var contacts = Array.from(card.state.cards.values());
+    const contacts = Array.from(card.state.cards.values());
     contacts.forEach(contact => {
       if (!updated || updated < contact?.data?.cardDetail?.statusUpdated) {
         updated = contact?.data?.cardDetail?.statusUpdated;
@@ -125,7 +125,7 @@ export function useSession() {
     updateState({ cardUpdated: cardStatus.current > storeStatus.current });
   }, [store]);
 
-  var actions = {
+  const actions = {
     setFullscreen: (fullscreen) => {
       updateState({ fullscreen });
     },
@@ -175,13 +175,13 @@ export function useSession() {
       ring.actions.ignore(call.cardId, call.callId);
     },
     decline: async (call) => {
-      var { cardId, contactNode, contactToken, callId } = call;
-      var node = contactNode ? contactNode : window.location.host;
+      const { cardId, contactNode, contactToken, callId } = call;
+      const node = contactNode ? contactNode : window.location.host;
       await ring.actions.decline(cardId, node, contactToken, callId);
     },
     accept: async (call) => {
-      var { cardId, callId, contactNode, contactToken, calleeToken, ice } = call;
-      var node = contactNode ? contactNode : window.location.host;
+      const { cardId, callId, contactNode, contactToken, calleeToken, ice } = call;
+      const node = contactNode ? contactNode : window.location.host;
       await ring.actions.accept(cardId, callId, node, contactToken, calleeToken, ice, state.audioId);
     },
     end: async () => {
