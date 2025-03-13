@@ -2,7 +2,7 @@ import { Button, Space } from 'antd';
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let DashboardWrapper = styled.div`
+export const DashboardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,22 +70,22 @@ export let DashboardWrapper = styled.div`
   }
 `;
 
-export let AddButton = styled(Button)`
+export const AddButton = styled(Button)`
   color: #1890ff;
 `;
 
-export let SettingsButton = styled(Button)`
+export const SettingsButton = styled(Button)`
   color: #1890ff;
 `;
 
-export let AlertIcon = styled.div`
+export const AlertIcon = styled.div`
   display: flex;
   align-items: center;
   color: ${Colors.alert};
   padding-left: 8px;
 `
 
-export let SettingsLayout = styled(Space)`
+export const SettingsLayout = styled(Space)`
   width: 100%;
 
   .header {
@@ -126,7 +126,7 @@ export let SettingsLayout = styled(Space)`
   }
 `;
 
-export let CreateLayout = styled.div`
+export const CreateLayout = styled.div`
   .header {
     display: flex;
     justify-content: center;
@@ -170,7 +170,7 @@ export let CreateLayout = styled.div`
   }
 `
 
-export let MFAModal = styled.div`
+export const MFAModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
