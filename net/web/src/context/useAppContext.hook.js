@@ -13,33 +13,33 @@ import { RingContext } from './RingContext';
 import { createWebsocket } from 'api/fetchUtil';
 
 export function useAppContext(websocket) {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     status: null,
     adminToken: null,
   });
-  const [appRevision, setAppRevision] = useState();
+  var [appRevision, setAppRevision] = useState();
 
-  const appName = "Databag";
-  const appVersion = "1.0.0";
-  const userAgent = window.navigator.userAgent;
+  var appName = "Databag";
+  var appVersion = "1.0.0";
+  var userAgent = window.navigator.userAgent;
 
-  const checked = useRef(false);
-  const appToken = useRef(null);
-  const ws = useRef(null);
+  var checked = useRef(false);
+  var appToken = useRef(null);
+  var ws = useRef(null);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const ringContext = useContext(RingContext);
-  const uploadContext = useContext(UploadContext);
-  const storeContext = useContext(StoreContext);
-  const accountContext = useContext(AccountContext);
-  const profileContext = useContext(ProfileContext);
-  const channelContext = useContext(ChannelContext);
-  const cardContext = useContext(CardContext);
+  var ringContext = useContext(RingContext);
+  var uploadContext = useContext(UploadContext);
+  var storeContext = useContext(StoreContext);
+  var accountContext = useContext(AccountContext);
+  var profileContext = useContext(ProfileContext);
+  var channelContext = useContext(ChannelContext);
+  var cardContext = useContext(CardContext);
 
-  const setSession = (token) => {
+  var setSession = (token) => {
     try {
       accountContext.actions.setToken(token);
       profileContext.actions.setToken(token);
@@ -58,7 +58,7 @@ export function useAppContext(websocket) {
     setWebsocket(token);
   }
 
-  const clearSession = () => {
+  var clearSession = () => {
     uploadContext.actions.clear();
     storeContext.actions.clear();
 
@@ -70,7 +70,7 @@ export function useAppContext(websocket) {
     clearWebsocket();
   }
 
-  const notifications = [
+  var notifications = [
     { event: 'contact.addCard', messageTitle: 'New Contact Request' },
     { event: 'contact.updateCard', messageTitle: 'Contact Update' },
     { event: 'content.addChannel.superbasic', messageTitle: 'New Topic' },
@@ -80,7 +80,7 @@ export function useAppContext(websocket) {
     { event: 'ring', messageTitle: 'Incoming Call' },
   ];
 
-  const actions = {
+  var actions = {
     logout: async (all) => {
       await appLogout(all);
     },
@@ -101,12 +101,12 @@ export function useAppContext(websocket) {
     },
   }
 
-  const appCreate = async (username, password, token) => {
+  var appCreate = async (username, password, token) => {
     if (appToken.current || !checked.current) {
       throw new Error('invalid session state');
     }
     await addAccount(username, password, token);
-    const access = await setLogin(username, password, null, appName, appVersion, userAgent, notifications);
+    var access = await setLogin(username, password, null, appName, appVersion, userAgent, notifications);
     storeContext.actions.setValue('login:timestamp', access.created);
     setSession(access.appToken);
     appToken.current = access.appToken;
@@ -118,11 +118,11 @@ export function useAppContext(websocket) {
     return access.created;
   } 
 
-  const appLogin = async (username, password, code) => {
+  var appLogin = async (username, password, code) => {
     if (appToken.current || !checked.current) {
       throw new Error('invalid session state');
     }
-    const access = await setLogin(username, password, code, appName, appVersion, userAgent, notifications);
+    var access = await setLogin(username, password, code, appName, appVersion, userAgent, notifications);
     storeContext.actions.setValue('login:timestamp', access.created);
     setSession(access.appToken);
     appToken.current = access.appToken;
@@ -134,11 +134,11 @@ export function useAppContext(websocket) {
     return access.created;
   }
 
-  const appAccess = async (token) => {
+  var appAccess = async (token) => {
     if (appToken.current || !checked.current) {
       throw new Error('invalid session state');
     }
-    const access = await setAccountAccess(token, appName, appVersion, userAgent, notifications);
+    var access = await setAccountAccess(token, appName, appVersion, userAgent, notifications);
     storeContext.actions.setValue('login:timestamp', access.created);
     setSession(access.appToken);
     appToken.current = access.appToken;
@@ -150,7 +150,7 @@ export function useAppContext(websocket) {
     return access.created;
   }
 
-  const appLogout = async (all) => {
+  var appLogout = async (all) => {
     clearSession();
     try {
       await clearLogin(appToken.current, all);
@@ -172,7 +172,7 @@ export function useAppContext(websocket) {
     // eslint-disable-next-line
   }, [appRevision]);
   
-  const setWebsocket = (token) => {
+  var setWebsocket = (token) => {
     let protocol;
     if (window.location.protocol === 'http:') {
       protocol = 'ws://';
@@ -195,8 +195,8 @@ export function useAppContext(websocket) {
           setAppRevision(activity.revision);
         }
         else if (activity.ring) {
-          const { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
-          const config = ice ? ice : [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
+          var { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
+          var config = ice ? ice : [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
           ringContext.actions.ring(cardId, callId, calleeToken, config);
         }
         else {
@@ -230,7 +230,7 @@ export function useAppContext(websocket) {
     }
   }
  
-  const clearWebsocket = ()  => {
+  var clearWebsocket = ()  => {
     ws.current.onclose = () => {}
     ws.current.close()
     ws.current = null
@@ -238,12 +238,12 @@ export function useAppContext(websocket) {
   }
 
   useEffect(() => {
-    const storage = localStorage.getItem('session');
+    var storage = localStorage.getItem('session');
     if (storage != null) {
       try {
-        const session = JSON.parse(storage)
+        var session = JSON.parse(storage)
         if (session?.access) {
-          const access = session.access;
+          var access = session.access;
           setSession(access);
           appToken.current = access;
         }
