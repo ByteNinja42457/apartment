@@ -22,9 +22,9 @@ jest.mock('react-router-dom', () => ({
 let cardContext;
 let storeContext;
 function SessionView() {
-  var { state, actions } = useSession();
-  var card = useContext(CardContext);
-  var store = useContext(StoreContext);
+  const { state, actions } = useSession();
+  const card = useContext(CardContext);
+  const store = useContext(StoreContext);
   cardContext = card;
   storeContext = store;
   return (<div data-testid="updated">{ state.cardUpdated.toString() }</div>);
@@ -56,12 +56,12 @@ function SessionTestApp() {
 
 let fetchCards;
 
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
   fetchCards = [];
 
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
     if (url === '/contact/cards?agent=123') {
       return Promise.resolve({
         json: () => Promise.resolve(fetchCards)
