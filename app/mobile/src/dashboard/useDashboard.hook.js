@@ -22,7 +22,7 @@ import { removeAdminMFAuth } from 'api/removeAdminMFAuth';
 
 export function useDashboard(server, token, mfa) {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     strings: getLanguageStrings(),
     accounts: [],
     editConfig: false,
@@ -54,15 +54,15 @@ export function useDashboard(server, token, mfa) {
     mfaEnabled: false,
   });
 
-  const navigate = useNavigate();
-  const display = useContext(DisplayContext);
+  var navigate = useNavigate();
+  var display = useContext(DisplayContext);
   
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const setAccountItem = (item) => {
-    const { name, handle, imageSet, accountId, disabled } = item;   
+  var setAccountItem = (item) => {
+    var { name, handle, imageSet, accountId, disabled } = item;   
  
     let logo;
     if (imageSet) {
@@ -74,22 +74,22 @@ export function useDashboard(server, token, mfa) {
     return { logo, name, handle, accountId, disabled };
   }
 
-  const syncNode = async () => {
-    const mfaEnabled = mfa ? await getAdminMFAuth(server, token) : false;
-    const config = await getNodeConfig(server, token);
-    const nodeAccounts = await getNodeAccounts(server, token);
-    const accounts = nodeAccounts.map(setAccountItem);
-    const { keyType, accountStorage, domain, enableImage, enableAudio, enableVideo, enableBinary, transformSupported, allowUnsealed, pushSupported, enableIce, iceService, iceUrl, iceUsername, icePassword } = config || {};
-    const storage = Math.ceil(accountStorage / 1073741824);
-    const iceServiceFlag = iceService === 'cloudflare' ? true : iceService == null ? null : true;
+  var syncNode = async () => {
+    var mfaEnabled = mfa ? await getAdminMFAuth(server, token) : false;
+    var config = await getNodeConfig(server, token);
+    var nodeAccounts = await getNodeAccounts(server, token);
+    var accounts = nodeAccounts.map(setAccountItem);
+    var { keyType, accountStorage, domain, enableImage, enableAudio, enableVideo, enableBinary, transformSupported, allowUnsealed, pushSupported, enableIce, iceService, iceUrl, iceUsername, icePassword } = config || {};
+    var storage = Math.ceil(accountStorage / 1073741824);
+    var iceServiceFlag = iceService === 'cloudflare' ? true : iceService == null ? null : true;
 console.log("ICE:", iceService, iceServiceFlag);
 
     updateState({ keyType, storage: storage.toString(), domain, enableImage, enableAudio, enableVideo, enableBinary, transformSupported, allowUnsealed, pushSupported, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword, accounts, mfaEnabled });
   }
 
-  const refreshAccounts = async () => {
-    const nodeAccounts = await getNodeAccounts(server, token);
-    const accounts = nodeAccounts.map(setAccountItem);
+  var refreshAccounts = async () => {
+    var nodeAccounts = await getNodeAccounts(server, token);
+    var accounts = nodeAccounts.map(setAccountItem);
     updateState({ accounts });
   }
 
@@ -97,7 +97,7 @@ console.log("ICE:", iceService, iceServiceFlag);
     syncNode();
   }, []);
 
-  const actions = {
+  var actions = {
     logout: () => {
       navigate('/admin');
     },
@@ -111,14 +111,14 @@ console.log("ICE:", iceService, iceServiceFlag);
       updateState({ editConfig: false });
     },
     addUser: async () => {
-      const createToken = await addAccountCreate(server, token);
+      var createToken = await addAccountCreate(server, token);
       updateState({ addUser: true, createToken });
     },
     hideAddUser: () => {
       updateState({ addUser: false });
     },
     accessUser: async (accountId) => {
-      const accessToken = await addAccountAccess(server, token, accountId);
+      var accessToken = await addAccountAccess(server, token, accountId);
       updateState({ accessUser: true, accessToken });
     },
     hideAccessUser: () => {
@@ -167,10 +167,10 @@ console.log("ICE:", iceService, iceServiceFlag);
       updateState({ icePassword });
     },
     saveConfig: async () => {
-      const { storage, domain, keyType, enableImage, pushSupported, allowUnsealed, transformSupported, enableAudio, enableVideo, enableBinary, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword } = state;
-      const iceService = iceServiceFlag ? 'cloudflare' : '';
-      const accountStorage = Number(storage) * 1073741824;
-      const config = { accountStorage, domain, keyType, enableImage, pushSupported, allowUnsealed, transformSupported, enableAudio, enableVideo, enableBinary, enableIce, iceService, iceUrl, iceUsername, icePassword };
+      var { storage, domain, keyType, enableImage, pushSupported, allowUnsealed, transformSupported, enableAudio, enableVideo, enableBinary, enableIce, iceServiceFlag, iceUrl, iceUsername, icePassword } = state;
+      var iceService = iceServiceFlag ? 'cloudflare' : '';
+      var accountStorage = Number(storage) * 1073741824;
+      var config = { accountStorage, domain, keyType, enableImage, pushSupported, allowUnsealed, transformSupported, enableAudio, enableVideo, enableBinary, enableIce, iceService, iceUrl, iceUsername, icePassword };
       await setNodeConfig(server, token, config);
     },
     enableUser: async (accountId, enabled) => {
@@ -194,7 +194,7 @@ console.log("ICE:", iceService, iceServiceFlag);
     },
     enableMFA: async () => {
       updateState({ mfaModal: true, mfaImage: null, mfaText: null, mfaCode: '', mfaError: '' });
-      const mfa = await addAdminMFAuth(server, token);
+      var mfa = await addAdminMFAuth(server, token);
       updateState({ mfaImage: mfa.secretImage, mfaText: mfa.secretText });
     },
     disableMFA: async () => {
