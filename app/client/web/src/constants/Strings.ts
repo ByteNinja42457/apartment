@@ -1,4 +1,4 @@
-export let en = {
+export const en = {
   viewTerms: 'View Terms of Service',
   acceptTerms: 'Accept Terms of Service',
   terms: 'Terms of Service',
@@ -293,7 +293,7 @@ export let en = {
   disablePrompt: 'Are you sure you want to disable multi-factor authentication',
 }
 
-export let fr = {
+export const fr = {
   viewTerms: "Voir les conditions d'utilisation",
   acceptTerms: "Accepter les conditions d'utilisation",
   terms: "Conditions d'utilisation",
@@ -588,7 +588,7 @@ export let fr = {
   disablePrompt: "Êtes-vous sûr de vouloir désactiver l'authentification multi-facteurs",
 }
 
-export let sp = {
+export const sp = {
   viewTerms: 'Ver los términos de servicio',
   acceptTerms: 'Aceptar los términos de servicio',
   terms: 'Términos de servicio',
@@ -882,7 +882,7 @@ export let sp = {
   disablePrompt: '¿Estás seguro de que quieres desactivar la autenticación de dos factores?',
 }
 
-export let pt = {
+export const pt = {
   viewTerms: 'Ver os termos de serviço',
   acceptTerms: 'Aceitar os termos de serviço',
   terms: 'Termos de serviço',
@@ -1176,7 +1176,7 @@ export let pt = {
   disablePrompt: 'Tem certeza de que deseja desativar a autenticação de dois fatores?',
 }
 
-export let de = {
+export const de = {
   viewTerms: 'Nutzungsbedingungen anzeigen',
   acceptTerms: 'Nutzungsbedingungen akzeptieren',
   terms: 'Nutzungsbedingungen',
@@ -1470,7 +1470,7 @@ export let de = {
   disablePrompt: 'Sind Sie sicher, dass Sie die Zwei-Faktor-Authentifizierung deaktivieren möchten?',
 }
 
-export let ru = {
+export const ru = {
   viewTerms: 'Просмотреть условия обслуживания',
   acceptTerms: 'Принять условия обслуживания',
   terms: 'Условия обслуживания',
@@ -1764,7 +1764,7 @@ export let ru = {
   disablePrompt: 'Вы уверены, что хотите отключить двухфакторную аутентификацию?',
 }
 
-export let el = {
+export const el = {
   viewTerms: 'Δείτε τους όρους υπηρεσίας',
   acceptTerms: 'Αποδεχτείτε τους όρους υπηρεσίας',
   terms: 'Όροι υπηρεσίας',
