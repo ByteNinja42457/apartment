@@ -8,7 +8,7 @@ import { decryptChannelSubject } from 'context/sealUtil';
 
 export function useChannelHeader(contentKey) {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     logoImg: null,
     logoUrl: null,
     label: null,
@@ -18,29 +18,29 @@ export function useChannelHeader(contentKey) {
     strings: {},
   });
 
-  const settings = useContext(SettingsContext);
-  const card = useContext(CardContext);
-  const conversation = useContext(ConversationContext);
-  const profile = useContext(ProfileContext);
+  var settings = useContext(SettingsContext);
+  var card = useContext(CardContext);
+  var conversation = useContext(ConversationContext);
+  var profile = useContext(ProfileContext);
   
-  const cardId = useRef();
-  const channelId = useRef();
-  const detailRevision = useRef();
-  const key = useRef();
+  var cardId = useRef();
+  var channelId = useRef();
+  var detailRevision = useRef();
+  var key = useRef();
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { display, strings } = settings.state;
+    var { display, strings } = settings.state;
     updateState({ display, strings });
   }, [settings.state]);
 
   useEffect(() => {
 
-    const cardValue = conversation.state.card;
-    const channelValue = conversation.state.channel;
+    var cardValue = conversation.state.card;
+    var channelValue = conversation.state.channel;
 
     // extract member info
     let memberCount = 0;
@@ -48,7 +48,7 @@ export function useChannelHeader(contentKey) {
     let img = null;
     let logo = null;
     if (cardValue) {
-      const profile = cardValue.data?.cardProfile;
+      var profile = cardValue.data?.cardProfile;
       if (profile?.name) {
         names.push(profile.name);
       }
@@ -65,8 +65,8 @@ export function useChannelHeader(contentKey) {
     if (channelValue?.data?.channelDetail?.members) {
       for (let guid of channelValue.data.channelDetail.members) {
         if (guid !== profile.state.identity.guid) {
-          const contact = getCardByGuid(card.state.cards, guid);
-          const profile = contact?.data?.cardProfile;
+          var contact = getCardByGuid(card.state.cards, guid);
+          var profile = contact?.data?.cardProfile;
           if (profile?.name) {
             names.push(profile.name);
           }
@@ -100,10 +100,10 @@ export function useChannelHeader(contentKey) {
         detailRevision.current !== channelValue?.data?.detailRevision || key.current !== contentKey) {
       let title;
       try {
-        const detail = channelValue?.data?.channelDetail;
+        var detail = channelValue?.data?.channelDetail;
         if (detail?.dataType === 'sealed') {
           if (contentKey) {
-            const unsealed = decryptChannelSubject(detail.data, contentKey);
+            var unsealed = decryptChannelSubject(detail.data, contentKey);
             title = unsealed.subject;
           }
           else {
@@ -111,7 +111,7 @@ export function useChannelHeader(contentKey) {
           }
         }
         else if (detail?.dataType === 'superbasic') {
-          const data = JSON.parse(detail.data);
+          var data = JSON.parse(detail.data);
           title = data.subject;
         }
       }
@@ -130,7 +130,7 @@ export function useChannelHeader(contentKey) {
     // eslint-disable-next-line
   }, [conversation.state, card.state, state.strings, contentKey]);
 
-  const actions = {
+  var actions = {
     resync: () => {
     },
   };
