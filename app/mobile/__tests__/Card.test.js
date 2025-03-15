@@ -7,15 +7,15 @@ import { CardContextProvider, CardContext } from 'context/CardContext';
 import * as fetchUtil from 'api/fetchUtil';
 
 function CardView() {
-  var [renderCount, setRenderCount] = useState(0);
-  var card = useContext(CardContext);
-  var [cards, setCards] = useState([]);
+  const [renderCount, setRenderCount] = useState(0);
+  const card = useContext(CardContext);
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
-    var rendered = [];
+    const rendered = [];
     card.state.cards.forEach((cardValue) => {
-      var content = [(  
+      const content = [(  
         <Text key="handle" testID={cardValue.card.cardId + "-handle"}>{ cardValue.card.profile.handle }</Text>
       )];
       cardValue.channels.forEach((channelValue) => {
@@ -45,9 +45,9 @@ function CardTestApp() {
   )
 }
 
-var realUseContext = React.useContext;
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realUseContext = React.useContext;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
 let fetchMessage;
 let fetchCards;
@@ -61,12 +61,12 @@ beforeEach(() => {
   fetchCardChannels = [];
   fetchMessage = false;
 
-  var mockUseContext = jest.fn().mockImplementation((ctx) => {
+  const mockUseContext = jest.fn().mockImplementation((ctx) => {
     return useTestStoreContext();
   });
   React.useContext = mockUseContext;
 
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
     if (url.startsWith('https://test.org/contact/cards?agent')) {
       return Promise.resolve({
         json: () => Promise.resolve(fetchCards)
@@ -115,7 +115,7 @@ test('add, update, and remove card', async () => {
   render(<CardTestApp />)
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await card.actions.setRevision(1);
   });
@@ -141,7 +141,7 @@ test('add, update, and remove card', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(2);
   });
 
@@ -174,7 +174,7 @@ test('add, update, and remove card', async () => {
   }
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(4);
   });
 
@@ -189,7 +189,7 @@ test('add, update, and remove card', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(4);
   });
 
@@ -198,7 +198,7 @@ test('add, update, and remove card', async () => {
   });
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(5);
   });
 
@@ -229,7 +229,7 @@ test('add, update, and remove channel', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await card.actions.setRevision(1);
   });
@@ -269,7 +269,7 @@ test('add, update, and remove channel', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(2);
   });
 
@@ -291,7 +291,7 @@ test('add, update, and remove channel', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(3);
   });
 
@@ -331,7 +331,7 @@ test('add, update, and remove channel', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(4);
   });
 
@@ -359,7 +359,7 @@ test('add, update, and remove channel', async () => {
   }];
 
   await act(async () => {
-    var card = screen.getByTestId('card').props.card;
+    const card = screen.getByTestId('card').props.card;
     await card.actions.setRevision(5);
   });
 
