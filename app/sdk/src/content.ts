@@ -40,10 +40,10 @@ export class ContentModule implements Content {
       if (!this.crypto) {
         throw new Error('crypto not set');
       }
-      const { aesKeyHex } = await this.crypto.aesKey();
-      const seals = [];
+      var { aesKeyHex } = await this.crypto.aesKey();
+      var seals = [];
       for (let cardId of cardIds) {
-        const seal = await this.contact.getSeal(cardId, aesKeyHex);
+        var seal = await this.contact.getSeal(cardId, aesKeyHex);
         seals.push(seal);
       }
       return await this.stream.addSealedChannel(type, subject, cardIds, aesKeyHex, seals);
@@ -61,7 +61,7 @@ export class ContentModule implements Content {
   }
 
   public async setChannelCard(channelId: string, cardId: string): Promise<void> {
-    const getSeal = async (aesKey: string) => {
+    var getSeal = async (aesKey: string) => {
       return await this.contact.getSeal(cardId, aesKey);
     }
     return await this.stream.setChannelCard(channelId, cardId, getSeal);
@@ -111,8 +111,8 @@ export class ContentModule implements Content {
   }
 
   public async getBlockedChannels(): Promise<Channel[]> {
-    const channels = await this.stream.getBlockedChannels();
-    const cardChannels = await this.contact.getBlockedChannels();
+    var channels = await this.stream.getBlockedChannels();
+    var cardChannels = await this.contact.getBlockedChannels();
     return channels.concat(cardChannels);
   }
 
