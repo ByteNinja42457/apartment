@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export const CardItemWrapper = styled.div`
+export let CardItemWrapper = styled.div`
   height: 48px;
   width: 100%;
   display: flex;
@@ -50,13 +50,13 @@ export const CardItemWrapper = styled.div`
   }
 `;
 
-export const StatusError = styled.div`
+export let StatusError = styled.div`
   color: ${props => props.theme.alertText};
   font-size: 14px;
   padding-right: 12px;
 `
 
-export const ComOptions = styled.div`
+export let ComOptions = styled.div`
   color: ${props => props.theme.linkText};
   font-size: 16px;
   display: flex;
@@ -68,35 +68,35 @@ export const ComOptions = styled.div`
   }
 `
 
-export const StatusConnected = styled.div`
+export let StatusConnected = styled.div`
   background-color: ${Colors.connected};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusConnecting = styled.div`
+export let StatusConnecting = styled.div`
   background-color: ${Colors.connecting};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusRequested = styled.div`
+export let StatusRequested = styled.div`
   background-color: ${Colors.requested};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusPending = styled.div`
+export let StatusPending = styled.div`
   background-color: ${Colors.pending};
   border-radius: 8px;
   width: 8px;
   height: 8px;
 `;
 
-export const StatusConfirmed = styled.div`
+export let StatusConfirmed = styled.div`
   background-color: ${Colors.confirmed};
   border-radius: 8px;
   width: 8px;
