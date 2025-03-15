@@ -25,7 +25,7 @@ function getTopic(id: number) {
 }
 
 function initialTopics() {
-  var topics = [];
+  const topics = [];
   for (let i = 0; i < 32; i++) {
     topics.push(getTopic(i));
   }
@@ -33,7 +33,7 @@ function initialTopics() {
 }
 
 function nextTopics() {
-  var topics = [];
+  const topics = [];
   for (let i = 0; i < 4; i++) {
     topics.push(getTopic(i + 32));
   }
@@ -41,7 +41,7 @@ function nextTopics() {
 }
 
 jest.mock('../src/net/fetchUtil', () => {
-  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     if (url === 'http://test_node/content/channels/test_channel_id/topics?agent=test_token&count=32') {
       return Promise.resolve({ status: 200, json: () => (initialTopics()), headers: { get: (key: string) => key === 'topic-marker' ? 300 : 400 }});
     } else if (url === 'http://test_node/content/channels/test_channel_id/topics?agent=test_token&count=32&end=300') {
@@ -63,15 +63,15 @@ class TestStore extends NoStore {
 
 test('focus module works', async () => {
   let focusTopics = null as null | Topic[];
-  var setTopics = (topics: null | Topic[]) => {
+  const setTopics = (topics: null | Topic[]) => {
     focusTopics = topics;
   }
-  var log = new ConsoleLogging();
-  var store = new TestStore();
-  var connection = { node: 'test_node', secure: false, token: 'test_token' };
-  var markRead = async () => {};
-  var flagTopic = async (id: string) => {};
-  var focus = new FocusModule(log, store, null, null, null, 'test_channel_id', 'my_guid', connection, null, false, 1, markRead, flagTopic);
+  const log = new ConsoleLogging();
+  const store = new TestStore();
+  const connection = { node: 'test_node', secure: false, token: 'test_token' };
+  const markRead = async () => {};
+  const flagTopic = async (id: string) => {};
+  const focus = new FocusModule(log, store, null, null, null, 'test_channel_id', 'my_guid', connection, null, false, 1, markRead, flagTopic);
   focus.addTopicListener(setTopics);
   await waitFor(() => focusTopics?.length == 32);
   focus.viewMoreTopics();
