@@ -12,9 +12,9 @@ import { useDetails } from 'session/details/useDetails.hook';
 
 import * as fetchUtil from 'api/fetchUtil';
 
-var details = null;
-var card = null;
-var conversation = null;
+let details = null;
+let card = null;
+let conversation = null;
 function InfoView() {
   const { state, actions } = useDetails();
   const [renderCount, setRenderCount] = useState(0);
@@ -50,10 +50,10 @@ function InfoTestApp() {
   );
 }
 
-var fetchCards;
-var fetchChannels;
-var fetchTopics;
-var fetchDetail;
+let fetchCards;
+let fetchChannels;
+let fetchTopics;
+let fetchDetail;
 const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
 const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
