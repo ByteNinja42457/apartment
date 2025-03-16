@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ConversationWrapper = styled.div`
+export let ConversationWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
@@ -121,7 +121,7 @@ export const ConversationWrapper = styled.div`
   }
 `
 
-export const StatusError = styled.div`
+export let StatusError = styled.div`
   color: ${props => props.theme.alertText};
   font-size: 14px;
   padding-left: 8px;
