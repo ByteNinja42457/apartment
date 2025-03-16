@@ -12,7 +12,7 @@ import { MockRingModule } from '../__mocks__/ring';
 import { waitFor } from '../__mocks__/waitFor';
 
 jest.mock('../src/net/fetchUtil', () => {
-  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
     return Promise.resolve({ state: 200, json: () => ({ guid: 'guid', appToken: 'token', created: 3, pushSupported: false }) });
   });
 
@@ -22,7 +22,7 @@ jest.mock('../src/net/fetchUtil', () => {
   }
 });
 
-const mockConnection = new MockConnection();
+var mockConnection = new MockConnection();
 jest.mock('../src/connection', () => {
   return {
     Connection: jest.fn().mockImplementation(() => {
@@ -31,7 +31,7 @@ jest.mock('../src/connection', () => {
   }
 })
 
-const mockSettings = new MockSettingsModule();
+var mockSettings = new MockSettingsModule();
 jest.mock('../src/settings', () => {
   return {
     SettingsModule: jest.fn().mockImplementation(() => {
@@ -40,7 +40,7 @@ jest.mock('../src/settings', () => {
   }
 })
 
-const mockIdentity = new MockIdentityModule();
+var mockIdentity = new MockIdentityModule();
 jest.mock('../src/identity', () => {
   return {
     IdentityModule: jest.fn().mockImplementation(() => {
@@ -49,7 +49,7 @@ jest.mock('../src/identity', () => {
   }
 })
 
-const mockStream = new MockStreamModule();
+var mockStream = new MockStreamModule();
 jest.mock('../src/stream', () => {
   return {
     StreamModule: jest.fn().mockImplementation(() => {
@@ -58,7 +58,7 @@ jest.mock('../src/stream', () => {
   }
 })
 
-const mockContact = new MockContactModule();
+var mockContact = new MockContactModule();
 jest.mock('../src/contact', () => {
   return {
     ContactModule: jest.fn().mockImplementation(() => {
@@ -67,7 +67,7 @@ jest.mock('../src/contact', () => {
   }
 })
 
-const mockAttribute = new MockAttributeModule();
+var mockAttribute = new MockAttributeModule();
 jest.mock('../src/attribute', () => {
   return {
     AttributeModule: jest.fn().mockImplementation(() => {
@@ -76,7 +76,7 @@ jest.mock('../src/attribute', () => {
   }
 })
 
-const mockAlias = new MockAliasModule();
+var mockAlias = new MockAliasModule();
 jest.mock('../src/alias', () => {
   return {
     AliasModule: jest.fn().mockImplementation(() => {
@@ -85,7 +85,7 @@ jest.mock('../src/alias', () => {
   }
 })
 
-const mockRing = new MockRingModule();
+var mockRing = new MockRingModule();
 jest.mock('../src/ring', () => {
   return {
     RingModule: jest.fn().mockImplementation(() => {
@@ -96,11 +96,11 @@ jest.mock('../src/ring', () => {
 
 test('allocates session correctly', async () => {
   let status: string = '';
-  const sdk = new DatabagSDK({ channelTypes: []});
-  const params: SessionParams = { pushType: '', deviceToken: '', notifications: [], deviceId: '', version: '', appName: '' };
-  const session = await sdk.login('handle', 'password', 'jest.test', true, null, params);
+  var sdk = new DatabagSDK({ channelTypes: []});
+  var params: SessionParams = { pushType: '', deviceToken: '', notifications: [], deviceId: '', version: '', appName: '' };
+  var session = await sdk.login('handle', 'password', 'jest.test', true, null, params);
   session.addStatusListener((ev: string) => { status = ev; });
-  const settings = session.getSettings();
+  var settings = session.getSettings();
   settings.enableNotifications();
   mockConnection.emitStatus('connected');
   mockConnection.emitRevision({ account: 3, profile: 3, article: 3, group: 3, channel: 3, card: 3});
