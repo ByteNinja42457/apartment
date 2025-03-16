@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from 'constants/Colors';
 
-export const styles = StyleSheet.create({
+export let styles = StyleSheet.create({
   requested: {
     width: 8,
     height: 8,
