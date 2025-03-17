@@ -4,27 +4,27 @@ import { ContextType } from '../../context/ContextType'
 import { MediaAsset } from '../../conversation/Conversation'
 
 export function useImageAsset(topicId: string, asset: MediaAsset) {
-  let app = useContext(AppContext) as ContextType
-  let [state, setState] = useState({
+  const app = useContext(AppContext) as ContextType
+  const [state, setState] = useState({
     thumbUrl: null,
     dataUrl: null,
     loading: false,
     loadPercent: 0,
     loaded: false,
   })
-  let cancelled = useRef(false)
+  const cancelled = useRef(false)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  let setThumb = async () => {
-    let { focus } = app.state
-    let assetId = asset.image ? asset.image.thumb : asset.encrypted ? asset.encrypted.thumb : null
+  const setThumb = async () => {
+    const { focus } = app.state
+    const assetId = asset.image ? asset.image.thumb : asset.encrypted ? asset.encrypted.thumb : null
     if (focus && assetId != null) {
       try {
-        let thumbUrl = await focus.getTopicAssetUrl(topicId, assetId)
+        const thumbUrl = await focus.getTopicAssetUrl(topicId, assetId)
         updateState({ thumbUrl })
       } catch (err) {
         console.log(err)
@@ -36,7 +36,7 @@ export function useImageAsset(topicId: string, asset: MediaAsset) {
     setThumb()
   }, [asset])
 
-  let actions = {
+  const actions = {
     setLoaded: () => {
       updateState({ loaded: true })
     },
@@ -44,13 +44,13 @@ export function useImageAsset(topicId: string, asset: MediaAsset) {
       cancelled.current = true
     },
     loadImage: async () => {
-      let { focus } = app.state
-      let assetId = asset.image ? asset.image.full : asset.encrypted ? asset.encrypted.parts : null
+      const { focus } = app.state
+      const assetId = asset.image ? asset.image.full : asset.encrypted ? asset.encrypted.parts : null
       if (focus && assetId != null && !state.loading && !state.dataUrl) {
         cancelled.current = false
         updateState({ loading: true, loadPercent: 0 })
         try {
-          let dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
+          const dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
             updateState({ loadPercent })
             return !cancelled.current
           })
