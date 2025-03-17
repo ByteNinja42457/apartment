@@ -4,19 +4,19 @@ import { Image } from 'react-native';
 
 export function useVideoThumb() {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     ratio: 1,
   });
 
-  const conversation = useContext(ConversationContext);
+  let conversation = useContext(ConversationContext);
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const actions = {
+  let actions = {
     loaded: (e) => {
-      const { width, height } = e.nativeEvent.source;
+      let { width, height } = e.nativeEvent.source;
       updateState({ loaded: true, ratio: width / height });
     },
   };
