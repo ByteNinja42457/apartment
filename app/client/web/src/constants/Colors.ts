@@ -1,4 +1,4 @@
-export let Colors = {
+export const Colors = {
   primary: '#66aa88',
   danger: '#ff8888',
   placeholder: '#888888',
@@ -12,7 +12,7 @@ export let Colors = {
   unread: '#448844',
 }
 
-export let LightTheme = {
+export const LightTheme = {
   remoteArea: '#080808',
   localArea: '#888888',
   splashArea: '#8fbea7',
@@ -51,7 +51,7 @@ export let LightTheme = {
   confirmed: '#aaaaaa',
 }
 
-export let DarkTheme = {
+export const DarkTheme = {
   remoteArea: '#080808',
   localArea: '#888888',
   splashArea: '#4c4c4c',
