@@ -4,7 +4,7 @@ export class SessionStore implements WebStore {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async getValue(key: string): Promise<any> {
     console.log('web store get: ', key)
-    let value = localStorage.getItem(key)
+    const value = localStorage.getItem(key)
     if (!value) {
       return null
     }
