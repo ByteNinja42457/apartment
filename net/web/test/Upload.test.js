@@ -5,10 +5,10 @@ import axios from 'axios';
 
 let uploadContext = null;
 function UploadView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [channel, setChannel] = useState();
-  const upload = useContext(UploadContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [total, setTotal] = useState(0);
+  var [channel, setChannel] = useState();
+  var upload = useContext(UploadContext);
   uploadContext = upload;
 
   useEffect(() => {
@@ -42,13 +42,13 @@ function UploadTestApp() {
   )
 }
 
-const realPost = axios.post;
+var realPost = axios.post;
 let asset;
 
 beforeEach(() => {
   asset = {};
 
-  const mockPost = jest.fn().mockImplementation(async (url, data, options) => {
+  var mockPost = jest.fn().mockImplementation(async (url, data, options) => {
     for (let i = 0; i < 10; i++) {
       await new Promise(r => setTimeout(r, 10));
       options.onUploadProgress({ loaded: i * 11, total: 111 });
