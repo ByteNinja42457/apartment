@@ -9,10 +9,10 @@ export function getCardByGuid(cards, guid) {
 }
 
 export function getProfileByGuid(cards, guid) {
-  var card = getCardByGuid(cards, guid);
+  const card = getCardByGuid(cards, guid);
   if (card?.data?.cardProfile) {
-    var { name, handle, imageSet, node } = card.data.cardProfile;
-    var cardId = card.id;
+    const { name, handle, imageSet, node } = card.data.cardProfile;
+    const cardId = card.id;
     return { cardId, name, handle, imageSet, node }
   }
   return {};
