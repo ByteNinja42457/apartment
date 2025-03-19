@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export const VideoAssetWrapper = styled.div`
+export let VideoAssetWrapper = styled.div`
   position: relative;
   height: 100%;
 
@@ -15,7 +15,7 @@ export const VideoAssetWrapper = styled.div`
   }
 `;
 
-export const VideoModalWrapper = styled.div`
+export let VideoModalWrapper = styled.div`
 
   .wrapper {
     padding-bottom: 6px;
