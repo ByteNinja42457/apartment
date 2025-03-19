@@ -7,7 +7,7 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useCards() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     cards: [],
     enableIce: false,
     sealable: false,
@@ -17,18 +17,18 @@ export function useCards() {
     filter: null,
   });
 
-  let profile = useContext(ProfileContext);
-  let account = useContext(AccountContext);
-  let card = useContext(CardContext);
-  let ring = useContext(RingContext);
+  const profile = useContext(ProfileContext);
+  const account = useContext(AccountContext);
+  const card = useContext(CardContext);
+  const ring = useContext(RingContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let { enableIce, allowUnsealed } = account.state.status || {};
-    let { status, sealKey } = account.state;
+    const { enableIce, allowUnsealed } = account.state.status || {};
+    const { status, sealKey } = account.state;
     if (status?.seal?.publicKey && sealKey?.public && sealKey?.private && sealKey?.public === status.seal.publicKey) {
       updateState({ sealable: true, allowUnsealed, enableIce });
     }
@@ -37,9 +37,9 @@ export function useCards() {
     }
   }, [account.state]);
 
-  let setCardItem = (item) => {
-    let { profile, detail, cardId, blocked, offsync } = item.card || { profile: {}, detail: {} }
-    let { name, handle, node, guid, location, description, imageSet, seal } = profile;
+  const setCardItem = (item) => {
+    const { profile, detail, cardId, blocked, offsync } = item.card || { profile: {}, detail: {} }
+    const { name, handle, node, guid, location, description, imageSet, seal } = profile;
 
     return {
       cardId: cardId,
@@ -61,16 +61,16 @@ export function useCards() {
   };
 
   useEffect(() => {
-    let cards = Array.from(card.state.cards.values());
-    let items = cards.map(setCardItem);
-    let filtered = items.filter(item => {
+    const cards = Array.from(card.state.cards.values());
+    const items = cards.map(setCardItem);
+    const filtered = items.filter(item => {
       if (item.blocked) {
         return false;
       }
       if (!state.filter) {
         return true;
       }
-      let lower = state.filter.toLowerCase();
+      const lower = state.filter.toLowerCase();
       if (item.name) {
         if (item.name.toLowerCase().includes(lower)) {
           return true;
@@ -85,8 +85,8 @@ export function useCards() {
     })
     if (state.sort) {
       filtered.sort((a, b) => {
-        let aName = a?.name?.toLowerCase();
-        let bName = b?.name?.toLowerCase();
+        const aName = a?.name?.toLowerCase();
+        const bName = b?.name?.toLowerCase();
         if (aName === bName) {
           return 0;
         }
@@ -110,10 +110,10 @@ export function useCards() {
     updateState({ cards: filtered }); 
   }, [card, state.filter, state.sort]);
 
-  let actions = {
+  const actions = {
     call: async (card) => {
-      let { cardId, guid, node, token } = card || {};
-      let server = node ? node : profile.state.server;
+      const { cardId, guid, node, token } = card || {};
+      const server = node ? node : profile.state.server;
       await ring.actions.call(cardId, server, `${guid}.${token}`);
     },
     setFilter: (filter) => {
