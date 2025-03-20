@@ -4,17 +4,17 @@ import { DisplayContext } from '../context/DisplayContext'
 import { ContextType } from '../context/ContextType'
 import { type Setup, KeyType, ICEService } from 'databag-client-sdk'
 
-const DEBOUNCE_MS = 2000
-const DELAY_MS = 1000
+let DEBOUNCE_MS = 2000
+let DELAY_MS = 1000
 
 export function useSetup() {
-  const updated = useRef(false)
-  const loading = useRef(false)
-  const debounce = useRef(setTimeout(() => {}, 0))
-  const setup = useRef(null as null | Setup)
-  const app = useContext(AppContext) as ContextType
-  const display = useContext(DisplayContext) as ContextType
-  const [state, setState] = useState({
+  let updated = useRef(false)
+  let loading = useRef(false)
+  let debounce = useRef(setTimeout(() => {}, 0))
+  let setup = useRef(null as null | Setup)
+  let app = useContext(AppContext) as ContextType
+  let display = useContext(DisplayContext) as ContextType
+  let [state, setState] = useState({
     layout: '',
     strings: display.state.strings,
     loading: true,
@@ -31,18 +31,18 @@ export function useSetup() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const sync = async () => {
+  let sync = async () => {
     while (loading.current) {
       try {
-        const service = app.state.service
-        const mfaEnabled = await service.checkMFAuth()
+        let service = app.state.service
+        let mfaEnabled = await service.checkMFAuth()
         setup.current = await service.getSetup()
         loading.current = false
-        const storage = Math.floor((setup.current?.accountStorage || 0) / 1073741824)
+        let storage = Math.floor((setup.current?.accountStorage || 0) / 1073741824)
         updateState({ setup: setup.current, mfaEnabled, accountStorage: storage.toString(), loading: false })
       } catch (err) {
         console.log(err)
@@ -51,14 +51,14 @@ export function useSetup() {
     }
   }
 
-  const save = () => {
+  let save = () => {
     updated.current = true
     updateState({ updating: true })
     clearTimeout(debounce.current)
     debounce.current = setTimeout(async () => {
       updated.current = false
       try {
-        const service = app.state.service
+        let service = app.state.service
         await service.setSetup(setup.current)
         if (updated.current) {
           save()
@@ -73,7 +73,7 @@ export function useSetup() {
   }
 
   useEffect(() => {
-    const { layout, strings } = display.state
+    let { layout, strings } = display.state
     updateState({ layout, strings })
   }, [display.state])
 
@@ -87,15 +87,15 @@ export function useSetup() {
     }
   }, [])
 
-  const actions = {
+  let actions = {
     logout: app.actions.adminLogout,
     clearError: () => {
       updateState({ error: false })
     },
     enableMFAuth: async () => {
       try {
-        const service = app.state.service
-        const { text, image } = await service.enableMFAuth()
+        let service = app.state.service
+        let { text, image } = await service.enableMFAuth()
         updateState({ confirmingMFAuth: true, mfaCode: '', mfaMessage: '', confirmMFAuthText: text, confirmMFAuthImage: image })
       } catch (err) {
         console.log(err)
@@ -104,7 +104,7 @@ export function useSetup() {
     },
     disableMFAuth: async () => {
       try {
-        const service = app.state.service
+        let service = app.state.service
         await service.disableMFAuth()
         updateState({ mfaEnabled: false })
       } catch (err) {
@@ -114,11 +114,11 @@ export function useSetup() {
     },
     confirmMFAuth: async () => {
       try {
-        const service = app.state.service
+        let service = app.state.service
         await service.confirmMFAuth(state.mfaCode)
         updateState({ confirmingMFAuth: false, mfaEnabled: true })
       } catch (err) {
-        const { message } = err as { message: string }
+        let { message } = err as { message: string }
         if (message === '401') {
           updateState({ mfaMessage: state.strings.mfaError })
         } else if (message === '429') {
@@ -143,7 +143,7 @@ export function useSetup() {
     },
     setAccountStorage: (accountStorage: string) => {
       if (setup.current) {
-        const storage = parseInt(accountStorage) * 1073741824
+        let storage = parseInt(accountStorage) * 1073741824
         if (storage >= 0) {
           setup.current.accountStorage = storage
           updateState({ setup: setup.current, accountStorage })
@@ -155,7 +155,7 @@ export function useSetup() {
       }
     },
     setKeyType: (type: string) => {
-      const keyType = type === 'RSA2048' ? KeyType.RSA_2048 : KeyType.RSA_4096
+      let keyType = type === 'RSA2048' ? KeyType.RSA_2048 : KeyType.RSA_4096
       if (setup.current) {
         setup.current.keyType = keyType
         updateState({ setup: setup.current })
@@ -171,7 +171,7 @@ export function useSetup() {
     },
     setOpenAccessLimit: (openAccessLimit: string) => {
       if (setup.current) {
-        const limit = parseInt(openAccessLimit)
+        let limit = parseInt(openAccessLimit)
         if (limit >= 0) {
           setup.current.openAccessLimit = limit
           updateState({ setup: setup.current, openAccessLimit })
@@ -233,7 +233,7 @@ export function useSetup() {
     },
     setEnableService: (iceService: boolean) => {
       if (setup.current) {
-        const iceUrl = iceService ? 'https://rtc.live.cloudflare.com/v1/turn/keys/%%TURN_KEY_ID%%/credentials/generate' : ''
+        let iceUrl = iceService ? 'https://rtc.live.cloudflare.com/v1/turn/keys/%%TURN_KEY_ID%%/credentials/generate' : ''
         setup.current.iceUrl = iceUrl
         setup.current.iceService = iceService ? ICEService.Cloudflare : ICEService.Default
         updateState({ setup: setup.current })
