@@ -1,7 +1,7 @@
 import { checkResponse, fetchWithTimeout } from './fetchUtil';
 
 export async function removeContactCall(server, token, callId) {
-  const host = "";
+  let host = "";
   if (server) {
     host = `https://${server}`
   }
