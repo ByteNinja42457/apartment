@@ -6,7 +6,7 @@ import { getCardByGuid } from 'context/cardUtil';
 
 export function useContact(guid, listing, close) {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     offsync: false,
     logo: null,
     logoSet: false,
@@ -23,27 +23,27 @@ export function useContact(guid, listing, close) {
     menuStyle: {},
   });
 
-  var card = useContext(CardContext);
-  var settings = useContext(SettingsContext);  
+  const card = useContext(CardContext);
+  const settings = useContext(SettingsContext);  
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    var contact = getCardByGuid(card.state.cards, guid);
+    const contact = getCardByGuid(card.state.cards, guid);
     if (contact) {
-      var profile = contact?.data?.cardProfile;
-      var detail = contact?.data?.cardDetail;
-      var { imageSet, name, location, description, handle, node } = profile;      
-      var status = detail.status;
-      var cardId = contact.id;
-      var offsync = contact.offsync;
-      var logo = imageSet ? card.actions.getCardImageUrl(cardId) : null;
+      const profile = contact?.data?.cardProfile;
+      const detail = contact?.data?.cardDetail;
+      const { imageSet, name, location, description, handle, node } = profile;      
+      const status = detail.status;
+      const cardId = contact.id;
+      const offsync = contact.offsync;
+      const logo = imageSet ? card.actions.getCardImageUrl(cardId) : null;
       updateState({ logoSet: true, offsync, logo, name, location, description, handle, node, status, cardId });
     }
     else if (listing) {
-      var { logo, name, location, description, handle, node } = listing;
+      const { logo, name, location, description, handle, node } = listing;
       updateState({ logoSet: true, logo, name, location, description, handle, node, status: 'unsaved', cardId: null });
     }
     else {
@@ -54,11 +54,11 @@ export function useContact(guid, listing, close) {
   }, [card.state, guid, listing]); 
 
   useEffect(() => {
-    var { display, strings, menuStyle } = settings.state;
+    const { display, strings, menuStyle } = settings.state;
     updateState({ display, strings, menuStyle });
   }, [settings.state]);
 
-  var applyAction = async (action) => {
+  const applyAction = async (action) => {
     if (!state.busy) {
       try {
         updateState({ busy: true, buttonStatus: 'button busy', action });
@@ -76,7 +76,7 @@ export function useContact(guid, listing, close) {
     }
   }
 
-  var actions = {
+  const actions = {
     saveContact: async () => {
       await applyAction(async () => {
         let message = await getListingMessage(state.node, guid);
@@ -144,7 +144,7 @@ export function useContact(guid, listing, close) {
     },
     resync: async () => {
       await applyAction(async () => {
-        var success = await card.actions.resyncCard(state.cardId);
+        const success = await card.actions.resyncCard(state.cardId);
         if (!success) {
           throw new Error("resync failed");
         }
