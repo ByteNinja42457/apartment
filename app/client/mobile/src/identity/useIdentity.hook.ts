@@ -4,10 +4,10 @@ import {DisplayContext} from '../context/DisplayContext';
 import {ContextType} from '../context/ContextType';
 
 export function useIdentity() {
-  const display = useContext(DisplayContext) as ContextType;
-  const app = useContext(AppContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let app = useContext(AppContext) as ContextType;
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     all: false,
     profile: {} as Profile,
     profileSet: false,
@@ -15,16 +15,16 @@ export function useIdentity() {
     strings: display.state.strings,
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    const identity = app.state.session?.getIdentity();
+    let identity = app.state.session?.getIdentity();
     if (!identity) {
       console.log('session not set in identity hook');
     } else {
-      const setProfile = (profile: Profile) => {
+      let setProfile = (profile: Profile) => {
         updateState({
           profile,
           profileSet: true,
@@ -39,7 +39,7 @@ export function useIdentity() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const actions = {
+  let actions = {
     setAll: all => {
       updateState({all});
     },
