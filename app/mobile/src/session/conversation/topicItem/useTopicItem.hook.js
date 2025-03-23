@@ -19,7 +19,7 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useTopicItem(item, hosting, remove, contentKey) {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     strings: getLanguageStrings(), 
     name: null,
     nameSet: null,
@@ -45,16 +45,16 @@ export function useTopicItem(item, hosting, remove, contentKey) {
     timeFull: false,
   });
 
-  const conversation = useContext(ConversationContext);
-  const profile = useContext(ProfileContext);
-  const display = useContext(DisplayContext);
-  const card = useContext(CardContext);
-  const account = useContext(AccountContext);
-  const dimensions = useWindowDimensions();
+  var conversation = useContext(ConversationContext);
+  var profile = useContext(ProfileContext);
+  var display = useContext(DisplayContext);
+  var card = useContext(CardContext);
+  var account = useContext(AccountContext);
+  var dimensions = useWindowDimensions();
 
-  const cancel = useRef(false);
+  var cancel = useRef(false);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -62,41 +62,41 @@ export function useTopicItem(item, hosting, remove, contentKey) {
     updateState({ width: dimensions.width, height: dimensions.height });
   }, [dimensions]);
 
-  const setAssets = (parsed) => {
-    const assets = [];
+  var setAssets = (parsed) => {
+    var assets = [];
     if (parsed?.length) {
       for (let i = 0; i < parsed.length; i++) {
-        const asset = parsed[i];
+        var asset = parsed[i];
         if (asset.encrypted) {
-          const encrypted = true;
-          const { type, thumb, label, extension, parts } = asset.encrypted;
+          var encrypted = true;
+          var { type, thumb, label, extension, parts } = asset.encrypted;
           assets.push({ type, thumb, label, extension, encrypted, decrypted: null, parts });
         }
         else {
-          const encrypted = false
+          var encrypted = false
           if (asset.image) {
-            const type = 'image';
-            const thumb = conversation.actions.getTopicAssetUrl(item.topicId, asset.image.thumb);
-            const full = conversation.actions.getTopicAssetUrl(item.topicId, asset.image.full);
+            var type = 'image';
+            var thumb = conversation.actions.getTopicAssetUrl(item.topicId, asset.image.thumb);
+            var full = conversation.actions.getTopicAssetUrl(item.topicId, asset.image.full);
             assets.push({ type, thumb, encrypted, full });
           }
           else if (asset.video) {
-            const type = 'video';
-            const thumb = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.thumb);
-            const lq = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.lq);
-            const hd = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.hd);
+            var type = 'video';
+            var thumb = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.thumb);
+            var lq = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.lq);
+            var hd = conversation.actions.getTopicAssetUrl(item.topicId, asset.video.hd);
             assets.push({ type, thumb, encrypted, lq, hd });
           }
           else if (asset.audio) {
-            const type = 'audio';
-            const label = asset.audio.label;
-            const full = conversation.actions.getTopicAssetUrl(item.topicId, asset.audio.full);
+            var type = 'audio';
+            var label = asset.audio.label;
+            var full = conversation.actions.getTopicAssetUrl(item.topicId, asset.audio.full);
             assets.push({ type, label, encrypted, full });
           }
           else if (asset.binary) {
-            const type = 'binary';  
-            const { label, extension } = asset.binary;
-            const data = conversation.actions.getTopicAssetUrl(item.topicId, asset.binary.data);
+            var type = 'binary';  
+            var { label, extension } = asset.binary;
+            var data = conversation.actions.getTopicAssetUrl(item.topicId, asset.binary.data);
             assets.push({ type, label, extension, data });
           }
         }
@@ -107,11 +107,11 @@ export function useTopicItem(item, hosting, remove, contentKey) {
 
   useEffect(() => {
 
-    const { topicId, revision, detail, unsealedDetail } = item;
-    const { guid, created, dataType, data, status, transform } = detail || {};
+    var { topicId, revision, detail, unsealedDetail } = item;
+    var { guid, created, dataType, data, status, transform } = detail || {};
 
     let name, nameSet, known, logo;
-    const { identity, imageUrl, monthLast, timeFull } = profile.state || {};
+    var { identity, imageUrl, monthLast, timeFull } = profile.state || {};
     if (guid === identity.guid) {
       known = true;
       if (identity.name) {
@@ -122,7 +122,7 @@ export function useTopicItem(item, hosting, remove, contentKey) {
         name = identity.node ? `${identity.handle}/${identity.node}` : identity.handle;
         nameSet = false;
       }
-      const img = imageUrl;
+      var img = imageUrl;
       if (img) {
         logo = img;
       }
@@ -131,7 +131,7 @@ export function useTopicItem(item, hosting, remove, contentKey) {
       }
     }
     else {
-      const contact = getCardByGuid(card.state.cards, guid)?.card;
+      var contact = getCardByGuid(card.state.cards, guid)?.card;
       if (contact) {
         logo = contact.profile?.imageSet ? card.actions.getCardImageUrl(contact.cardId) : null;
 
@@ -141,7 +141,7 @@ export function useTopicItem(item, hosting, remove, contentKey) {
           nameSet = true;
         }
         else {
-          const { node, handle } = contact.profile || {};
+          var { node, handle } = contact.profile || {};
           name = node ? `${handle}/${node}` : handle;
           nameSet = false;
         }
@@ -228,9 +228,9 @@ export function useTopicItem(item, hosting, remove, contentKey) {
     }
 
     let timestamp;
-    const date = new Date(created * 1000);
-    const now = new Date();
-    const offset = now.getTime() - date.getTime();
+    var date = new Date(created * 1000);
+    var now = new Date();
+    var offset = now.getTime() - date.getTime();
     if(offset < 86400000) {
       if (timeFull) { 
         timestamp = moment(date).format('H:mm');
@@ -256,21 +256,21 @@ export function useTopicItem(item, hosting, remove, contentKey) {
       }
     }
 
-    const shareable = parsed;
-    const editable = guid === identity?.guid && parsed;
-    const flagable = guid !== identity?.guid;
-    const deletable = guid === identity?.guid || hosting;
+    var shareable = parsed;
+    var editable = guid === identity?.guid && parsed;
+    var flagable = guid !== identity?.guid;
+    var deletable = guid === identity?.guid || hosting;
 
     updateState({ logo, name, nameSet, known, sealed, message, clickable, fontSize, fontColor, timestamp, transform, status, assets, deletable, shareable, editable, flagable, editData: parsed, editMessage: message, editType: dataType });
   }, [conversation.state, card.state, account.state, profile.state, item, contentKey]);
 
-  const unsealTopic = async (topicId, revision, topicDetail) => {
+  var unsealTopic = async (topicId, revision, topicDetail) => {
     try {
-      const channelDetail = conversation.state.channel?.detail;
-      const seals = getChannelSeals(channelDetail?.data);
-      const sealKey = account.state.sealKey;
+      var channelDetail = conversation.state.channel?.detail;
+      var seals = getChannelSeals(channelDetail?.data);
+      var sealKey = account.state.sealKey;
       if (isUnsealed(seals, sealKey)) {
-        const contentKey = await getContentKey(seals, sealKey);
+        var contentKey = await getContentKey(seals, sealKey);
       }
     }
     catch(err) {
@@ -278,18 +278,18 @@ export function useTopicItem(item, hosting, remove, contentKey) {
     }
   };
 
-  const clickableText = (text) => {
-      const urlPattern = new RegExp('(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)');
-      const hostPattern = new RegExp('^https?:\\/\\/', 'i');
+  var clickableText = (text) => {
+      var urlPattern = new RegExp('(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,4}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)');
+      var hostPattern = new RegExp('^https?:\\/\\/', 'i');
 
       let clickable = [];
       let group = '';
-      const words = text == null ? [''] : text.split(' ');
+      var words = text == null ? [''] : text.split(' ');
       words.forEach((word, index) => {
         if (!!urlPattern.test(word)) {
           clickable.push(<Text key={index}>{ group }</Text>);
           group = '';
-          const url = !!hostPattern.test(word) ? word : `https://${word}`;
+          var url = !!hostPattern.test(word) ? word : `https://${word}`;
           clickable.push(<Text key={'link-' + index} onPress={() => Linking.openURL(sanitizeUrl(url))} style={{ fontStyle: 'italic' }}>{ sanitizeUrl(word) + ' ' }</Text>);
         }
         else {
@@ -300,38 +300,38 @@ export function useTopicItem(item, hosting, remove, contentKey) {
       return <Text>{ clickable }</Text>;
   };
 
-  const getExtension = async (path, type) => {
+  var getExtension = async (path, type) => {
     if (type === 'video') {
         return 'mp4';
       }
   }
 
-  const actions = {
+  var actions = {
     showCarousel: async (index) => {
-      const assets = state.assets.map((asset) => ({ ...asset, error: false, decrypted: null }));
+      var assets = state.assets.map((asset) => ({ ...asset, error: false, decrypted: null }));
       updateState({ assets, carousel: true, carouselIndex: index });
 
       try {
         cancel.current = false;
-        const assets = state.assets;
+        var assets = state.assets;
         for (let i = 0; i < assets.length; i++) {
-          const cur = (i + index) % assets.length
-          const asset = assets[cur];
+          var cur = (i + index) % assets.length
+          var asset = assets[cur];
           if (asset.encrypted) {
-            const ext = asset.type === 'video' ? '.mp4' : asset.type === 'audio' ? '.mp3' : '';
-            const path = RNFS.DocumentDirectoryPath + `/${i}.asset${ext}`;
-            const exists = await RNFS.exists(path);
+            var ext = asset.type === 'video' ? '.mp4' : asset.type === 'audio' ? '.mp3' : '';
+            var path = RNFS.DocumentDirectoryPath + `/${i}.asset${ext}`;
+            var exists = await RNFS.exists(path);
             if (exists) {
               RNFS.unlink(path);
             }
             assets[cur] = { ...asset, block: 0, total: asset.parts.length };
             updateState({ assets: [ ...assets ]});
             for (let j = 0; j < asset.parts.length; j++) {
-              const part = asset.parts[j];
-              const url = conversation.actions.getTopicAssetUrl(item.topicId, part.partId);
-              const response = await fetchWithTimeout(url, { method: 'GET' });
-              const block = await response.text();
-              const decrypted = decryptBlock(block, part.blockIv, contentKey);
+              var part = asset.parts[j];
+              var url = conversation.actions.getTopicAssetUrl(item.topicId, part.partId);
+              var response = await fetchWithTimeout(url, { method: 'GET' });
+              var block = await response.text();
+              var decrypted = decryptBlock(block, part.blockIv, contentKey);
               if (cancel.current) {
                 throw new Error("unseal assets cancelled");
               }
@@ -345,9 +345,9 @@ export function useTopicItem(item, hosting, remove, contentKey) {
             };
 
             if (asset.type === 'image') {
-              const prefix = await RNFS.read(path, 64, 0, "base64");
-              const ext = prefix.startsWith('R0lGODlh') ? '.gif' : '.jpg';
-              const exists = await RNFS.exists(path + ext);
+              var prefix = await RNFS.read(path, 64, 0, "base64");
+              var ext = prefix.startsWith('R0lGODlh') ? '.gif' : '.jpg';
+              var exists = await RNFS.exists(path + ext);
               if (exists) {
                 RNFS.unlink(path + ext);
               }
@@ -365,12 +365,12 @@ export function useTopicItem(item, hosting, remove, contentKey) {
       }
       catch (err) {
         console.log(err);
-        const assets = state.assets.map((asset) => ({ ...asset, error: true }));
+        var assets = state.assets.map((asset) => ({ ...asset, error: true }));
         updateState({ assets: [ ...assets ]});
       }
     },
     hideCarousel: () => {
-      const assets = state.assets.map((asset) => ({ ...asset, error: false, decrypted: null }));
+      var assets = state.assets.map((asset) => ({ ...asset, error: false, decrypted: null }));
       updateState({ carousel: false, assets });
       cancel.current = true;
     },
@@ -383,12 +383,12 @@ export function useTopicItem(item, hosting, remove, contentKey) {
     shareMessage: async () => {
       if (!state.sharing) {
         updateState({ sharing: true });
-        const files = []
-        const unlink = []
-        const fs = RNFetchBlob.fs;
+        var files = []
+        var unlink = []
+        var fs = RNFetchBlob.fs;
         try {
-          const data = JSON.parse(item.detail.data)
-          const assets = data.assets || []
+          var data = JSON.parse(item.detail.data)
+          var assets = data.assets || []
 
           for (let i = 0; i < assets.length; i++) {
 
@@ -407,13 +407,13 @@ export function useTopicItem(item, hosting, remove, contentKey) {
             }
 
             if (asset) {
-              const url = actions.getTopicAssetUrl(item.topicId, asset);
-              const blob = await RNFetchBlob.config({ fileCache: true }).fetch("GET", url);
-              const type = blob.respInfo.headers["Content-Type"] || blob.respInfo.headers["content-type"]
+              var url = actions.getTopicAssetUrl(item.topicId, asset);
+              var blob = await RNFetchBlob.config({ fileCache: true }).fetch("GET", url);
+              var type = blob.respInfo.headers["Content-Type"] || blob.respInfo.headers["content-type"]
 
-              const src = blob.path();
-              const dir = src.split('/').slice(0,-1).join('/')
-              const dst = dir + '/' + asset + '.' + getExtension(type);
+              var src = blob.path();
+              var dir = src.split('/').slice(0,-1).join('/')
+              var dst = dir + '/' + asset + '.' + getExtension(type);
 
               try {
                 await fs.unlink(dst);
@@ -429,7 +429,7 @@ export function useTopicItem(item, hosting, remove, contentKey) {
 
           await Share.open({ urls: files, message: files.length > 0 ? null : data.text, title: 'Databag', subject: 'Shared from Databag' })
           while (unlink.length > 0) {
-            const file = unlink.shift();
+            var file = unlink.shift();
             await fs.unlink(file);
           }
         }
