@@ -15,15 +15,15 @@ export function getChannelSubjectLogo(cardId, profileGuid, channel, cards, cardI
     console.log(err);
   }
 
-  const contacts = [];
+  var contacts = [];
   if (cardId) {
-    const contact = cards.get(cardId)?.card;
+    var contact = cards.get(cardId)?.card;
     contacts.push(contact);
   }
   if (channel?.detail?.members?.length) {
     channel.detail.members.forEach(guid => {
       if (guid !== profileGuid) {
-        const contact = getCardByGuid(cards, guid)?.card;
+        var contact = getCardByGuid(cards, guid)?.card;
         contacts.push(contact);
       }
     })
@@ -34,7 +34,7 @@ export function getChannelSubjectLogo(cardId, profileGuid, channel, cards, cardI
       subject = strings?.notes;
     }
     else {
-      const names = [];
+      var names = [];
       contacts.forEach(contact => {
         if (contact?.profile?.name) {
           names.push(contact.profile.name);
@@ -52,7 +52,7 @@ export function getChannelSubjectLogo(cardId, profileGuid, channel, cards, cardI
     logo = 'solution';
   }
   else if (contacts.length === 1) {
-    const contact = contacts[0];
+    var contact = contacts[0];
     if (contact?.profile?.imageSet) {
       logo = cardImageUrl(contact.cardId)
     }
