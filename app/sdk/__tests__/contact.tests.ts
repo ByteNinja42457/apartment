@@ -12,7 +12,7 @@ let connected = false;
 let connecting = false;
 let deleted = false;
 
-var getCard = (id: string) => {
+const getCard = (id: string) => {
   return {
     id: 'C000' + id,
     revision: 1 + (connected ? 1 : 0),
@@ -47,7 +47,7 @@ var getCard = (id: string) => {
 
 jest.mock('../src/net/fetchUtil', () => {
 
-  var fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
+  const fn = jest.fn().mockImplementation((url: string, options: { method: string, body: string }) => {
       if (url === 'http://test_url/contact/cards?agent=test_token' && options.method === 'GET') {
         return Promise.resolve({ status: 200, json: () => [getCard('A')] });
       }
@@ -89,7 +89,7 @@ jest.mock('../src/net/fetchUtil', () => {
         return Promise.resolve({ status: 200, json: () => JSON.parse('{"keyType": "RSA2048", "message": "eyJndWlkIjoiMDAzNWQ2ZmZkMzQyMThhMTJiNmYzYzY3ZWQyYzIwZjRlZWUwNmRjMzZlZWQwMzcxNWJiZjQ2ZjA0MzY2NTExYyIsInRpbWVzdGFtcCI6MTcyOTkwMjg4NCwibWVzc2FnZVR5cGUiOiJpZGVudGl0eSIsInZhbHVlIjoie1wicmV2aXNpb25cIjoxLFwiaGFuZGxlXCI6XCIxMjN0dHR0cnJcIixcInZlcnNpb25cIjpcIjAuMS4wXCIsXCJub2RlXCI6XCJiYWx6YWNrLmNvcmVkYi5vcmdcIixcInNlYWxcIjpcIlwifSJ9", "publicKey": "LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUNJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBZzhBTUlJQ0NnS0NBZ0VBcmI1Zjd4a0NmODhlazhhQ05paVgKWlpJOCt3dlArSzZBUG85OWZCM3hBWWRGVi84djZzSTdCY3lnWXYxVC9QbzI2UmpPdEZjcVRRV1ZZZlBiTlZxVgpQQ1VSblJwWkVnQWVjSGdqUmNzSjF3cWJZQWZRSDhhRGR4aGE4enRRcS9ZVlVzRCtkRU5IamNYV0NCSW04eDVzCjZ2NXo1aS9BeFRyR2I4YlgybDAydUxaNmVIYjNuOHhUQkRMa2VPUzJBaFZWWW0zSVc3bjhrQUJnT2dQY1Y1QS8Ka1B2LzFWbnJ4OTd6Q2VNaHdYd3Y0SEpxTldGR3dvaUlTNzJXU2hCcWk5N2ZSRHlOSVJ4SVJrMDFRdlJYL3hMcQpuM3R0WWN1cWdYN0NoUGhyRHpwRVlKOUZKT0ZaQSt1TVF2K1NmZVg4YlQzcGEzV2hXNFFHZ3BMNXhuM0NuMTlkCkYwVG1laWVLSTUyR0lPejRLV1R2alJDZHc2YW5vTGJNWW0xUzM4emhpbHZ4YWlZWTZ4WXVpNXJneWU2bzJlakgKZGphV0kzeTRaZVJ1UnUxTEgzd1U2UGhzbGhDZnJrU05FVFIzRkd2RWRKNzRzdVFEVmtnakF2R3BqaC9FUlkyUApZYmE1L254WlJVRGF4bjFjcURzOU0wUk5pMHp0R2d3dVJPSE1WeHFNMEFONko2TnJlL3F0dTFGbm5SMVllMmQ5CnRHVDVLSXRaZUN2dzY0Y3U2SFhMZWFzcXg3b2kwbU5BT0RoQWUrMzlXbFN1VEE1YWNyR3YydFpUSldPY0I5TmcKNlpGb2hzY3ErbHdVZHM3ek1lVkdXU1VQWmtnZUxrTk9rT0ZlWVNuVk4wc2RaVHFQMllTU0hDU0hxS0dtaHlhMQpXRlNPMTBxaTZjQWhheldraWMyR0Zwa0NBd0VBQVE9PQotLS0tLUVORCBSU0EgUFVCTElDIEtFWS0tLS0tCg==", "signature": "gj5NKLzgF5HHWthu47ofuEhkhpOiP4CJ5QNG65VmuqL05Mu7dUef5Nxp6BacCIJoDb3GdYbHI/UBj0Ns4gBsMihOkwIMCav/P0FdvLYZQrpaNf6t6PUI2c4xW/w3gZ/5IrJiUmWE+PKYTjMjUlroc1gHAXIyGG2vs152HT2uMjB/kGKMU1nxvjABAN+khhw7h0iW3EBKffKRTeAsRjUw6YIXwmeYEM7MP8zrISkKquIScf4yxDM2iZWC0DJOvGa4XANqkLKLPNL11u7hBXt2Ovj++U5eQsYSXcn1IDyhwlgRyRzuNEayZJnpbCCyXybEIaty+bf0wdq5nVWi1E4ju4wY+Z1pV5lsXtuKyxA/GY4Zk3QMTwx4dz2tWPDQYa35VUeyxhm5U5iMWdFG+nJuhPT0IhajLWrrTzQA5xXCzb5Da/ae0FrS3w3opATKNKxDpl0P5gjCQ1Xbku7VoUYaQQ6JaTdxNV/eKNCmcDcCDnZoEsE0Mp1hcqf8nT6YVvIVJG5luhv5TWEmTLBgZsWfUreaUkz/DJV+0fLwfL6oZuRkEx3aZnU1BfWtsS1ecgVJ93Q73sGohnUN9EaeR4ruviMrb4x1lS1IHGFuKooGqChukuTbKxlBkeqABiMsVkvme846cpFWijv/CnK6yoDhJA9lHaugjI+KgapYZUOwJOg=", "signatureType": "PKCS1v15"}') });
       }
       else if (url === 'http://test_url/contact/cards?agent=test_token' && options.method === 'POST') {
-        var id = JSON.parse(options.body).message.substring(0,9);
+        const id = JSON.parse(options.body).message.substring(0,9);
         return Promise.resolve({ status: 200, json: () => ({ id }) });
       }
       else {
@@ -145,14 +145,14 @@ class TestCrypto implements Crypto {
 class TestStore extends NoStore {
 }
 
-var log = new ConsoleLogging();
-var store = new TestStore();
-var crypto = new TestCrypto();
+const log = new ConsoleLogging();
+const store = new TestStore();
+const crypto = new TestCrypto();
 
 test('received contact updates', async () => {
   let testCards: Card[] = [];
-  var update = (cards: Card[]) => { testCards = cards }
-  var contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
+  const update = (cards: Card[]) => { testCards = cards }
+  const contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
   contact.addCardListener(update);
   contact.setRevision(1)
   await waitFor(() => testCards.length === 1);
@@ -162,21 +162,21 @@ test('received contact updates', async () => {
 
 test('adds new contact', async () => {
   let testCards: Card[] = [];
-  var update = (cards: Card[]) => { testCards = cards }
-  var contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
+  const update = (cards: Card[]) => { testCards = cards }
+  const contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
   contact.addCardListener(update);
   contact.setRevision(3)
   await waitFor(() => testCards.length === 1);
-  var listing = await contact.getRegistry(null, null);
+  const listing = await contact.getRegistry(null, null);
   expect(listing.length).toBe(3);
-  var added = await contact.addCard(null, 'G0000003');
+  const added = await contact.addCard(null, 'G0000003');
   expect(added).toBe('eyJndWlkI');
 });
 
 test('removes contact', async () => {
   let testCards: Card[] = [];
-  var update = (cards: Card[]) => { testCards = cards }
-  var contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
+  const update = (cards: Card[]) => { testCards = cards }
+  const contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
   contact.addCardListener(update);
   contact.setRevision(8)
   await waitFor(() => testCards.length === 1);
@@ -188,8 +188,8 @@ test('removes contact', async () => {
 
 test('connects and disconnects with known contact', async () => {
   let testCards: Card[] = [];
-  var update = (cards: Card[]) => { testCards = cards }
-  var contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
+  const update = (cards: Card[]) => { testCards = cards }
+  const contact = new ContactModule(log, store, crypto, null, 'test_guid', 'test_token', 'test_url', false, []);
   contact.addCardListener(update);
   contact.setRevision(11)
   await waitFor(() => testCards.length === 1);
