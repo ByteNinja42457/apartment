@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let ImageAssetWrapper = styled.div`
+export const ImageAssetWrapper = styled.div`
   position: relative;
   height: 100%;
 
@@ -41,7 +41,7 @@ export let ImageAssetWrapper = styled.div`
   }
 `;
 
-export let ImageModalWrapper = styled.div`
+export const ImageModalWrapper = styled.div`
   .frame {
     display: flex;
     align-items: center;
