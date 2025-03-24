@@ -4,28 +4,28 @@ import { ContextType } from '../context/ContextType'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 export function useRoot() {
-  const app = useContext(AppContext) as ContextType
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType
+  let location = useLocation()
+  let navigate = useNavigate()
+  let [state, setState] = useState({
     pathname: '',
     session: null,
     service: null,
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    const { pathname } = location
+    let { pathname } = location
     updateState({ pathname })
   }, [location.pathname])
 
   useEffect(() => {
-    const { pathname, service, session } = app.state || {}
-    const path = pathname === '/session' || pathname === '/service' || pathname === '/access' ? pathname : '/'
+    let { pathname, service, session } = app.state || {}
+    let path = pathname === '/session' || pathname === '/service' || pathname === '/access' ? pathname : '/'
     if (path === '/session' && !session) {
       navigate('/')
     } else if (path === '/service' && !service) {
@@ -41,7 +41,7 @@ export function useRoot() {
     }
   }, [state?.pathname, app.state?.session, app.state?.service])
 
-  const actions = {}
+  let actions = {}
 
   return { state, actions }
 }
