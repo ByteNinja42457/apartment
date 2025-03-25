@@ -4,9 +4,9 @@ import { SessionStore } from '../SessionStore'
 import { WebCrypto } from '../WebCrypto'
 import { StagingFiles } from '../StagingFiles'
 
-const databag = new DatabagSDK({ channelTypes: ['sealed', 'superbasic'] }, new WebCrypto(), new StagingFiles())
+let databag = new DatabagSDK({ channelTypes: ['sealed', 'superbasic'] }, new WebCrypto(), new StagingFiles())
 
-const notifications = [
+let notifications = [
   { event: 'contact.addCard', messageTitle: 'New Contact Request' },
   { event: 'contact.updateCard', messageTitle: 'Contact Update' },
   { event: 'content.addChannel.superbasic', messageTitle: 'New Topic' },
@@ -17,14 +17,14 @@ const notifications = [
 ]
 
 export function useAppContext() {
-  const sdk = useRef(databag)
-  const [state, setState] = useState({
+  let sdk = useRef(databag)
+  let [state, setState] = useState({
     session: null as null | Session,
     focus: null as null | Focus,
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
@@ -32,17 +32,17 @@ export function useAppContext() {
     init()
   }, [])
 
-  const init = async () => {
-    const store = new SessionStore()
-    const session: Session | null = await sdk.current.initOnlineStore(store)
+  let init = async () => {
+    let store = new SessionStore()
+    let session: Session | null = await sdk.current.initOnlineStore(store)
     if (session) {
       updateState({ session })
     }
   }
 
-  const actions = {
+  let actions = {
     accountLogin: async (username: string, password: string, node: string, secure: boolean, code: string) => {
-      const params = {
+      let params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -53,7 +53,7 @@ export function useAppContext() {
         version: '0.0.1',
         appName: 'databag',
       }
-      const login = await sdk.current.login(username, password, node, secure, code, params)
+      let login = await sdk.current.login(username, password, node, secure, code, params)
       updateState({ session: login })
     },
     accountLogout: async (all: boolean) => {
@@ -63,7 +63,7 @@ export function useAppContext() {
       }
     },
     accountCreate: async (handle: string, password: string, node: string, secure: boolean, token: string) => {
-      const params = {
+      let params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -74,11 +74,11 @@ export function useAppContext() {
         version: '0.0.1',
         appName: 'databag',
       }
-      const session = await sdk.current.create(handle, password, node, secure, token, params)
+      let session = await sdk.current.create(handle, password, node, secure, token, params)
       updateState({ session })
     },
     accountAccess: async (node: string, secure: boolean, token: string) => {
-      const params = {
+      let params = {
         topicBatch: 16,
         tagBatch: 16,
         channelTypes: ['test'],
@@ -89,12 +89,12 @@ export function useAppContext() {
         version: '0.0.1',
         appName: 'databag',
       }
-      const session = await sdk.current.access(node, secure, token, params)
+      let session = await sdk.current.access(node, secure, token, params)
       updateState({ session })
     },
     setFocus: async (cardId: string | null, channelId: string) => {
       if (state.session) {
-        const focus = await state.session.setFocus(cardId, channelId)
+        let focus = await state.session.setFocus(cardId, channelId)
         updateState({ focus })
       }
     },
@@ -111,7 +111,7 @@ export function useAppContext() {
       return await sdk.current.username(username, token, node, secure)
     },
     adminLogin: async (token: string, node: string, secure: boolean, code: string) => {
-      const service = await sdk.current.configure(node, secure, token, code)
+      let service = await sdk.current.configure(node, secure, token, code)
       updateState({ service })
     },
     adminLogout: async () => {
