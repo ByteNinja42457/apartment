@@ -17,7 +17,7 @@ import messaging from '@react-native-firebase/messaging';
 import { DeviceEventEmitter } from 'react-native';
 
 export function useAppContext() {
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     session: null,
     status: null,
     loggingOut: false,
@@ -26,28 +26,28 @@ export function useAppContext() {
     version: getVersion(),
   });
 
-  var store = useContext(StoreContext);
-  var account = useContext(AccountContext);
-  var profile = useContext(ProfileContext);
-  var card = useContext(CardContext);
-  var channel = useContext(ChannelContext);
-  var ring = useContext(RingContext);
-  var delay = useRef(0);
+  const store = useContext(StoreContext);
+  const account = useContext(AccountContext);
+  const profile = useContext(ProfileContext);
+  const card = useContext(CardContext);
+  const channel = useContext(ChannelContext);
+  const ring = useContext(RingContext);
+  const delay = useRef(0);
 
-  var ws = useRef(null);
-  var deviceToken = useRef(null);
-  var pushType = useRef(null);
-  var access = useRef(null);
-  var init = useRef(false);
+  const ws = useRef(null);
+  const deviceToken = useRef(null);
+  const pushType = useRef(null);
+  const access = useRef(null);
+  const init = useRef(false);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var setDeviceToken = async () => {
+  const setDeviceToken = async () => {
     if (!deviceToken.current) {
       try {
-        var token = await messaging().getToken();
+        const token = await messaging().getToken();
         if (!token) {
           throw new Error('null push token');
         }
@@ -81,8 +81,8 @@ export function useAppContext() {
     })();
   }, []);
 
-  var setSession = async () => {
-    var { loginTimestamp, guid } = access.current;
+  const setSession = async () => {
+    const { loginTimestamp, guid } = access.current;
     updateState({ session: true, loginTimestamp, status: 'connecting' });
     await store.actions.updateDb(guid);
     await account.actions.setSession(access.current);
@@ -93,7 +93,7 @@ export function useAppContext() {
     setWebsocket(access.current);
   }
 
-  var clearSession = async () => {
+  const clearSession = async () => {
     account.actions.clearSession();
     profile.actions.clearSession();
     card.actions.clearSession();
@@ -103,7 +103,7 @@ export function useAppContext() {
     clearWebsocket();
   }
 
-  var notifications = [
+  const notifications = [
     { event: 'contact.addCard', messageTitle: 'New Contact Request' },
     { event: 'contact.updateCard', messageTitle: 'Contact Update' },
     { event: 'content.addChannel.superbasic', messageTitle: 'New Topic' },
@@ -113,7 +113,7 @@ export function useAppContext() {
     { event: 'ring', messageTitle: 'Incoming Call' },
   ];
 
-  var actions = {
+  const actions = {
     create: async (server, username, password, token) => {
       if (!init.current || access.current) {
         throw new Error('invalid session state');
@@ -121,7 +121,7 @@ export function useAppContext() {
       await setDeviceToken();
       updateState({ loggedOut: false });
       await addAccount(server, username, password, token);
-      var session = await setLogin(username, server, password, null, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications)
+      const session = await setLogin(username, server, password, null, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications)
       access.current = { loginTimestamp: session.created, server, token: session.appToken, guid: session.guid };
       await store.actions.setSession(access.current);
       await setSession();
@@ -135,7 +135,7 @@ export function useAppContext() {
       }
       await setDeviceToken();
       updateState({ loggedOut: false });
-      var session = await setAccountAccess(server, token, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications);
+      const session = await setAccountAccess(server, token, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications);
       access.current = { loginTimestamp: session.created, server, token: session.appToken, guid: session.guid };
       await store.actions.setSession(access.current);
       await setSession();
@@ -149,8 +149,8 @@ export function useAppContext() {
       }
       await setDeviceToken();
       updateState({ loggedOut: false });
-      var acc = username.includes('/') ? username.split('/') : username.split('@');
-      var session = await setLogin(acc[0], acc[1], password, code, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications)
+      const acc = username.includes('/') ? username.split('/') : username.split('@');
+      const session = await setLogin(acc[0], acc[1], password, code, getApplicationName(), getVersion(), getDeviceId(), deviceToken.current, pushType.current, notifications)
       access.current = { loginTimestamp: session.created, server: acc[1], token: session.appToken, guid: session.guid };
       await store.actions.setSession(access.current);
       await setSession(); 
@@ -168,7 +168,7 @@ export function useAppContext() {
           await messaging().deleteToken();
           deviceToken.current = await messaging().getToken();
         }
-        var { server, token } = access.current || {};
+        const { server, token } = access.current || {};
         await clearLogin(server, token);
       }
       catch (err) {
@@ -184,16 +184,16 @@ export function useAppContext() {
       if (!access.current) {
         throw new Error('invalid session state');
       }
-      var { server, token } = access.current || {};
+      const { server, token } = access.current || {};
       await removeProfile(server, token);
       await clearSession();
       await store.actions.clearSession();
     },
   }
 
-  var setWebsocket = (session) => {
-    var insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(session.server);
-    var protocol = insecure ? 'ws' : 'wss';
+  const setWebsocket = (session) => {
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(session.server);
+    const protocol = insecure ? 'ws' : 'wss';
     ws.current = createWebsocket(`${protocol}://${session.server}/status?mode=ring`);
     ws.current.onmessage = (ev) => {
       if (ev.data == '') {
@@ -206,19 +206,19 @@ export function useAppContext() {
         updateState({ status: 'connected' });
 
         if (activity.revision) {
-          var { profile: profileRev, account: accountRev, channel: channelRev, card: cardRev } = activity.revision;
+          const { profile: profileRev, account: accountRev, channel: channelRev, card: cardRev } = activity.revision;
           profile.actions.setRevision(profileRev);
           account.actions.setRevision(accountRev);
           channel.actions.setRevision(channelRev);
           card.actions.setRevision(cardRev);
         }
         else if (activity.ring) {
-          var { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
-          var config = ice ? ice : [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
+          const { cardId, callId, calleeToken, ice, iceUrl, iceUsername, icePassword } = activity.ring;
+          const config = ice ? ice : [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
           ring.actions.ring(cardId, callId, calleeToken, config);
         }
         else {
-          var { profile: profileRev, account: accountRev, channel: channelRev, card: cardRev } = activity;
+          const { profile: profileRev, account: accountRev, channel: channelRev, card: cardRev } = activity;
           profile.actions.setRevision(profileRev);
           account.actions.setRevision(accountRev);
           channel.actions.setRevision(channelRev);
@@ -255,7 +255,7 @@ export function useAppContext() {
     }
   }
  
-  var clearWebsocket = ()  => {
+  const clearWebsocket = ()  => {
     if (ws.current) {
       ws.current.onmessage = () => {};
       ws.current.onclose = () => {};
