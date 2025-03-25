@@ -5,7 +5,7 @@ import { SettingsContext } from 'context/SettingsContext';
 
 export function useAccess() {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     display: null,
     scheme: null,
     colors: {},
@@ -16,12 +16,12 @@ export function useAccess() {
     strings: {},
   });
 
-  var navigate = useNavigate();
-  var location = useLocation();
-  var app = useContext(AppContext);
-  var settings = useContext(SettingsContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const app = useContext(AppContext);
+  const settings = useContext(SettingsContext);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -35,7 +35,7 @@ export function useAccess() {
     let params = new URLSearchParams(location);
     let token = params.get("access");
     if (token) {
-      var access = async () => {
+      const access = async () => {
         try {
           await app.actions.access(token)
         }
@@ -50,11 +50,11 @@ export function useAccess() {
 
 
   useEffect(() => {
-    var { theme, themes, strings, language, languages, colors, display, scheme } = settings.state;
+    const { theme, themes, strings, language, languages, colors, display, scheme } = settings.state;
     updateState({ theme, themes, language, languages, strings, colors, display, scheme });
   }, [settings.state]);
 
-  var actions = {
+  const actions = {
     setTheme: (theme) => {
       settings.actions.setTheme(theme);
     },
