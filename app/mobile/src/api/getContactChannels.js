@@ -4,7 +4,7 @@ export async function getContactChannels(server, token, viewRevision, channelRev
   var insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(server);
   var protocol = insecure ? 'http' : 'https';
 
-  let param = "?contact=" + token
+  const param = "?contact=" + token
   if (viewRevision != null) {
     param += `&viewRevision=${viewRevision}`;
   }
@@ -12,7 +12,7 @@ export async function getContactChannels(server, token, viewRevision, channelRev
     param += `&channelRevision=${channelRevision}`;
   }
   param += `&types=${encodeURIComponent(JSON.stringify(['sealed','superbasic']))}`;
-  let channels = await fetchWithTimeout(`${protocol}://${server}/content/channels${param}`, { method: 'GET' });
+  const channels = await fetchWithTimeout(`${protocol}://${server}/content/channels${param}`, { method: 'GET' });
   checkResponse(channels)
   return await channels.json()
 }
