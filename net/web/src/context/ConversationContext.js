@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { useConversationContext } from './useConversationContext.hook';
 
-export let ConversationContext = createContext({});
+export const ConversationContext = createContext({});
 
 export function ConversationContextProvider({ children }) {
-  let { state, actions } = useConversationContext();
+  const { state, actions } = useConversationContext();
   return (
     <ConversationContext.Provider value={{ state, actions }}>
       {children}
