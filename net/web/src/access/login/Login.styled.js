@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const LoginWrapper = styled.div`
+export let LoginWrapper = styled.div`
   max-width: 400px;
   width: 90%;
   height: 90%;
@@ -80,7 +80,7 @@ export const LoginWrapper = styled.div`
   }
 `;
 
-export const MFAModal = styled.div`
+export let MFAModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
