@@ -41,17 +41,17 @@ export class DatabagSDK {
   }
 
   public async initOfflineStore(sql: SqlStore): Promise<Session | null> {
-    const { channelTypes } = this.params;
+    let { channelTypes } = this.params;
     this.store = new OfflineStore(this.log, sql);
     await this.staging?.clear();
-    const login = await this.store.init();
+    let login = await this.store.init();
     return login ? new SessionModule(this.store, this.crypto, this.log, this.staging, login.guid, login.token, login.node, login.secure, login.timestamp, channelTypes) : null;
   }
 
   public async initOnlineStore(web: WebStore): Promise<Session | null> {
-    const { channelTypes } = this.params;
+    let { channelTypes } = this.params;
     this.store = new OnlineStore(this.log, web);
-    const login = await this.store.init();
+    let login = await this.store.init();
     return login ? new SessionModule(this.store, this.crypto, this.log, this.staging, login.guid, login.token, login.node, login.secure, login.timestamp, channelTypes) : null;
   }
 
@@ -64,10 +64,10 @@ export class DatabagSDK {
   }
 
   public async login(handle: string, password: string, node: string, secure: boolean, mfaCode: string | null, params: SessionParams): Promise<Session> {
-    const { channelTypes } = this.params;
-    const { appName, version, deviceId, deviceToken, pushType, notifications } = params;
-    const { guid, appToken, created, pushSupported } = await setLogin(node, secure, handle, password, mfaCode, appName, version, deviceId, deviceToken, pushType, notifications);
-    const login: Login = {
+    let { channelTypes } = this.params;
+    let { appName, version, deviceId, deviceToken, pushType, notifications } = params;
+    let { guid, appToken, created, pushSupported } = await setLogin(node, secure, handle, password, mfaCode, appName, version, deviceId, deviceToken, pushType, notifications);
+    let login: Login = {
       guid,
       node,
       secure,
@@ -80,10 +80,10 @@ export class DatabagSDK {
   }
 
   public async access(node: string, secure: boolean, token: string, params: SessionParams): Promise<Session> {
-    const { channelTypes } = this.params;
-    const { appName, version, deviceId, deviceToken, pushType, notifications } = params;
-    const { guid, appToken, created, pushSupported } = await setAccess(node, secure, token, appName, version, deviceId, deviceToken, pushType, notifications);
-    const login: Login = {
+    let { channelTypes } = this.params;
+    let { appName, version, deviceId, deviceToken, pushType, notifications } = params;
+    let { guid, appToken, created, pushSupported } = await setAccess(node, secure, token, appName, version, deviceId, deviceToken, pushType, notifications);
+    let login: Login = {
       guid,
       node,
       secure,
@@ -96,11 +96,11 @@ export class DatabagSDK {
   }
 
   public async create(handle: string, password: string, node: string, secure: boolean, token: string | null, params: SessionParams): Promise<Session> {
-    const { channelTypes } = this.params;
+    let { channelTypes } = this.params;
     await addAccount(node, secure, handle, password, token);
-    const { appName, version, deviceId, deviceToken, pushType, notifications } = params;
-    const { guid, appToken, created, pushSupported } = await setLogin(node, secure, handle, password, null, appName, version, deviceId, deviceToken, pushType, notifications);
-    const login: Login = {
+    let { appName, version, deviceId, deviceToken, pushType, notifications } = params;
+    let { guid, appToken, created, pushSupported } = await setLogin(node, secure, handle, password, null, appName, version, deviceId, deviceToken, pushType, notifications);
+    let login: Login = {
       guid,
       node,
       secure,
@@ -113,8 +113,8 @@ export class DatabagSDK {
   }
 
   public async remove(session: Session): Promise<void> {
-    const sessionModule = session as SessionModule;
-    const { node, secure, token } = sessionModule.getParams();
+    let sessionModule = session as SessionModule;
+    let { node, secure, token } = sessionModule.getParams();
     await removeAccount(node, secure, token);
     await sessionModule.close();
     try {
@@ -125,8 +125,8 @@ export class DatabagSDK {
   }
 
   public async logout(session: Session, all: boolean): Promise<void> {
-    const sessionModule = session as SessionModule;
-    const { node, secure, token } = sessionModule.getParams();
+    let sessionModule = session as SessionModule;
+    let { node, secure, token } = sessionModule.getParams();
     await sessionModule.close();
     try {
       await this.store.clearLogin();
@@ -141,7 +141,7 @@ export class DatabagSDK {
   }
 
   public async configure(node: string, secure: boolean, token: string, mfaCode: string | null): Promise<Service> {
-    const access = await setAdmin(node, secure, token, mfaCode);
+    let access = await setAdmin(node, secure, token, mfaCode);
     return new ServiceModule(this.log, node, secure, access);
   }
 
