@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let BinaryAssetWrapper = styled.div`
+export const BinaryAssetWrapper = styled.div`
   position: relative;
   height: 100%;
 
