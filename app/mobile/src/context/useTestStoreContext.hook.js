@@ -2,23 +2,23 @@ import { useEffect, useState, useRef, useContext } from 'react';
 import SQLite from "react-native-sqlite-storage";
 
 export function useTestStoreContext() {
-  const [state, setState] = useState({});
+  let [state, setState] = useState({});
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const channelRevision = useRef(0);
-  const channels = useRef(new Map());
+  let channelRevision = useRef(0);
+  let channels = useRef(new Map());
 
-  const cardRevision = useRef(0);
-  const cards = useRef(new Map());
-  const cardChannels = useRef(new Map());
+  let cardRevision = useRef(0);
+  let cards = useRef(new Map());
+  let cardChannels = useRef(new Map());
 
-  const initSession = async (guid) => {
+  let initSession = async (guid) => {
   }
 
-  const actions = {
+  let actions = {
     init: async () => {
       return null;
     },
@@ -174,7 +174,7 @@ export function useTestStoreContext() {
     },
 
     setCardChannelItem: async (guid, cardId, channel) => {
-      const card = cardChannels.current.get(cardId) || new Map();
+      let card = cardChannels.current.get(cardId) || new Map();
       card.set(channel.channelId, channel);
       cardChannels.current.set(cardId, card);
     },
@@ -201,7 +201,7 @@ export function useTestStoreContext() {
     getCardChannelItemView: async (guid, cardId, channelId) => {
     },
     getCardChannelItems: async (guid, cardId) => {
-      const card = cardChannels.current.get(cardId) || new Map();
+      let card = cardChannels.current.get(cardId) || new Map();
       return Array.from(card.values());
     },
     clearCardChannelItems: async (guid, cardId) => {
