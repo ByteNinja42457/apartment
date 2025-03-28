@@ -6,7 +6,7 @@ import { getListingImageUrl } from 'api/getListingImageUrl';
 
 export function useListing() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     contacts: [],
     username: null,
     node: null,
@@ -18,10 +18,10 @@ export function useListing() {
     menuStyle: {},
   });
 
-  let profile = useContext(ProfileContext);
-  let settings = useContext(SettingsContext);
+  const profile = useContext(ProfileContext);
+  const settings = useContext(SettingsContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -29,7 +29,7 @@ export function useListing() {
     updateState({ contacts: [] });
   }, [state.node]);
 
-  let actions = {
+  const actions = {
     showFilter: () => {
       updateState({ showFilter: true });
     },
@@ -45,11 +45,11 @@ export function useListing() {
     getListing: async () => {
       updateState({ busy: true });
       try {
-        let listing = await getListing(state.node, state.username);
-        let filtered = listing.filter(item => {
+        const listing = await getListing(state.node, state.username);
+        const filtered = listing.filter(item => {
           return item.guid !== profile.state.identity.guid;
         });
-        let contacts = filtered.map(item => {
+        const contacts = filtered.map(item => {
           return {
             guid: item.guid,
             logo: item.imageSet ? getListingImageUrl(state.node, item.guid) : null,
@@ -58,7 +58,7 @@ export function useListing() {
             node: item.node,
           };
         });
-        let sorted = contacts.sort((a, b) => {
+        const sorted = contacts.sort((a, b) => {
           if (a?.name < b?.name) {
             return -1;
           }
@@ -75,12 +75,12 @@ export function useListing() {
   };
 
   useEffect(() => {
-    let node = profile?.state?.identity?.node;
+    const node = profile?.state?.identity?.node;
     updateState({ disabled: node == null || node === '', node });
   }, [profile.state]);
 
   useEffect(() => {
-    let { display, strings, menuStyle } = settings.state;
+    const { display, strings, menuStyle } = settings.state;
     updateState({ display, strings, menuStyle });
   }, [settings.state]);
 
