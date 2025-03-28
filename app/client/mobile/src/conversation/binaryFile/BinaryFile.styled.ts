@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+export let styles = StyleSheet.create({
   binary: {
     height: 72,
     width: 72,
