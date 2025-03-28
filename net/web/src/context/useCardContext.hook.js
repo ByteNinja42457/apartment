@@ -25,23 +25,23 @@ import { removeCard } from 'api/removeCard';
 import { UploadContext } from 'context/UploadContext';
 
 export function useCardContext() {
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     offsync: false,
     cards: new Map(),
   });
-  var upload = useContext(UploadContext);
-  var access = useRef(null);
-  var syncing = useRef(false);
-  var setRevision = useRef(null);
-  var curRevision = useRef(null);
-  var cards = useRef(new Map());
-  var force = useRef(false);
+  const upload = useContext(UploadContext);
+  const access = useRef(null);
+  const syncing = useRef(false);
+  const setRevision = useRef(null);
+  const curRevision = useRef(null);
+  const cards = useRef(new Map());
+  const force = useRef(false);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var resync = async () => {
+  const resync = async () => {
     try {
       force.current = true;
       await sync();
@@ -51,14 +51,14 @@ export function useCardContext() {
     }
   };
 
-  var resyncCard = async (cardId) => {
+  const resyncCard = async (cardId) => {
     let success = true;
     if (!syncing.current) {
       syncing.current = true;
 
       try {
-        var token = access.current;
-        var card = cards.current.get(cardId);
+        const token = access.current;
+        const card = cards.current.get(cardId);
 
         if (card.data.cardDetail.status === 'connected') {
           await syncCard(token, card);
@@ -77,15 +77,15 @@ export function useCardContext() {
     return success;
   }
 
-  var sync = async () => {
+  const sync = async () => {
     if (!syncing.current && (setRevision.current !== curRevision.current || force.current)) {
       syncing.current = true;
       force.current = false;
 
       try {
-        var token = access.current;
-        var revision = curRevision.current;
-        var delta = await getCards(token, setRevision.current);
+        const token = access.current;
+        const revision = curRevision.current;
+        const delta = await getCards(token, setRevision.current);
         for (let card of delta) {
           if (card.data) {
             let cur = cards.current.get(card.id);
@@ -149,13 +149,13 @@ export function useCardContext() {
     }
   };
  
-  var syncCard = async (token, card) => {
-    var { cardProfile, cardDetail } = card.data;
+  const syncCard = async (token, card) => {
+    const { cardProfile, cardDetail } = card.data;
     // sync profile
     if (card.data.setNotifiedProfile !== card.data.curNotifiedProfile) {
       if (card.data.profileRevision !== card.data.curNotifiedProfile) {
-        var cardToken = `${cardProfile.guid}.${cardDetail.token}`;
-        var message = await getContactProfile(cardProfile.node, cardToken);
+        const cardToken = `${cardProfile.guid}.${cardDetail.token}`;
+        const message = await getContactProfile(cardProfile.node, cardToken);
         await setCardProfile(token, card.id, message);
       }
     }
@@ -174,12 +174,12 @@ export function useCardContext() {
     card.offsync = false;
   }
 
-  var syncCardArticles = async (card) => {}
+  const syncCardArticles = async (card) => {}
 
-  var syncCardChannels = async (card) => {
-    var { cardProfile, cardDetail, setNotifiedView, setNotifiedChannel } = card.data;
-    var node = cardProfile.node;
-    var token = `${cardProfile.guid}.${cardDetail.token}`;
+  const syncCardChannels = async (card) => {
+    const { cardProfile, cardDetail, setNotifiedView, setNotifiedChannel } = card.data;
+    const node = cardProfile.node;
+    const token = `${cardProfile.guid}.${cardDetail.token}`;
     let delta;
     if (card.data.setNotifiedView !== card.data.curNotifiedView) {
       card.channels = new Map();
@@ -222,7 +222,7 @@ export function useCardContext() {
     }
   }
 
-  var actions = {
+  const actions = {
     setToken: (token) => {
       if (access.current || syncing.current) {
         throw new Error("invalid card session state");
@@ -269,9 +269,9 @@ export function useCardContext() {
       return await setCardCloseMessage(server, message);
     },
     getCardImageUrl: (cardId) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (card) {
-        var revision = card.data.profileRevision;
+        const revision = card.data.profileRevision;
         return getCardImageUrl(access.current, cardId, revision)
       }
     },
@@ -286,10 +286,10 @@ export function useCardContext() {
       let token = cardProfile.guid + '.' + cardDetail.token;
       let node = cardProfile.node;
       if (files?.length) {
-        var topicId = await addContactChannelTopic(node, token, channelId, null, null, null);
-        var contact = { server: node, cardId };
+        const topicId = await addContactChannelTopic(node, token, channelId, null, null, null);
+        const contact = { server: node, cardId };
         upload.actions.addTopic(token, channelId, topicId, files, async (assets) => {
-          var subject = message(assets);
+          const subject = message(assets);
           await setContactChannelTopicSubject(node, token, channelId, topicId, type, subject);
         }, async () => {
           try {
@@ -301,61 +301,61 @@ export function useCardContext() {
         }, contact);
       }
       else {
-        var subject = message([]);
+        const subject = message([]);
         await addContactChannelTopic(node, token, channelId, type, subject, files);
       }
       //resyncCard(cardId);
     },
     removeTopic: async (cardId, channelId, topicId) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (!card) {
         throw new Error('card not found');
       }
-      var { cardProfile, cardDetail } = card.data;
-      var token = cardProfile.guid + '.' + cardDetail.token;
-      var node = cardProfile.node;
+      const { cardProfile, cardDetail } = card.data;
+      const token = cardProfile.guid + '.' + cardDetail.token;
+      const node = cardProfile.node;
       await removeContactChannelTopic(node, token, channelId, topicId);
       resyncCard(cardId);
     },
     setTopicSubject: async (cardId, channelId, topicId, type, subject) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (!card) {
         throw new Error('card not found');
       }
-      var { cardProfile, cardDetail } = card.data;
-      var token = cardProfile.guid + '.' + cardDetail.token;
-      var node = cardProfile.node;
+      const { cardProfile, cardDetail } = card.data;
+      const token = cardProfile.guid + '.' + cardDetail.token;
+      const node = cardProfile.node;
       await setContactChannelTopicSubject(node, token, channelId, topicId, type, subject);
       resyncCard(cardId);
     },
     getTopicAssetUrl: (cardId, channelId, topicId, assetId) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (!card) {
         throw new Error('card not found');
       }
-      var { cardProfile, cardDetail } = card.data;
-      var token = cardProfile.guid + '.' + cardDetail.token;
-      var node = cardProfile.node;
+      const { cardProfile, cardDetail } = card.data;
+      const token = cardProfile.guid + '.' + cardDetail.token;
+      const node = cardProfile.node;
       return getContactChannelTopicAssetUrl(node, token, channelId, topicId, assetId);
     },
     getTopics: async (cardId, channelId, revision, count, begin, end) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (!card) {
         throw new Error('card not found');
       }
-      var { cardProfile, cardDetail } = card.data;
-      var token = cardProfile.guid + '.' + cardDetail.token;
-      var node = cardProfile.node;
+      const { cardProfile, cardDetail } = card.data;
+      const token = cardProfile.guid + '.' + cardDetail.token;
+      const node = cardProfile.node;
       return await getContactChannelTopics(node, token, channelId, revision, count, begin, end);
     },
     getTopic: async (cardId, channelId, topicId) => {
-      var card = cards.current.get(cardId);
+      const card = cards.current.get(cardId);
       if (!card) {
         throw new Error('card not found');
       }
-      var { cardProfile, cardDetail } = card.data;
-      var token = cardProfile.guid + '.' + cardDetail.token;
-      var node = cardProfile.node;
+      const { cardProfile, cardDetail } = card.data;
+      const token = cardProfile.guid + '.' + cardDetail.token;
+      const node = cardProfile.node;
       return await getContactChannelTopic(node, token, channelId, topicId);
     },
     resync: async () => {
