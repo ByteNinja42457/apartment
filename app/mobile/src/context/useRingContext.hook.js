@@ -21,7 +21,7 @@ import {
 } from 'react-native-webrtc';
 
 export function useRingContext() {
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     ringing: new Map(),
     callStatus: null,
     cardId: null,
@@ -32,24 +32,24 @@ export function useRingContext() {
     removeVideo: false,
     removeAudio: false,
   });
-  var access = useRef(null);
+  const access = useRef(null);
 
-  var EXPIRE = 3000
-  var RING = 2000
-  var RING_COUNT = 10
-  var ringing = useRef(new Map());
-  var calling = useRef(null);
-  var ws = useRef(null);
-  var pc = useRef(null);
-  var stream = useRef(null);
-  var videoTrack = useRef();
-  var audioTrack = useRef();
-  var offers = useRef([]);
-  var processing = useRef(false);
-  var connected = useRef(false);
-  var candidates = useRef([]);
+  const EXPIRE = 3000
+  const RING = 2000
+  const RING_COUNT = 10
+  const ringing = useRef(new Map());
+  const calling = useRef(null);
+  const ws = useRef(null);
+  const pc = useRef(null);
+  const stream = useRef(null);
+  const videoTrack = useRef();
+  const audioTrack = useRef();
+  const offers = useRef([]);
+  const processing = useRef(false);
+  const connected = useRef(false);
+  const candidates = useRef([]);
 
-  var constraints = {
+  const constraints = {
     mandatory: {
       OfferToReceiveAudio: true,
       OfferToReceiveVideo: false,
@@ -57,11 +57,11 @@ export function useRingContext() {
     }
   };
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var polite = async () => {
+  const polite = async () => {
     if (processing.current || !connected.current) {
       return;
     }
@@ -69,35 +69,35 @@ export function useRingContext() {
     processing.current = true;
 
     while (offers.current.length > 0) {
-      var descriptions = offers.current;
+      const descriptions = offers.current;
       offers.current = [];
 
       try {
         for (let i = 0; i < descriptions.length; i++) {
-          var description = descriptions[i];
+          const description = descriptions[i];
           stream.current = null;
 
           if (description == null) {
-            var offer = await pc.current.createOffer(constraints);
+            const offer = await pc.current.createOffer(constraints);
             await pc.current.setLocalDescription(offer);
             ws.current.send(JSON.stringify({ description: offer }));
           }
           else {
             if (description.type === 'offer' && pc.current.signalingState !== 'stable') {
-              var rollback = new RTCSessionDescription({ type: "rollback" });
+              const rollback = new RTCSessionDescription({ type: "rollback" });
               await pc.current.setLocalDescription(rollback);
             }
-            var offer = new RTCSessionDescription(description);
+            const offer = new RTCSessionDescription(description);
             await pc.current.setRemoteDescription(offer);
             if (description.type === 'offer') {
-              var answer = await pc.current.createAnswer();
+              const answer = await pc.current.createAnswer();
               await pc.current.setLocalDescription(answer);
               ws.current.send(JSON.stringify({ description: answer }));
             }
-            var servers = candidates.current;
+            const servers = candidates.current;
             candidates.current = [];
             for (let i = 0; i < servers.length; i++) {
-              var candidate = new RTCIceCandidate(servers[i]);
+              const candidate = new RTCIceCandidate(servers[i]);
               await pc.current.addIceCandidate(candidate);
             }
           }
@@ -112,23 +112,23 @@ export function useRingContext() {
     processing.current = false;
   }
 
-  var impolite = async () => {
+  const impolite = async () => {
     if (processing.current || !connected.current) {
       return;
     }
 
     processing.current = true;
     while (offers.current.length > 0) {
-      var descriptions = offers.current;
+      const descriptions = offers.current;
       offers.current = [];
 
       for (let i = 0; i < descriptions.length; i++) {
-        var description = descriptions[i];
+        const description = descriptions[i];
         stream.current = null;
 
         try {
           if (description == null) {
-            var offer = await pc.current.createOffer(constraints);
+            const offer = await pc.current.createOffer(constraints);
             await pc.current.setLocalDescription(offer);
             ws.current.send(JSON.stringify({ description: offer }));
           }
@@ -137,18 +137,18 @@ export function useRingContext() {
               continue;
             }
 
-            var offer = new RTCSessionDescription(description);
+            const offer = new RTCSessionDescription(description);
             await pc.current.setRemoteDescription(offer);
 
             if (description.type === 'offer') {
-              var answer = await pc.current.createAnswer();
+              const answer = await pc.current.createAnswer();
               await pc.current.setLocalDescription(answer);
               ws.current.send(JSON.stringify({ description: answer }));
             }
-            var servers = candidates.current;
+            const servers = candidates.current;
             candidates.current = [];
             for (let i = 0; i < servers.length; i++) {
-              var candidate = new RTCIceCandidate(servers[i]);
+              const candidate = new RTCIceCandidate(servers[i]);
               await pc.current.addIceCandidate(candidate);
             }
           }
@@ -162,7 +162,7 @@ export function useRingContext() {
     processing.current = false;
   }
 
-  var transmit = async (policy, ice) => {
+  const transmit = async (policy, ice) => {
 
     pc.current = new RTCPeerConnection({ iceServers: ice });
     pc.current.addEventListener( 'connectionstatechange', event => {
@@ -205,14 +205,14 @@ export function useRingContext() {
     } );
 
     try {
-      var stream = await mediaDevices.getUserMedia({
+      const stream = await mediaDevices.getUserMedia({
         audio: true,
         video: {
           frameRate: 30,
           facingMode: 'user'
         }
       });
-      for (var track of stream.getTracks()) {
+      for (const track of stream.getTracks()) {
         if (track.kind === 'audio') {
           audioTrack.current = track;
           pc.current.addTrack(track, stream);
@@ -228,7 +228,7 @@ export function useRingContext() {
     }
   }
 
-  var connect = async (policy, node, token, clearRing, clearAlive, ice) => {
+  const connect = async (policy, node, token, clearRing, clearAlive, ice) => {
 
     // connect signal socket
     connected.current = false;
@@ -239,13 +239,13 @@ export function useRingContext() {
     videoTrack.current = false;
     audioTrack.current = false;
 
-    var insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
-    var protocol = insecure ? 'ws' : 'wss';
+    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(node);
+    const protocol = insecure ? 'ws' : 'wss';
     ws.current = createWebsocket(`${protocol}://${node}/signal`);
     ws.current.onmessage = async (ev) => {
       // handle messages [impolite]
       try {
-        var signal = JSON.parse(ev.data);
+        const signal = JSON.parse(ev.data);
         if (signal.status === 'connected') {
           clearRing();
           updateState({ callStatus: "connected" });
@@ -273,7 +273,7 @@ export function useRingContext() {
             candidates.current.push(signal.candidate);
           }
           else {
-            var candidate = new RTCIceCandidate(signal.candidate);
+            const candidate = new RTCIceCandidate(signal.candidate);
             await pc.current.addIceCandidate(candidate);
           }
         }
@@ -317,7 +317,7 @@ export function useRingContext() {
     }
   }
 
-  var actions = {
+  const actions = {
     setSession: (token) => {
 
       if (access.current) {
@@ -332,8 +332,8 @@ export function useRingContext() {
       access.current = null;
     },
     ring: (cardId, callId, calleeToken, ice) => {
-      var key = `${cardId}:${callId}`
-      var call = ringing.current.get(key) || { cardId, calleeToken, callId, ice }
+      const key = `${cardId}:${callId}`
+      const call = ringing.current.get(key) || { cardId, calleeToken, callId, ice }
       call.expires = Date.now() + EXPIRE;
       ringing.current.set(key, call);
       updateState({ ringing: ringing.current });
@@ -342,8 +342,8 @@ export function useRingContext() {
       }, EXPIRE);
     },
     ignore: async (cardId, callId) => {
-      var key = `${cardId}:${callId}`
-      var call = ringing.current.get(key);
+      const key = `${cardId}:${callId}`
+      const call = ringing.current.get(key);
       if (call) {
         call.status = 'ignored'
         ringing.current.set(key, call);
@@ -351,8 +351,8 @@ export function useRingContext() {
       }
     },
     decline: async (cardId, contactNode, contactToken, callId) => {
-      var key = `${cardId}:${callId}`
-      var call = ringing.current.get(key);
+      const key = `${cardId}:${callId}`
+      const call = ringing.current.get(key);
       if (call) {
         call.status = 'declined'
         ringing.current.set(key, call);
@@ -370,8 +370,8 @@ export function useRingContext() {
         throw new Error("active session");
       }
 
-      var key = `${cardId}:${callId}`
-      var call = ringing.current.get(key);
+      const key = `${cardId}:${callId}`
+      const call = ringing.current.get(key);
       if (call) {
         call.status = 'accepted'
         ringing.current.set(key, call);
@@ -384,9 +384,9 @@ export function useRingContext() {
     end: async () => {
       if (calling.current?.callId) {
         try {
-          var { host, callId, contactNode, contactToken } = calling.current;
+          const { host, callId, contactNode, contactToken } = calling.current;
           if (host) {
-            var { server, token } = access.current;
+            const { server, token } = access.current;
             await removeCall(server, token, callId);
           }
           else {
@@ -410,7 +410,7 @@ export function useRingContext() {
       updateState({ callStatus: "dialing", cardId });
 
       // create call
-      var { server, token } = access.current;
+      const { server, token } = access.current;
       let call;
       try {
         call = await addCall(server, token, cardId);
@@ -421,14 +421,14 @@ export function useRingContext() {
         throw err;
       }
 
-      var { id, keepAlive, callerToken, calleeToken, ice, iceUrl, iceUsername, icePassword } = call;
+      const { id, keepAlive, callerToken, calleeToken, ice, iceUrl, iceUsername, icePassword } = call;
       try {
         await addContactRing(contactNode, contactToken, { index, callId: id, calleeToken, ice, iceUrl, iceUsername, icePassword });
       }
       catch (err) {
         console.log(err);
       }
-      var aliveInterval = setInterval(async () => {
+      const aliveInterval = setInterval(async () => {
         try {
           await keepCall(server, token, id);
         }
@@ -437,7 +437,7 @@ export function useRingContext() {
         }
       }, keepAlive * 1000);
       let index = 0;
-      var ringInterval = setInterval(async () => {
+      const ringInterval = setInterval(async () => {
         try {
           if (index > RING_COUNT) {
             if (ws.current) {
@@ -456,20 +456,20 @@ export function useRingContext() {
 
       updateState({ callStatus: "ringing" });
       calling.current = { callId: id, host: true };
-      var iceLegacy = [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
+      const iceLegacy = [{ urls: iceUrl, username: iceUsername, credential: icePassword }];
       await connect('polite', server, callerToken, () => clearInterval(ringInterval), () => clearInterval(aliveInterval), ice ? ice : iceLegacy);
     },
     enableVideo: async () => {
       if (!videoTrack.current) {
         try {
-          var stream = await mediaDevices.getUserMedia({
+          const stream = await mediaDevices.getUserMedia({
             audio: true,
             video: {
               frameRate: 30,
               facingMode: 'user'
             }
           });
-          for (var track of stream.getTracks()) {
+          for (const track of stream.getTracks()) {
             if (track.kind === 'audio') {
               if (audioTrack.current) {
                 audioTrack.current.stop();
@@ -485,7 +485,7 @@ export function useRingContext() {
               videoTrack.current = track;
               pc.current.addTrack(track, stream);
               InCallManager.setForceSpeakerphoneOn(true);
-              var localStream = new MediaStream();
+              const localStream = new MediaStream();
               localStream.addTrack(track, localStream);
               updateState({ localVideo: true, localStream });
             }
