@@ -6,8 +6,8 @@ import { AccountContextProvider, AccountContext } from 'context/AccountContext';
 import * as fetchUtil from 'api/fetchUtil';
 
 function AccountView() {
-  var [renderCount, setRenderCount] = useState(0);
-  var account = useContext(AccountContext);
+  const [renderCount, setRenderCount] = useState(0);
+  const account = useContext(AccountContext);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
@@ -29,17 +29,17 @@ function AccountTestApp() {
 }
 
 let fetchStatus;
-var realUseContext = React.useContext;
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realUseContext = React.useContext;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
-  var mockUseContext = jest.fn().mockImplementation((ctx) => {
+  const mockUseContext = jest.fn().mockImplementation((ctx) => {
     return useTestStoreContext();
   });
   React.useContext = mockUseContext;
 
   fetchStatus = {};
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
     return Promise.resolve({
       json: () => Promise.resolve(fetchStatus)
     });
@@ -65,7 +65,7 @@ test('testing', async () => {
   fetchStatus = { searchable: true };
 
   await act(async () => {
-    var account = screen.getByTestId('account').props.account;
+    const account = screen.getByTestId('account').props.account;
     await account.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await account.actions.setRevision(1);
   });
@@ -77,7 +77,7 @@ test('testing', async () => {
   fetchStatus = { searchable: false };
 
   await act(async () => {
-    var account = screen.getByTestId('account').props.account;
+    const account = screen.getByTestId('account').props.account;
     await account.actions.setRevision(2);
   });
 
