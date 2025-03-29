@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let AudioAssetWrapper = styled.div`
+export const AudioAssetWrapper = styled.div`
   position: relative;
   height: 100%;
 
@@ -42,7 +42,7 @@ export let AudioAssetWrapper = styled.div`
 `;
 
 
-export let AudioModalWrapper = styled.div`
+export const AudioModalWrapper = styled.div`
   width: 256px;
   height: 256px;
   display: flex;
