@@ -7,14 +7,14 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
     return { data: null, assets: [] };
   }
 
-  const { text, textColor, textSize, assets } = data;
+  var { text, textColor, textSize, assets } = data;
   let index: number = 0;
-  const assetItems = new Set<AssetItem>();
-  const dataAssets = !assets ? [] : assets.map(({ encrypted, image, audio, video, binary }: BasicAsset) => {
+  var assetItems = new Set<AssetItem>();
+  var dataAssets = !assets ? [] : assets.map(({ encrypted, image, audio, video, binary }: BasicAsset) => {
     if (encrypted) {
-      const { type, thumb, label, extension, parts } = encrypted;
+      var { type, thumb, label, extension, parts } = encrypted;
       if (thumb) {
-        const asset = {
+        var asset = {
           assetId: `${index}`,
           hosting: HostingMode.Inline,
           inline: thumb,
@@ -22,7 +22,7 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
         assetItems.add(asset);
         index += 1;
       }
-      const asset = {
+      var asset = {
         assetId: `${index}`,
         hosting: HostingMode.Split,
         split: parts,
@@ -37,15 +37,15 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
       }
     } else {
       if (image) {
-        const { thumb, full } = image;
-        const thumbAsset = {
+        var { thumb, full } = image;
+        var thumbAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: thumb,
         }
         assetItems.add(thumbAsset);
         index += 1;
-        const fullAsset = {
+        var fullAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: full,
@@ -54,22 +54,22 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
         index += 1;
         return { image: { thumb: `${index-2}`, full: `${index-1}` }};
       } else if (video) {
-        const { thumb, hd, lq } = video;
-        const thumbAsset = {
+        var { thumb, hd, lq } = video;
+        var thumbAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: thumb,
         }
         assetItems.add(thumbAsset);
         index += 1;
-        const hdAsset = {
+        var hdAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: hd,
         }
         assetItems.add(hdAsset);
         index += 1;
-        const lqAsset = {
+        var lqAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: lq,
@@ -78,8 +78,8 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
         index += 1;
         return { video: { thumb: `${index-3}`, hd: `${index-2}`, lq: `${index-1}` }};
       } else if (audio) {
-        const { label, full } = audio;
-        const fullAsset = {
+        var { label, full } = audio;
+        var fullAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: full,
@@ -88,8 +88,8 @@ export function getLegacyData(data: any): { data: any, assets: AssetItem[] } {
         index += 1;
         return { audio: { label, full: `${index-1}` }};
       } else if (binary) {
-        const { label, extension, data } = binary;
-        const dataAsset = {
+        var { label, extension, data } = binary;
+        var dataAsset = {
           assetId: `${index}`,
           hosting: HostingMode.Basic,
           basic: data,
