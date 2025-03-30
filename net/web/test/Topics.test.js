@@ -14,17 +14,17 @@ import * as fetchUtil from 'api/fetchUtil';
 let cardContext;
 let channelContext;
 function TopicsView() {
-  const { state, actions } = useChannels();
+  var { state, actions } = useChannels();
 
-  const [renderCount, setRenderCount] = useState(0);
-  const [channels, setChannels] = useState([]);
-  const card = useContext(CardContext);
-  const channel = useContext(ChannelContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var [channels, setChannels] = useState([]);
+  var card = useContext(CardContext);
+  var channel = useContext(ChannelContext);
   cardContext = card;
   channelContext = channel;
 
   useEffect(() => {
-    const rendered = [];
+    var rendered = [];
     state.channels.forEach(chan => {
       rendered.push(
         <div key={chan.channelId} data-testid="channel">
@@ -66,15 +66,15 @@ function TopicsTestApp() {
 let fetchCards;
 let fetchChannels;
 let fetchCardChannels;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
 
   fetchCards = []
   fetchChannels = [];
   fetchCardChannels = [];
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
 
     if (url.startsWith('/contact/cards?agent')) {
       return Promise.resolve({
