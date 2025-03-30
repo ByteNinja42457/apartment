@@ -4,21 +4,21 @@ import { Image } from 'react-native';
 
 export function useImageThumb() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     loaded: false,
     ratio: 1,
     url: null,
   });
 
-  let conversation = useContext(ConversationContext);
+  const conversation = useContext(ConversationContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  let actions = {
+  const actions = {
     loaded: (e) => {
-      let { width, height } = e.nativeEvent;
+      const { width, height } = e.nativeEvent;
       updateState({ loaded: true, ratio: width / height });
     },
   };
