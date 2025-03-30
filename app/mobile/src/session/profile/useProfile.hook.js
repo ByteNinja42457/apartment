@@ -8,7 +8,7 @@ import avatar from 'images/avatar.png';
 
 export function useProfile() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     strings: getLanguageStrings(),
     searchable: null,
     imageSource: null,
@@ -23,16 +23,16 @@ export function useProfile() {
     detailName: '',
   });
 
-  let dimensions = useWindowDimensions();
-  let profile = useContext(ProfileContext);
-  let account = useContext(AccountContext);
+  const dimensions = useWindowDimensions();
+  const profile = useContext(ProfileContext);
+  const account = useContext(AccountContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let { width, height } = dimensions;
+    const { width, height } = dimensions;
     if (height > width) {
       updateState({ imageWidth: width, imageHeight: width, detailWidth: width + 2 });
     }
@@ -42,20 +42,20 @@ export function useProfile() {
   }, [dimensions]);
 
   useEffect(() => {
-    let { searchable } = account.state.status;
+    const { searchable } = account.state.status;
     updateState({ searchable });
   }, [account.state]);
 
   useEffect(() => {
-    let { name, handle, node, location, description, image } = profile.state.identity;
-    let imageSource = image ? { uri: profile.state.imageUrl } : avatar;
-    let username = `${handle}/${node}`
+    const { name, handle, node, location, description, image } = profile.state.identity;
+    const imageSource = image ? { uri: profile.state.imageUrl } : avatar;
+    const username = `${handle}/${node}`
     updateState({ name, username, location, description, imageSource });
   }, [profile.state]);
 
-  let actions = {
+  const actions = {
     setVisible: async (searchable) => {
-      let cur = state.searchable;
+      const cur = state.searchable;
       try {
         updateState({ searchable });
         await account.actions.setSearchable(searchable);
@@ -69,9 +69,9 @@ export function useProfile() {
       await profile.actions.setProfileImage(data);
     },
     showDetails: () => {
-      let detailName = state.name ? state.name : '';
-      let detailLocation = state.location ? state.location : '';
-      let detailDescription = state.description ? state.description : '';
+      const detailName = state.name ? state.name : '';
+      const detailLocation = state.location ? state.location : '';
+      const detailDescription = state.description ? state.description : '';
       updateState({ details: true, detailName, detailLocation, detailDescription });
     },
     hideDetails: () => {
