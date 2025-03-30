@@ -5,7 +5,7 @@ import { Logging } from './logging';
 import type { Call } from './types';
 import { removeContactCall } from './net/removeContactCall';
 
-const EXPIRES = 6000;
+let EXPIRES = 6000;
 
 export class RingModule implements Ring {
   private log: Logging;
@@ -31,11 +31,11 @@ export class RingModule implements Ring {
   }
 
   public ring(call: Call): void {
-    const now = (new Date()).getTime();
-    const { cardId, callId } = call;
-    const expires = now + EXPIRES;
-    const id = `${cardId}:${callId}`;
-    const ringing = this.calls.get(id);
+    let now = (new Date()).getTime();
+    let { cardId, callId } = call;
+    let expires = now + EXPIRES;
+    let id = `${cardId}:${callId}`;
+    let ringing = this.calls.get(id);
     if (ringing) {
       ringing.expires = expires;
     } else {
@@ -47,31 +47,31 @@ export class RingModule implements Ring {
 
   private emitRinging(): void {
     if (!this.closed) {
-      const now = (new Date()).getTime();
-      const ringing = Array.from(this.calls.values());
+      let now = (new Date()).getTime();
+      let ringing = Array.from(this.calls.values());
       this.emitter.emit('ringing', ringing.filter(item => item.expires > now && item.status === 'ringing').map(item => ({ cardId: item.call.cardId, callId: item.call.callId })));
     }
   }
 
   public async accept(cardId: string, callId: string, contactNode: string): Promise<Link> {
-    const now = (new Date()).getTime();
-    const id = `${cardId}:${callId}`;
-    const entry = this.calls.get(id);
+    let now = (new Date()).getTime();
+    let id = `${cardId}:${callId}`;
+    let entry = this.calls.get(id);
     if (!entry || entry.expires < now || entry.status !== 'ringing') {
       throw new Error('invalid ringing entry');
     }
     entry.status = 'accepted';
     this.emitRinging();
-    const link = new LinkModule(this.log);
-    const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(contactNode);
+    let link = new LinkModule(this.log);
+    let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(contactNode);
     await link.join(contactNode, !insecure, entry.call.calleeToken, entry.call.ice, async ()=>{ await this.endContactCall(cardId, callId) });
     return link;
   }
 
   public async ignore(cardId: string, callId: string): Promise<void> {
-    const now = (new Date()).getTime();
-    const id = `${cardId}:${callId}`;
-    const entry = this.calls.get(id);
+    let now = (new Date()).getTime();
+    let id = `${cardId}:${callId}`;
+    let entry = this.calls.get(id);
     if (!entry || entry.expires < now || entry.status !== 'ringing') {
       throw new Error('invalid ringing entry');
     }
@@ -80,9 +80,9 @@ export class RingModule implements Ring {
   }
 
   public async decline(cardId: string, callId: string): Promise<void> {
-    const now = (new Date()).getTime();
-    const id = `${cardId}:${callId}`;
-    const entry = this.calls.get(id);
+    let now = (new Date()).getTime();
+    let id = `${cardId}:${callId}`;
+    let entry = this.calls.get(id);
     if (!entry || entry.expires < now || entry.status !== 'ringing') {
       throw new Error('invalid ringing entry');
     }
