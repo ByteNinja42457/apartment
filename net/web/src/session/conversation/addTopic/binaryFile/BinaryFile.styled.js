@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let BinaryFileWrapper = styled.div`
+export const BinaryFileWrapper = styled.div`
   position: relative;
   height: 100%;
 
