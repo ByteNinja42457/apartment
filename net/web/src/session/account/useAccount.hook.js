@@ -3,22 +3,22 @@ import { SettingsContext } from 'context/SettingsContext';
 
 export function useAccount() {
   
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     strings: {},
   });
 
-  let settings = useContext(SettingsContext);
+  const settings = useContext(SettingsContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let { strings } = settings.state;
+    const { strings } = settings.state;
     updateState({ strings });
   }, [settings.state]);
 
-  let actions = {
+  const actions = {
   };
 
   return { state, actions };
