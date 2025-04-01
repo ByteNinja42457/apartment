@@ -7,7 +7,7 @@ import { removeCall } from 'api/removeCall';
 import { removeContactCall } from 'api/removeContactCall';
 
 export function useRingContext() {
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     ringing: new Map(),
     callStatus: null,
     cardId: null,
@@ -18,30 +18,30 @@ export function useRingContext() {
     remoteVideo: false,
     remoteAudio: false,
   });
-  const access = useRef(null);
+  var access = useRef(null);
 
-  const EXPIRE = 3000
-  const RING = 2000
-  const RING_COUNT = 10
-  const ringing = useRef(new Map());
-  const calling = useRef(null);
-  const ws = useRef(null);
-  const pc = useRef(null);
-  const stream = useRef(null);
-  const accessVideo = useRef(false);
-  const accessAudio = useRef(false);
-  const videoTrack = useRef();
-  const audioTrack = useRef();
-  const offers = useRef([]);
-  const processing = useRef(false);
-  const connected = useRef(false);
-  const candidates = useRef([]);
+  var EXPIRE = 3000
+  var RING = 2000
+  var RING_COUNT = 10
+  var ringing = useRef(new Map());
+  var calling = useRef(null);
+  var ws = useRef(null);
+  var pc = useRef(null);
+  var stream = useRef(null);
+  var accessVideo = useRef(false);
+  var accessAudio = useRef(false);
+  var videoTrack = useRef();
+  var audioTrack = useRef();
+  var offers = useRef([]);
+  var processing = useRef(false);
+  var connected = useRef(false);
+  var candidates = useRef([]);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  const polite = async () => {
+  var polite = async () => {
     if (processing.current || !connected.current) {
       return;
     }
@@ -49,16 +49,16 @@ export function useRingContext() {
     processing.current = true;
 
     while (offers.current.length > 0) {
-      const descriptions = offers.current;
+      var descriptions = offers.current;
       offers.current = [];
 
       try {
         for (let i = 0; i < descriptions.length; i++) {
-          const description = descriptions[i];
+          var description = descriptions[i];
           stream.current = null;
 
           if (description == null) {
-            const offer = await pc.current.createOffer();
+            var offer = await pc.current.createOffer();
             await pc.current.setLocalDescription(offer);
             ws.current.send(JSON.stringify({ description: pc.current.localDescription }));
           }
@@ -68,11 +68,11 @@ export function useRingContext() {
             }
             await pc.current.setRemoteDescription(description);
             if (description.type === 'offer') {
-              const answer = await pc.current.createAnswer();
+              var answer = await pc.current.createAnswer();
               await pc.current.setLocalDescription(answer);
               ws.current.send(JSON.stringify({ description: pc.current.localDescription }));
             }
-            const servers = candidates.current;
+            var servers = candidates.current;
             candidates.current = [];
             for (let i = 0; i < servers.length; i++) {
               await pc.current.addIceCandidate(servers[0]);
@@ -88,23 +88,23 @@ export function useRingContext() {
     processing.current = false;
   }
 
-  const impolite = async () => {
+  var impolite = async () => {
     if (processing.current || !connected.current) {
       return;
     }
 
     processing.current = true;
     while (offers.current.length > 0) {
-      const descriptions = offers.current;
+      var descriptions = offers.current;
       offers.current = [];
 
       for (let i = 0; i < descriptions.length; i++) {
-        const description = descriptions[i];
+        var description = descriptions[i];
         stream.current = null;
 
         try {
           if (description == null) {
-            const offer = await pc.current.createOffer();
+            var offer = await pc.current.createOffer();
             await pc.current.setLocalDescription(offer);
             ws.current.send(JSON.stringify({ description: pc.current.localDescription }));
           }
@@ -114,11 +114,11 @@ export function useRingContext() {
             }
             await pc.current.setRemoteDescription(description);
             if (description.type === 'offer') {
-              const answer = await pc.current.createAnswer();
+              var answer = await pc.current.createAnswer();
               await pc.current.setLocalDescription(answer);
               ws.current.send(JSON.stringify({ description: pc.current.localDescription }));
             }
-            const servers = candidates.current;
+            var servers = candidates.current;
             candidates.current = [];
             for (let i = 0; i < servers.length; i++) {
               await pc.current.addIceCandidate(servers[0]);
@@ -134,7 +134,7 @@ export function useRingContext() {
     processing.current = false;
   }
 
-  const getAudioStream = async (audioId) => {
+  var getAudioStream = async (audioId) => {
     try {
       if (audioId) {
         return await navigator.mediaDevices.getUserMedia({ video: false, audio: { deviceId: audioId } });
@@ -146,7 +146,7 @@ export function useRingContext() {
     return await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
   }
 
-  const getVideoStream = async (videoId) => {
+  var getVideoStream = async (videoId) => {
     try {
       if (videoId) {
         return await navigator.mediaDevices.getUserMedia({ video: { deviceId: videoId }, audio: false });
@@ -158,7 +158,7 @@ export function useRingContext() {
     return await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
   }
 
-  const transmit = async (policy, ice, audioId) => {
+  var transmit = async (policy, ice, audioId) => {
     pc.current = new RTCPeerConnection({ iceServers: ice });
     pc.current.ontrack = (ev) => {
       if (!stream.current) {
@@ -187,10 +187,10 @@ export function useRingContext() {
     };
 
     try {
-      const stream = await getAudioStream(audioId);
+      var stream = await getAudioStream(audioId);
       accessAudio.current = true;
       updateState({ localAudio: true });
-      for (const track of stream.getTracks()) {
+      for (var track of stream.getTracks()) {
         if (track.kind === 'audio') {
           audioTrack.current = track;
         }
@@ -202,7 +202,7 @@ export function useRingContext() {
     }
   }
 
-  const connect = async (policy, audioId, node, token, clearRing, clearAlive, ice) => {
+  var connect = async (policy, audioId, node, token, clearRing, clearAlive, ice) => {
 
     // connect signal socket
     connected.current = false;
@@ -215,12 +215,12 @@ export function useRingContext() {
     accessVideo.current = false;
     accessAudio.current = false;
 
-    const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+    var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
     ws.current = createWebsocket(`${protocol}${node}/signal?mode=ring`);
     ws.current.onmessage = async (ev) => {
       // handle messages [impolite]
       try {
-        const signal = JSON.parse(ev.data);
+        var signal = JSON.parse(ev.data);
         if (signal.status === 'connected') {
           clearRing();
           updateState({ callStatus: "connected" });
@@ -287,7 +287,7 @@ export function useRingContext() {
     }
   }
 
-  const actions = {
+  var actions = {
     setToken: (token) => {
       if (access.current) {
         throw new Error("invalid ring state");
@@ -301,8 +301,8 @@ export function useRingContext() {
       access.current = null;
     },
     ring: (cardId, callId, calleeToken, ice) => {
-      const key = `${cardId}:${callId}`
-      const call = ringing.current.get(key) || { cardId, calleeToken, callId, ice }
+      var key = `${cardId}:${callId}`
+      var call = ringing.current.get(key) || { cardId, calleeToken, callId, ice }
       call.expires = Date.now() + EXPIRE;
       ringing.current.set(key, call);
       updateState({ ringing: ringing.current });
@@ -311,8 +311,8 @@ export function useRingContext() {
       }, EXPIRE);
     },
     ignore: (cardId, callId) => {
-      const key = `${cardId}:${callId}`
-      const call = ringing.current.get(key);
+      var key = `${cardId}:${callId}`
+      var call = ringing.current.get(key);
       if (call) {
         call.status = 'ignored'
         ringing.current.set(key, call);
@@ -320,8 +320,8 @@ export function useRingContext() {
       }
     },
     decline: async (cardId, contactNode, contactToken, callId) => {
-      const key = `${cardId}:${callId}`
-      const call = ringing.current.get(key);
+      var key = `${cardId}:${callId}`
+      var call = ringing.current.get(key);
       if (call) {
         call.status = 'declined'
         ringing.current.set(key, call);
@@ -341,8 +341,8 @@ console.log("ACCEPT", ice);
         throw new Error("active session");
       }
 
-      const key = `${cardId}:${callId}`
-      const call = ringing.current.get(key);
+      var key = `${cardId}:${callId}`
+      var call = ringing.current.get(key);
       if (call) {
         call.status = 'accepted'
         ringing.current.set(key, call);
@@ -355,7 +355,7 @@ console.log("ACCEPT", ice);
     end: async () => {
       if (calling.current?.callId) {
         try {
-          const { host, callId, contactNode, contactToken } = calling.current;
+          var { host, callId, contactNode, contactToken } = calling.current;
           if (host) {
             await removeCall(access.current, callId);
           }
@@ -398,15 +398,15 @@ console.log("ACCEPT", ice);
       }
 
       let index = 0;
-      const { id, keepAlive, callerToken, calleeToken, ice } = call;
+      var { id, keepAlive, callerToken, calleeToken, ice } = call;
       try {
-        const turn = ice[ice.length - 1]; //backwards compatibility
+        var turn = ice[ice.length - 1]; //backwards compatibility
         await addContactRing(contactNode, contactToken, { index, callId: id, calleeToken, ice, iceUrl: turn.urls, iceUsername: turn.username, icePassword: turn.credential });
       }
       catch (err) {
         console.log(err);
       }
-      const aliveInterval = setInterval(async () => {
+      var aliveInterval = setInterval(async () => {
         try {
           await keepCall(access.current, id);
         }
@@ -414,7 +414,7 @@ console.log("ACCEPT", ice);
           console.log(err);
         }
       }, keepAlive * 1000);
-      const ringInterval = setInterval(async () => {
+      var ringInterval = setInterval(async () => {
         try {
           if (index > RING_COUNT) {
             if (ws.current) {
@@ -422,7 +422,7 @@ console.log("ACCEPT", ice);
             }
           }
           else {
-            const turn = ice[ice.length - 1];
+            var turn = ice[ice.length - 1];
             await addContactRing(contactNode, contactToken, { index, callId: id, calleeToken, ice, iceUrl: turn.urls, iceUsername: turn.username, icePassword: turn.credential });
             index += 1;
           }
@@ -438,11 +438,11 @@ console.log("ACCEPT", ice);
     },
     enableVideo: async (videoId) => {
       if (!accessVideo.current) {
-        const stream = await getVideoStream(videoId);
+        var stream = await getVideoStream(videoId);
         accessVideo.current = true;
         accessAudio.current = true;
         updateState({ localStream: stream });
-        for (const track of stream.getTracks()) {
+        for (var track of stream.getTracks()) {
           if (track.kind === 'audio') {
             audioTrack.current = track;
           }
@@ -476,11 +476,11 @@ console.log("ACCEPT", ice);
       }
     },
     getDevices: async (type) => {
-      const filtered = new Map();
-      const devices = await navigator.mediaDevices.enumerateDevices();
+      var filtered = new Map();
+      var devices = await navigator.mediaDevices.enumerateDevices();
       devices.filter(item => item.kind === type + 'input').forEach(item => {
         if (item && item.label) {
-          const entry = filtered.get(item.groupId);
+          var entry = filtered.get(item.groupId);
           if (entry) {
             if (item.label && item.label.length < entry.label.length) {
               filtered.set(item.groupId, item);
