@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export let AdminWrapper = styled.div`
+export const AdminWrapper = styled.div`
   max-width: 400px;
   width: 90%;
   height: 90%;
@@ -72,7 +72,7 @@ export let AdminWrapper = styled.div`
 `;
 
 
-export let MFAModal = styled.div`
+export const MFAModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
