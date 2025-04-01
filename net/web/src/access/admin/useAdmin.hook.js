@@ -8,7 +8,7 @@ import { SettingsContext } from 'context/SettingsContext';
 
 export function useAdmin() {
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     password: '',
     placeholder: '',
     unclaimed: null,
@@ -20,18 +20,18 @@ export function useAdmin() {
     mfaError: null,
   });
 
-  let navigate = useNavigate();
-  let app = useContext(AppContext);
-  let settings = useContext(SettingsContext);
+  const navigate = useNavigate();
+  const app = useContext(AppContext);
+  const settings = useContext(SettingsContext);
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let check = async () => {
+    const check = async () => {
       try {
-        let unclaimed = await getNodeStatus();
+        const unclaimed = await getNodeStatus();
         updateState({ unclaimed });
       }
       catch(err) {
@@ -41,7 +41,7 @@ export function useAdmin() {
     check();
   }, []);
 
-  let actions = {
+  const actions = {
     setPassword: (password) => {
       updateState({ password });
     },
@@ -56,11 +56,11 @@ export function useAdmin() {
             await setNodeStatus(state.password);
           }
           try {
-            let session = await setNodeAccess(state.password, state.mfaCode);
+            const session = await setNodeAccess(state.password, state.mfaCode);
             app.actions.setAdmin(session);          
           }
           catch (err) {
-            let msg = err?.message;
+            const msg = err?.message;
             if (msg === '405' || msg === '403' || msg === '429') {
               updateState({ busy: false, mfaModal: true, mfaError: msg });
             }
@@ -88,7 +88,7 @@ export function useAdmin() {
   }
 
   useEffect(() => {
-    let { strings, menuStyle } = settings.state;
+    const { strings, menuStyle } = settings.state;
     updateState({ strings, menuStyle });
   }, [settings.state]);
 
