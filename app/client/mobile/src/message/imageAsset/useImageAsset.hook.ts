@@ -6,9 +6,9 @@ import {MediaAsset} from '../../conversation/Conversation';
 import {Download} from '../../download';
 
 export function useImageAsset(topicId: string, asset: MediaAsset) {
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
-  let [state, setState] = useState({
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const [state, setState] = useState({
     strings: display.state.strings,
     thumbUrl: null,
     dataUrl: null,
@@ -20,18 +20,18 @@ export function useImageAsset(topicId: string, asset: MediaAsset) {
     height: 0,
     failed: false,
   });
-  let cancelled = useRef(false);
+  const cancelled = useRef(false);
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let setThumb = async () => {
-    let {focus} = app.state;
-    let assetId = asset.image ? asset.image.thumb : asset.encrypted ? asset.encrypted.thumb : null;
+  const setThumb = async () => {
+    const {focus} = app.state;
+    const assetId = asset.image ? asset.image.thumb : asset.encrypted ? asset.encrypted.thumb : null;
     if (focus && assetId != null) {
       try {
-        let thumbUrl = await focus.getTopicAssetUrl(topicId, assetId);
+        const thumbUrl = await focus.getTopicAssetUrl(topicId, assetId);
         updateState({thumbUrl});
       } catch (err) {
         console.log(err);
@@ -44,13 +44,13 @@ export function useImageAsset(topicId: string, asset: MediaAsset) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asset]);
 
-  let actions = {
+  const actions = {
     loaded: e => {
-      let {width, height} = e.nativeEvent.source;
+      const {width, height} = e.nativeEvent.source;
       updateState({loaded: true, ratio: width / height});
     },
     fullscreen: e => {
-      let {width, height} = e.nativeEvent.layout;
+      const {width, height} = e.nativeEvent.layout;
       updateState({width, height});
     },
     cancelLoad: () => {
@@ -69,13 +69,13 @@ export function useImageAsset(topicId: string, asset: MediaAsset) {
       }
     },
     loadImage: async () => {
-      let {focus} = app.state;
-      let assetId = asset.image ? asset.image.full : asset.encrypted ? asset.encrypted.parts : null;
+      const {focus} = app.state;
+      const assetId = asset.image ? asset.image.full : asset.encrypted ? asset.encrypted.parts : null;
       if (focus && assetId != null && !state.loading && !state.dataUrl) {
         cancelled.current = false;
         updateState({loading: true, loadPercent: 0});
         try {
-          let dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
+          const dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
             updateState({loadPercent});
             return !cancelled.current;
           });
