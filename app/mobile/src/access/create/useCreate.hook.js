@@ -8,11 +8,11 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useCreate() {
 
-  var [count, setCount] = useState(0);
-  var navigate = useNavigate();
-  var app = useContext(AppContext);
+  const [count, setCount] = useState(0);
+  const navigate = useNavigate();
+  const app = useContext(AppContext);
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     strings: getLanguageStrings(),
     busy: false,
     enabled: false,
@@ -34,11 +34,11 @@ export function useCreate() {
     showTerms: false,
   });
 
-  var backoff = useRef(false);
-  var checking = useRef(false);
-  var debounce = useRef(null);
+  const backoff = useRef(false);
+  const checking = useRef(false);
+  const debounce = useRef(null);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -75,7 +75,7 @@ export function useCreate() {
       clearTimeout(debounce.current);
     }
 
-    var restricted = new RegExp('[!@#$%^&*()\ ,.?":{}|<>]', 'i');
+    const restricted = new RegExp('[!@#$%^&*()\ ,.?":{}|<>]', 'i');
     if (restricted.test(state.username)) {
       updateState({ usernameValid: false });
       return;
@@ -86,11 +86,11 @@ export function useCreate() {
       debounce.current = null;
       if (state.server) {
         try {
-          var available = await getAvailable(state.server);
+          const available = await getAvailable(state.server);
           if (available) {
             if (state.username) {
               try {
-                var claimable = await getUsername(state.username, state.server, null);
+                const claimable = await getUsername(state.username, state.server, null);
                 updateState({ tokenRequired: false, usernameValid: claimable, serverValid: true });
               }
               catch (err) {
@@ -104,11 +104,11 @@ export function useCreate() {
           else {
             if (state.token) {
               try {
-                var accessible = await getUsername(null, state.server, state.token);
+                const accessible = await getUsername(null, state.server, state.token);
                 if (accessible) {
                   if (state.username) {
                     try {
-                      var claimable = await getUsername(state.username, state.server, state.token);
+                      const claimable = await getUsername(state.username, state.server, state.token);
                       updateState({ tokenRequired: true, usernameValid: claimable, tokenValid: true, serverValid: true });
                     }
                     catch (err) {
@@ -148,7 +148,7 @@ export function useCreate() {
     }, 1000);
   }, [count]);
 
-  var actions = {
+  const actions = {
     config: () => {
       navigate('/admin');
     },
