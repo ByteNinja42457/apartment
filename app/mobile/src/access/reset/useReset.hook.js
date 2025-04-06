@@ -6,10 +6,10 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useReset() {
 
-  const navigate = useNavigate();
-  const app = useContext(AppContext);
+  let navigate = useNavigate();
+  let app = useContext(AppContext);
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     strings: getLanguageStrings(),
     busy: false,
     enabled: false,
@@ -19,7 +19,7 @@ export function useReset() {
     showTerms: false,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -38,7 +38,7 @@ export function useReset() {
     }
   }, [state.server, state.token]);
 
-  const actions = {
+  let actions = {
     config: () => {
       navigate('/admin');
     },
