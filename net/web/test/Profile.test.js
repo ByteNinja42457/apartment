@@ -5,8 +5,8 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let profileContext = null;
 function ProfileView() {
-  var [renderCount, setRenderCount] = useState(0);
-  var profile = useContext(ProfileContext);
+  const [renderCount, setRenderCount] = useState(0);
+  const profile = useContext(ProfileContext);
   profileContext = profile;
 
   useEffect(() => {
@@ -38,12 +38,12 @@ function ProfileTestApp() {
   )
 }
 
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 let identity = { };
 
 beforeEach(() => {
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
     if (options.method === 'PUT') {
       identity = JSON.parse(options.body);
     }
@@ -90,7 +90,7 @@ test('testing profile sync', async () => {
     expect(screen.getByTestId('name').textContent).toBe("tester");
   }); 
 
-  var count = screen.getByTestId('count').textContent;
+  const count = screen.getByTestId('count').textContent;
 
   await act(async () => {
     identity = { name: 'renderer' };
@@ -98,8 +98,8 @@ test('testing profile sync', async () => {
   });
 
   await waitFor(async () => {
-    var renderCount = parseInt(screen.getByTestId('count').textContent);
-    var nextCount = parseInt(count) + 1;
+    const renderCount = parseInt(screen.getByTestId('count').textContent);
+    const nextCount = parseInt(count) + 1;
     expect(nextCount).toBe(renderCount);
   });
 
