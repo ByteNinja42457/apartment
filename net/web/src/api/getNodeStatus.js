@@ -1,7 +1,7 @@
 import { checkResponse, fetchWithTimeout } from './fetchUtil';
 
 export async function getNodeStatus() {
-  const status = await fetchWithTimeout(`/admin/status`, { method: 'GET' });
+  let status = await fetchWithTimeout(`/admin/status`, { method: 'GET' });
   checkResponse(status);
   return await status.json();
 }
