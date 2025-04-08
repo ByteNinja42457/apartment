@@ -1,5 +1,5 @@
 export function getCardByGuid(cards, guid) {
-  const card = null;
+  let card = null;
   cards.forEach((value, key, map) => {
     if(value?.card?.profile?.guid === guid) {
       card = value;
