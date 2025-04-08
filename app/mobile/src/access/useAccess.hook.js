@@ -4,12 +4,12 @@ import config from 'constants/Config';
 
 export function useAccess() {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     split: null,
   });
-  const dimensions = useWindowDimensions();
+  let dimensions = useWindowDimensions();
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -22,7 +22,7 @@ export function useAccess() {
     }
   }, [dimensions]);
 
-  const actions = {
+  let actions = {
   };
 
   return { state, actions };
