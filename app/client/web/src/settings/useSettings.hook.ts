@@ -5,15 +5,15 @@ import { ContextType } from '../context/ContextType'
 import { type Profile, type Config, PushType } from 'databag-client-sdk'
 import { Point, Area } from 'react-easy-crop/types'
 
-var IMAGE_DIM = 192
-var DEBOUNCE_MS = 1000
+const IMAGE_DIM = 192
+const DEBOUNCE_MS = 1000
 
 function urlB64ToUint8Array(b64: string) {
-  var padding = '='.repeat((4 - (b64.length % 4)) % 4)
-  var base64 = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const padding = '='.repeat((4 - (b64.length % 4)) % 4)
+  const base64 = (b64 + padding).replace(/-/g, '+').replace(/_/g, '/')
 
-  var rawData = window.atob(base64)
-  var outputArray = new Uint8Array(rawData.length)
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
 
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i)
@@ -22,11 +22,11 @@ function urlB64ToUint8Array(b64: string) {
 }
 
 export function useSettings() {
-  var display = useContext(DisplayContext) as ContextType
-  var app = useContext(AppContext) as ContextType
-  var debounce = useRef(setTimeout(() => {}, 0))
+  const display = useContext(DisplayContext) as ContextType
+  const app = useContext(AppContext) as ContextType
+  const debounce = useRef(setTimeout(() => {}, 0))
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     config: {} as Config,
     profile: {} as Profile,
     profileSet: false,
@@ -70,14 +70,14 @@ export function useSettings() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  var updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
-  var getSession = () => {
-    var session = app.state?.session
-    var settings = session?.getSettings()
-    var identity = session?.getIdentity()
+  const getSession = () => {
+    const session = app.state?.session
+    const settings = session?.getSettings()
+    const identity = session?.getIdentity()
     if (!settings || !identity) {
       console.log('session not set in settings hook')
     }
@@ -85,14 +85,14 @@ export function useSettings() {
   }
 
   useEffect(() => {
-    var { settings, identity } = getSession()
-    var setConfig = (config: Config) => {
+    const { settings, identity } = getSession()
+    const setConfig = (config: Config) => {
       updateState({ config })
     }
     settings.addConfigListener(setConfig)
-    var setProfile = (profile: Profile) => {
-      var { handle, name, location, description } = profile
-      var url = identity.getProfileImageUrl()
+    const setProfile = (profile: Profile) => {
+      const { handle, name, location, description } = profile
+      const url = identity.getProfileImageUrl()
       updateState({
         profile,
         handle,
@@ -112,7 +112,7 @@ export function useSettings() {
   }, [])
 
   useEffect(() => {
-    var { strings, dateFormat, timeFormat, themes, scheme, languages, language, audioId, audioInputs, videoId, videoInputs } = display.state
+    const { strings, dateFormat, timeFormat, themes, scheme, languages, language, audioId, audioInputs, videoId, videoInputs } = display.state
     updateState({
       strings,
       dateFormat,
@@ -128,105 +128,105 @@ export function useSettings() {
     })
   }, [display.state])
 
-  var actions = {
+  const actions = {
     loadBlockedMessages: async () => {
-      var settings = app.state.session.getSettings()
-      var blockedMessages = await settings.getBlockedTopics()
+      const settings = app.state.session.getSettings()
+      const blockedMessages = await settings.getBlockedTopics()
       updateState({ blockedMessages })
     },
     unblockMessage: async (cardId: string | null, channelId: string, topicId: string) => {
-      var content = app.state.session.getContent()
+      const content = app.state.session.getContent()
       await content.clearBlockedChannelTopic(cardId, channelId, topicId)
-      var blockedMessages = state.blockedMessages.filter((blocked) => blocked.cardId != cardId || blocked.channelId != channelId || blocked.topicId != topicId)
+      const blockedMessages = state.blockedMessages.filter((blocked) => blocked.cardId != cardId || blocked.channelId != channelId || blocked.topicId != topicId)
       updateState({ blockedMessages })
     },
     loadBlockedChannels: async () => {
-      var settings = app.state.session.getSettings()
-      var blockedChannels = await settings.getBlockedChannels()
+      const settings = app.state.session.getSettings()
+      const blockedChannels = await settings.getBlockedChannels()
       updateState({ blockedChannels })
     },
     unblockChannel: async (cardId: string | null, channelId: string) => {
-      var content = app.state.session.getContent()
+      const content = app.state.session.getContent()
       await content.setBlockedChannel(cardId, channelId, false)
-      var blockedChannels = state.blockedChannels.filter((blocked) => blocked.cardId != cardId || blocked.channelId != channelId)
+      const blockedChannels = state.blockedChannels.filter((blocked) => blocked.cardId != cardId || blocked.channelId != channelId)
       updateState({ blockedChannels })
     },
     loadBlockedCards: async () => {
-      var settings = app.state.session.getSettings()
-      var blockedCards = await settings.getBlockedCards()
+      const settings = app.state.session.getSettings()
+      const blockedCards = await settings.getBlockedCards()
       updateState({ blockedCards })
     },
     unblockCard: async (cardId: string) => {
-      var contact = app.state.session.getContact()
+      const contact = app.state.session.getContact()
       await contact.setBlockedCard(cardId, false)
-      var blockedCards = state.blockedCards.filter((blocked) => blocked.cardId != cardId)
+      const blockedCards = state.blockedCards.filter((blocked) => blocked.cardId != cardId)
       updateState({ blockedCards })
     },
     getUsernameStatus: async (username: string) => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       return await settings.getUsernameStatus(username)
     },
     setLogin: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.setLogin(state.handle, state.password)
     },
     enableNotifications: async () => {
-      var webPushKey = state.config?.webPushKey
+      const webPushKey = state.config?.webPushKey
       if (!webPushKey) {
         throw new Error('web push key not set')
       }
-      var status = await Notification.requestPermission()
+      const status = await Notification.requestPermission()
       if (status === 'granted') {
-        var registration = await navigator.serviceWorker.register('push.js')
+        const registration = await navigator.serviceWorker.register('push.js')
         await navigator.serviceWorker.ready
-        var params = { userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(webPushKey) }
-        var subscription = await registration.pushManager.subscribe(params)
+        const params = { userVisibleOnly: true, applicationServerKey: urlB64ToUint8Array(webPushKey) }
+        const subscription = await registration.pushManager.subscribe(params)
 
-        var endpoint = subscription.endpoint
-        var binPublicKey = subscription.getKey('p256dh')
-        var binAuth = subscription.getKey('auth')
+        const endpoint = subscription.endpoint
+        const binPublicKey = subscription.getKey('p256dh')
+        const binAuth = subscription.getKey('auth')
 
         if (endpoint && binPublicKey && binAuth) {
-          var numPublicKey: number[] = []
+          const numPublicKey: number[] = []
           new Uint8Array(binPublicKey).forEach((val) => {
             numPublicKey.push(val)
           })
-          var numAuth: number[] = []
+          const numAuth: number[] = []
           new Uint8Array(binAuth).forEach((val) => {
             numAuth.push(val)
           })
-          var publicKey = btoa(String.fromCharCode.apply(null, numPublicKey))
-          var auth = btoa(String.fromCharCode.apply(null, numAuth))
+          const publicKey = btoa(String.fromCharCode.apply(null, numPublicKey))
+          const auth = btoa(String.fromCharCode.apply(null, numAuth))
 
-          var pushParams = { endpoint, publicKey, auth, type: PushType.Web }
-          var { settings } = getSession()
+          const pushParams = { endpoint, publicKey, auth, type: PushType.Web }
+          const { settings } = getSession()
           await settings.enableNotifications(pushParams)
         }
       }
     },
     disableNotifications: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.disableNotifications()
     },
     enableRegistry: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.enableRegistry()
     },
     disableRegistry: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.disableRegistry()
     },
     enableMFA: async () => {
-      var { settings } = getSession()
-      var { secretImage, secretText } = await settings.enableMFA()
+      const { settings } = getSession()
+      const { secretImage, secretText } = await settings.enableMFA()
       updateState({ secretImage, secretText })
     },
     disableMFA: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.disableMFA()
     },
     confirmMFA: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.confirmMFA(state.code)
     },
     setCode: (code: string) => {
@@ -240,35 +240,35 @@ export function useSettings() {
       }, 1000)
     },
     setSeal: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.setSeal(state.sealPassword)
     },
     clearSeal: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.clearSeal()
     },
     unlockSeal: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.unlockSeal(state.sealPassword)
     },
     forgetSeal: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.forgetSeal()
     },
     updateSeal: async () => {
-      var { settings } = getSession()
+      const { settings } = getSession()
       await settings.updateSeal(state.sealPassword)
     },
     setProfileData: async (name: string, location: string, description: string) => {
-      var { identity } = getSession()
+      const { identity } = getSession()
       await identity.setProfileData(name, location, description)
     },
     setProfileImage: async (image: string) => {
-      var { identity } = getSession()
+      const { identity } = getSession()
       await identity.setProfileImage(image)
     },
     getProfileImageUrl: () => {
-      var { identity } = getSession()
+      const { identity } = getSession()
       return identity.getProfileImageUrl()
     },
     setLanguage: (code: string) => {
@@ -302,8 +302,8 @@ export function useSettings() {
         updateState({ available: true, checked: true })
       } else {
         debounce.current = setTimeout(async () => {
-          var { settings } = getSession()
-          var available = await settings.getUsernameStatus(handle)
+          const { settings } = getSession()
+          const available = await settings.getUsernameStatus(handle)
           updateState({ taken: !available, checked: true })
         }, DEBOUNCE_MS)
       }
@@ -324,8 +324,8 @@ export function useSettings() {
       updateState({ description })
     },
     setDetails: async () => {
-      var { identity } = getSession()
-      var { name, location, description } = state
+      const { identity } = getSession()
+      const { name, location, description } = state
       await identity.setProfileData(name, location, description)
     },
     setCrop: (crop: Point) => {
@@ -350,14 +350,14 @@ export function useSettings() {
       updateState({ sealConfirm })
     },
     setImage: async () => {
-      var { identity } = getSession()
-      var processImg = () => {
+      const { identity } = getSession()
+      const processImg = () => {
         return new Promise<string>((resolve, reject) => {
-          var img = new Image()
+          const img = new Image()
           img.onload = () => {
             try {
-              var canvas = document.createElement('canvas')
-              var context = canvas.getContext('2d')
+              const canvas = document.createElement('canvas')
+              const context = canvas.getContext('2d')
               if (!context) {
                 throw new Error('failed to allocate context')
               }
@@ -378,14 +378,14 @@ export function useSettings() {
           img.src = state.editImage
         })
       }
-      var dataUrl = await processImg()
-      var data = dataUrl.split(',')[1]
+      const dataUrl = await processImg()
+      const data = dataUrl.split(',')[1]
       await identity.setProfileImage(data)
     },
     getTimestamp: (created: number) => {
-      var now = Math.floor(new Date().getTime() / 1000)
-      var date = new Date(created * 1000)
-      var offset = now - created
+      const now = Math.floor(new Date().getTime() / 1000)
+      const date = new Date(created * 1000)
+      const offset = now - created
       if (offset < 43200) {
         if (state.timeFormat === '12h') {
           return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
