@@ -13,8 +13,8 @@ import { ChannelContextProvider } from 'context/ChannelContext';
 import { StoreContext } from 'context/StoreContext';
 
 function AppView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const app = useContext(AppContext);
+  var [renderCount, setRenderCount] = useState(0);
+  var app = useContext(AppContext);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
@@ -64,17 +64,17 @@ jest.mock('react-native-device-info', () => ({
   getDeviceId: () => '##',
 }));
 
-const realUseContext = React.useContext;
-const realCreateWebsocket = fetchUtil.createWebsocket;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realUseContext = React.useContext;
+var realCreateWebsocket = fetchUtil.createWebsocket;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
-  const mockCreateWebsocket = jest.fn().mockImplementation((url) => {
+  var mockCreateWebsocket = jest.fn().mockImplementation((url) => {
     mockWebsocket = new MockWebsocket(url);
     return mockWebsocket;
   });
 
-  const mockUseContext = jest.fn().mockImplementation((ctx) => {
+  var mockUseContext = jest.fn().mockImplementation((ctx) => {
     if (ctx === StoreContext) {
       return useTestStoreContext();
     }
@@ -82,7 +82,7 @@ beforeEach(() => {
   });
   React.useContext = mockUseContext;
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (url.startsWith('https://test.org/account/apps')) {
       return Promise.resolve({
         json: () => Promise.resolve({ guid: '123', appToken: 'abc' })
@@ -112,7 +112,7 @@ test('testing', async () => {
   });
 
   await act(async () => {
-    const app = screen.getByTestId('app').props.app;
+    var app = screen.getByTestId('app').props.app;
     app.actions.login('testlogin@test.org', 'testpassword');
   });
 
