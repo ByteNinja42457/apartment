@@ -5,9 +5,9 @@ import { ContextType } from '../context/ContextType'
 import { Focus } from 'databag-client-sdk'
 
 export function useSession() {
-  let app = useContext(AppContext) as ContextType
-  let display = useContext(DisplayContext) as ContextType
-  let [state, setState] = useState({
+  const app = useContext(AppContext) as ContextType
+  const display = useContext(DisplayContext) as ContextType
+  const [state, setState] = useState({
     focus: null as Focus | null,
     layout: null,
     strings: display.state.strings,
@@ -15,12 +15,12 @@ export function useSession() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    let setStatus = (status: string) => {
+    const setStatus = (status: string) => {
       if (status === 'disconnected') {
         updateState({ disconnected: true })
       }
@@ -28,7 +28,7 @@ export function useSession() {
         updateState({ disconnected: false })
       }
     }
-    let session = app.state.session
+    const session = app.state.session
     if (session) {
       session.addStatusListener(setStatus)
       return () => session.removeStatusListener()
@@ -36,16 +36,16 @@ export function useSession() {
   }, [app.state.session])
 
   useEffect(() => {
-    let { layout, strings } = display.state
+    const { layout, strings } = display.state
     updateState({ layout, strings })
   }, [display.state])
 
   useEffect(() => {
-    let { focus } = app.state
+    const { focus } = app.state
     updateState({ focus })
   }, [app.state])
 
-  let actions = {}
+  const actions = {}
 
   return { state, actions }
 }
