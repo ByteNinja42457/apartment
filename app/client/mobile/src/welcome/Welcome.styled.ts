@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export let styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   base: {
     width: '100%',
     height: '100%',
