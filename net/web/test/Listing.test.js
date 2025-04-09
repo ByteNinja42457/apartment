@@ -7,14 +7,14 @@ import * as fetchUtil from 'api/fetchUtil';
 
 let listing = null;
 function ListingView() {
-  var { state, actions } = useListing();
-  var [renderCount, setRenderCount] = useState(0);
-  var [contacts, setContacts] = useState([]);
+  const { state, actions } = useListing();
+  const [renderCount, setRenderCount] = useState(0);
+  const [contacts, setContacts] = useState([]);
 
   listing = actions;
   useEffect(() => {
 
-    var rendered = [];
+    const rendered = [];
     state.contacts.forEach(item => {
       rendered.push(
         <div key={item.guid} data-testid="contact">
@@ -44,12 +44,12 @@ function ListingTestApp() {
 }
 
 let fetchListing;
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
   fetchListing = [];
 
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
 
     return Promise.resolve({
       json: () => Promise.resolve(fetchListing)
