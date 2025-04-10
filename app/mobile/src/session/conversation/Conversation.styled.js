@@ -2,7 +2,7 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from 'constants/Colors';
 
-export let styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   title: {
     display: 'flex',
     flexDirection: 'row',
