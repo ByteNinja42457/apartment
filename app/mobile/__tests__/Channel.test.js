@@ -7,13 +7,13 @@ import { ChannelContextProvider, ChannelContext } from 'context/ChannelContext';
 import * as fetchUtil from 'api/fetchUtil';
 
 function ChannelView() {
-  const [renderCount, setRenderCount] = useState(0);
-  const channel = useContext(ChannelContext);
-  const [channels, setChannels] = useState([]);
+  var [renderCount, setRenderCount] = useState(0);
+  var channel = useContext(ChannelContext);
+  var [channels, setChannels] = useState([]);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
-    const rendered = [];
+    var rendered = [];
     channel.state.channels.forEach((value) => {
       rendered.push(<Text key={value.channelId} testID={value.channelId}>{ value.detail.data }</Text>);
     });
@@ -35,21 +35,21 @@ function ChannelTestApp() {
   )
 }
 
-const realUseContext = React.useContext;
-const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+var realUseContext = React.useContext;
+var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
 let fetchChannels;
 let fetchDetail;
 beforeEach(() => {
   fetchChannels = [];
 
-  const mockUseContext = jest.fn().mockImplementation((ctx) => {
+  var mockUseContext = jest.fn().mockImplementation((ctx) => {
     return useTestStoreContext();
   });
   React.useContext = mockUseContext;
 
-  const mockFetch = jest.fn().mockImplementation((url, options) => {
+  var mockFetch = jest.fn().mockImplementation((url, options) => {
     if (url.startsWith('https://test.org/content/channels?agent')) {
       return Promise.resolve({
         json: () => Promise.resolve(fetchChannels)
@@ -94,7 +94,7 @@ test('add, update, and remove', async () => {
   }];
 
   await act(async () => {
-    const channel = screen.getByTestId('channel').props.channel;
+    var channel = screen.getByTestId('channel').props.channel;
     await channel.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
     await channel.actions.setRevision(1);
   });
@@ -106,7 +106,7 @@ test('add, update, and remove', async () => {
   fetchChannels = [];
 
   await act(async () => {
-    const channel = screen.getByTestId('channel').props.channel;
+    var channel = screen.getByTestId('channel').props.channel;
     await channel.actions.clearSession();
     await channel.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
   });
@@ -130,7 +130,7 @@ test('add, update, and remove', async () => {
   };
 
   await act(async () => {
-    const channel = screen.getByTestId('channel').props.channel;
+    var channel = screen.getByTestId('channel').props.channel;
     await channel.actions.setRevision(2);
   });
 
@@ -144,7 +144,7 @@ test('add, update, and remove', async () => {
   }];
 
   await act(async () => {
-    const channel = screen.getByTestId('channel').props.channel;
+    var channel = screen.getByTestId('channel').props.channel;
     await channel.actions.setRevision(3);
   });
 
@@ -153,7 +153,7 @@ test('add, update, and remove', async () => {
   });
 
   await act(async () => {
-    const channel = screen.getByTestId('channel').props.channel;
+    var channel = screen.getByTestId('channel').props.channel;
     await channel.actions.clearSession();
     await channel.actions.setSession({ guid: 'abc', server: 'test.org', token: '123' });
   });
