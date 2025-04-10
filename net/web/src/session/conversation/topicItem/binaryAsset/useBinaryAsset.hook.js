@@ -2,29 +2,29 @@ import { useState, useRef } from 'react';
 
 export function useBinaryAsset(asset) {
 
-  const index = useRef(0);
-  const updated = useRef(false);
+  let index = useRef(0);
+  let updated = useRef(false);
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     error: false,
     unsealing: false,
     block: 0,
     total: 0,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const actions = {
+  let actions = {
     download: async () => {
       if (asset.encrypted) {
         if (!state.unsealing) {
           try {
             updateState({ error: false, unsealing: true });
-            const view = index.current;
+            let view = index.current;
             updateState({ active: true, ready: false, error: false, loading: true, url: null });
-            const blob = await asset.getDecryptedBlob(() => view !== index.current, (block, total) => { 
+            let blob = await asset.getDecryptedBlob(() => view !== index.current, (block, total) => { 
               if (!updated.current || block === total) {
                 updated.current = true;
                 setTimeout(() => {
@@ -33,8 +33,8 @@ export function useBinaryAsset(asset) {
                 updateState({ block, total });
               }
             });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
+            let url = URL.createObjectURL(blob);
+            let link = document.createElement("a");
             link.download = `${asset.label}.${asset.extension.toLowerCase()}`
             link.href = url;
             link.click();
@@ -48,7 +48,7 @@ export function useBinaryAsset(asset) {
         }
       }
       else {
-        const link = document.createElement("a");
+        let link = document.createElement("a");
         link.download = `${asset.label}.${asset.extension.toLowerCase()}`
         link.href = asset.data;
         link.click();
