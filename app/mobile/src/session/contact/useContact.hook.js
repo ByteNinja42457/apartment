@@ -12,7 +12,7 @@ import avatar from 'images/avatar.png';
 
 export function useContact(contact, back) {
 
-  const [state, setState] = useState({
+  var [state, setState] = useState({
     name: null,
     handle: null,
     node: null,
@@ -32,17 +32,17 @@ export function useContact(contact, back) {
     username: null,
   });
 
-  const dimensions = useWindowDimensions();
-  const card = useContext(CardContext);
-  const profile = useContext(ProfileContext);
-  const display = useContext(DisplayContext);
+  var dimensions = useWindowDimensions();
+  var card = useContext(CardContext);
+  var profile = useContext(ProfileContext);
+  var display = useContext(DisplayContext);
 
-  const updateState = (value) => {
+  var updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    const { width, height } = dimensions;
+    var { width, height } = dimensions;
     if (height > width) {
       updateState({ imageWidth: width, imageHeight: width, detailWidth: width + 2 });
     }
@@ -52,29 +52,29 @@ export function useContact(contact, back) {
   }, [dimensions]);
 
   useEffect(() => {
-    const contactCard = getCardByGuid(card.state.cards, contact?.guid);
-    const { server } = profile.state;
+    var contactCard = getCardByGuid(card.state.cards, contact?.guid);
+    var { server } = profile.state;
     if (contactCard) {
-      const { offsync, profile, detail, cardId } = contactCard.card;
-      const { name, handle, node, location, description, guid, imageSet, revision } = profile;
-      const host = node ? node : server;
+      var { offsync, profile, detail, cardId } = contactCard.card;
+      var { name, handle, node, location, description, guid, imageSet, revision } = profile;
+      var host = node ? node : server;
       
-      const username = `${handle}/${node}`
-      const imageSource = imageSet ? { uri: card.actions.getCardImageUrl(cardId) } : avatar;
-      const status = offsync ? 'offsync' : detail.status;
+      var username = `${handle}/${node}`
+      var imageSource = imageSet ? { uri: card.actions.getCardImageUrl(cardId) } : avatar;
+      var status = offsync ? 'offsync' : detail.status;
       updateState({ name, handle, node: host, location, description, imageSource, username, cardId, guid, status });
     }
     else {
-      const { guid, handle, node, name, location, description, imageSet } = contact || {};
-      const host = node ? node : server;
+      var { guid, handle, node, name, location, description, imageSet } = contact || {};
+      var host = node ? node : server;
       
-      const username = `${handle}/${node}`
-      const imageSource = imageSet ? { uri: getListingImageUrl(host, guid) } : avatar;
+      var username = `${handle}/${node}`
+      var imageSource = imageSet ? { uri: getListingImageUrl(host, guid) } : avatar;
       updateState({ guid, handle, node: host, name, location, description, imageSource, username, offsync: false, status: 'unsaved' });
     }
   }, [contact, card.state, profile.state]);
 
-  const applyAction = async (action) => {
+  var applyAction = async (action) => {
     if (!state.busy) {
       try {
         updateState({ busy: true });
@@ -92,7 +92,7 @@ export function useContact(contact, back) {
     }
   }
 
-  const actions = {
+  var actions = {
     saveAndConnect: async () => {
       let profile = await getListingMessage(state.node, state.guid);
       let added = await card.actions.addCard(profile);
