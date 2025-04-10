@@ -2,24 +2,24 @@ import { useState, useRef, useEffect, useContext } from 'react';
 
 export function useVideoFile() {
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     duration: 0,
     position: 0,
     ratio: 1,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  const actions = {
+  let actions = {
     setInfo: (width, height, duration) => {
       updateState({ ratio: width / height, duration: Math.floor(duration) });
     },
     setNextPosition: () => {
       if (state.duration) {
-        const step = Math.floor(1 + state.duration / 20);
-        const position = (state.position + step ) % state.duration;
+        let step = Math.floor(1 + state.duration / 20);
+        let position = (state.position + step ) % state.duration;
         updateState({ position });
       }
     },
