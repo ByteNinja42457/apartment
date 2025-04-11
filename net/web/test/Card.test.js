@@ -4,7 +4,7 @@ import {render, act, screen, waitFor, fireEvent} from '@testing-library/react'
 import { CardContextProvider, CardContext } from 'context/CardContext';
 import * as fetchUtil from 'api/fetchUtil';
 
-let cardContext = null;
+const cardContext = null;
 function CardView() {
   var [renderCount, setRenderCount] = useState(0);
   var [cards, setCards] = useState([]);
@@ -45,14 +45,14 @@ function CardTestApp() {
 var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
 var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
-let statusCards;
-let statusMessage;
-let statusDetail;
-let statusProfile;
-let fetchCards;
-let fetchMessage;
-let fetchDetail;
-let fetchProfile;
+const statusCards;
+const statusMessage;
+const statusDetail;
+const statusProfile;
+const fetchCards;
+const fetchMessage;
+const fetchDetail;
+const fetchProfile;
 beforeEach(() => {
 
   statusMessage = 200;
