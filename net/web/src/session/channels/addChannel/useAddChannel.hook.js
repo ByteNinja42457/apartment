@@ -7,7 +7,7 @@ import { encryptChannelSubject } from 'context/sealUtil';
 
 export function useAddChannel() {
 
-  var [state, setState] = useState({
+  const [state, setState] = useState({
     sealable: false,
     busy: false,
     showAdd: false,
@@ -18,18 +18,18 @@ export function useAddChannel() {
     strings: {},
   });
 
-  var card = useContext(CardContext);
-  var channel = useContext(ChannelContext);
-  var account = useContext(AccountContext);
-  var settings = useContext(SettingsContext);
+  const card = useContext(CardContext);
+  const channel = useContext(ChannelContext);
+  const account = useContext(AccountContext);
+  const settings = useContext(SettingsContext);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    var { seal, sealKey } = account.state;
-    var allowUnsealed = account.state.status?.allowUnsealed;
+    const { seal, sealKey } = account.state;
+    const allowUnsealed = account.state.status?.allowUnsealed;
     if (seal?.publicKey && sealKey?.public && sealKey?.private && seal.publicKey === sealKey.public) {
       updateState({ seal: false, sealable: true, allowUnsealed });
     }
@@ -39,27 +39,27 @@ export function useAddChannel() {
   }, [account.state]);
 
   useEffect(() => {
-    var { strings } = settings.state;
+    const { strings } = settings.state;
     updateState({ strings });
   }, [settings.state]);
 
-  var actions = {
+  const actions = {
     addChannel: async () => {
       let conversation;
       if (!state.busy) {
         try {
           updateState({ busy: true });
-          var cards = Array.from(state.members.values());
+          const cards = Array.from(state.members.values());
           if (state.seal || !state.allowUnsealed) {
-            var keys = [ account.state.sealKey.public ];
+            const keys = [ account.state.sealKey.public ];
             cards.forEach(id => {
               keys.push(card.state.cards.get(id).data.cardProfile.seal);
             });
-            var sealed = encryptChannelSubject(state.subject, keys);
+            const sealed = encryptChannelSubject(state.subject, keys);
             conversation = await channel.actions.addChannel('sealed', sealed, cards);
           }
           else {
-            var subject = { subject: state.subject };
+            const subject = { subject: state.subject };
             conversation = await channel.actions.addChannel('superbasic', subject, cards);
           }
           updateState({ busy: false });
@@ -77,8 +77,8 @@ export function useAddChannel() {
     },
     setSeal: (seal) => {
       if (seal) {
-        var cards = Array.from(state.members.values());
-        var members = new Set(state.members);
+        const cards = Array.from(state.members.values());
+        const members = new Set(state.members);
         cards.forEach(id => {
           if (!(card.state.cards.get(id)?.data?.cardProfile?.seal)) {
             members.delete(id);
@@ -91,7 +91,7 @@ export function useAddChannel() {
       }
     },
     onMember: (string) => {
-      var members = new Set(state.members);
+      const members = new Set(state.members);
       if (members.has(string)) {
         members.delete(string);
       }
