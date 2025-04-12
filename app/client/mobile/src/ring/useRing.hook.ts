@@ -5,12 +5,12 @@ import {ContextType} from '../context/ContextType';
 import {Card} from 'databag-client-sdk';
 
 export function useRing() {
-  const ring = useContext(RingContext) as ContextType;
-  const display = useContext(DisplayContext) as ContextType;
-  const offsetTime = useRef(0);
-  const offset = useRef(false);
+  let ring = useContext(RingContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let offsetTime = useRef(0);
+  let offset = useRef(false);
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     strings: display.state.strings,
     layout: display.state.layout,
     calls: [] as {callId: string; card: Card}[],
@@ -23,20 +23,20 @@ export function useRing() {
     failed: false,
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    const {layout, strings} = display.state;
+    let {layout, strings} = display.state;
     updateState({layout, strings});
   }, [display.state]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    let interval = setInterval(() => {
       if (offset.current) {
-        const now = new Date();
-        const duration = Math.floor(now.getTime() / 1000 - offsetTime.current);
+        let now = new Date();
+        let duration = Math.floor(now.getTime() / 1000 - offsetTime.current);
         updateState({duration});
       }
     }, 1000);
@@ -46,13 +46,13 @@ export function useRing() {
   }, []);
 
   useEffect(() => {
-    const {calls, calling, localVideo, remoteVideo, audioEnabled, connected, connectedTime, failed} = ring.state;
+    let {calls, calling, localVideo, remoteVideo, audioEnabled, connected, connectedTime, failed} = ring.state;
     offsetTime.current = connectedTime;
     offset.current = connected;
-    const duration = connected ? Math.floor(new Date().getTime() / 1000 - connectedTime) : 0;
+    let duration = connected ? Math.floor(new Date().getTime() / 1000 - connectedTime) : 0;
     updateState({calls, calling, duration, localVideo, remoteVideo, audioEnabled, connected, failed});
   }, [ring.state]);
 
-  const actions = ring.actions;
+  let actions = ring.actions;
   return {state, actions};
 }
