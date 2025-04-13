@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AccountAccessWrapper = styled.div`
+export let AccountAccessWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -97,7 +97,7 @@ export const AccountAccessWrapper = styled.div`
   }
 `;
 
-export const SealModal = styled.div`
+export let SealModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -182,7 +182,7 @@ export const SealModal = styled.div`
   }
 `
 
-export const MFAModal = styled.div`
+export let MFAModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -251,7 +251,7 @@ export const MFAModal = styled.div`
   }
 `
 
-export const LoginModal = styled.div`
+export let LoginModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -316,7 +316,7 @@ export const LoginModal = styled.div`
   }
 `
 
-export const LogoutContent = styled.div`
+export let LogoutContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
