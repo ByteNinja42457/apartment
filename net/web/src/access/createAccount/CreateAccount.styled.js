@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Colors } from 'constants/Colors';
 
-export const CreateAccountWrapper = styled.div`
+export let CreateAccountWrapper = styled.div`
   max-width: 400px;
   width: 90%;
   height: 90%;
