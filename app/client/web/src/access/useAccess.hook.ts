@@ -4,11 +4,11 @@ import { AppContext } from '../context/AppContext'
 import { ContextType } from '../context/ContextType'
 
 export function useAccess() {
-  const debounceAvailable = useRef(setTimeout(() => {}, 0))
-  const debounceTaken = useRef(setTimeout(() => {}, 0))
-  const app = useContext(AppContext) as ContextType
-  const display = useContext(DisplayContext) as ContextType
-  const [state, setState] = useState({
+  let debounceAvailable = useRef(setTimeout(() => {}, 0))
+  let debounceTaken = useRef(setTimeout(() => {}, 0))
+  let app = useContext(AppContext) as ContextType
+  let display = useContext(DisplayContext) as ContextType
+  let [state, setState] = useState({
     layout: null,
     strings: display.state.strings,
     mode: '',
@@ -29,13 +29,13 @@ export function useAccess() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    const params = new URLSearchParams(location.href)
-    const search = params.get('search')
+    let params = new URLSearchParams(location.href)
+    let search = params.get('search')
     if (search && search.startsWith('?create=')) {
       updateState({ mode: 'create', token: search.substring(8) })
     } else if (search && search.startsWith('?reset=')) {
@@ -44,23 +44,23 @@ export function useAccess() {
       updateState({ mode: 'account' })
     }
 
-    const { protocol, host } = location
+    let { protocol, host } = location
     updateState({ host, secure: protocol === 'https:' })
   }, [])
 
   useEffect(() => {
-    const { username, token, host, secure, mode } = state
+    let { username, token, host, secure, mode } = state
     if (mode === 'create') {
       checkTaken(username, token, host, secure)
       getAvailable(host, secure)
     }
   }, [state.mode, state.username, state.token, state.host, state.secure])
 
-  const getAvailable = (node: string, secure: boolean) => {
+  let getAvailable = (node: string, secure: boolean) => {
     clearTimeout(debounceAvailable.current)
     debounceAvailable.current = setTimeout(async () => {
       try {
-        const available = await app.actions.getAvailable(node, secure)
+        let available = await app.actions.getAvailable(node, secure)
         updateState({ available })
       } catch (err) {
         console.log(err)
@@ -69,17 +69,17 @@ export function useAccess() {
     }, 2000)
   }
 
-  const checkTaken = (username: string, token: string, node: string, secure: boolean) => {
+  let checkTaken = (username: string, token: string, node: string, secure: boolean) => {
     updateState({ taken: false })
     clearTimeout(debounceTaken.current)
     debounceTaken.current = setTimeout(async () => {
-      const available = await app.actions.getUsername(username, token, node, secure)
+      let available = await app.actions.getUsername(username, token, node, secure)
       updateState({ taken: !available })
     }, 2000)
   }
 
   useEffect(() => {
-    const { layout, strings, themes, scheme, languages, language } = display.state
+    let { layout, strings, themes, scheme, languages, language } = display.state
     updateState({
       layout,
       strings,
@@ -90,7 +90,7 @@ export function useAccess() {
     })
   }, [display.state])
 
-  const actions = {
+  let actions = {
     setMode: (mode: string) => {
       updateState({ mode })
     },
@@ -110,7 +110,7 @@ export function useAccess() {
       updateState({ code })
     },
     setNode: (host: string) => {
-      const insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(host)
+      let insecure = /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|:\d+$|$)){4}$/.test(host)
       updateState({ host, secure: !insecure })
     },
     setLanguage: (code: string) => {
@@ -123,19 +123,19 @@ export function useAccess() {
       updateState({ loading })
     },
     accountLogin: async () => {
-      const { username, password, host, secure, code } = state
+      let { username, password, host, secure, code } = state
       await app.actions.accountLogin(username, password, host, secure, code)
     },
     accountCreate: async () => {
-      const { username, password, host, secure, token } = state
+      let { username, password, host, secure, token } = state
       await app.actions.accountCreate(username, password, host, secure, token)
     },
     accountAccess: async () => {
-      const { host, secure, token } = state
+      let { host, secure, token } = state
       await app.actions.accountAccess(host, secure, token)
     },
     adminLogin: async () => {
-      const { password, host, secure, code } = state
+      let { password, host, secure, code } = state
       await app.actions.adminLogin(password, host, secure, code)
     },
   }
