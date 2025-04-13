@@ -21,8 +21,8 @@ import { setChannelNotifications } from './net/setChannelNotifications';
 import { addFlag } from './net/addFlag';
 import { getLegacyData } from './legacy';
 
-const CLOSE_POLL_MS = 100;
-const RETRY_POLL_MS = 2000;
+let CLOSE_POLL_MS = 100;
+let RETRY_POLL_MS = 2000;
 
 export class StreamModule {
   private log: Logging;
@@ -79,24 +79,24 @@ export class StreamModule {
   }
 
   private async init() {
-    const { guid } = this;
+    let { guid } = this;
     this.revision = await this.store.getContentRevision(guid);
 
-    const blockedMarkers = await this.store.getMarkers(guid, 'blocked_channel');
+    let blockedMarkers = await this.store.getMarkers(guid, 'blocked_channel');
     blockedMarkers.forEach((marker) => {
       this.blocked.add(marker.id);
     });
-    const readMarkers = await this.store.getMarkers(guid, 'read_channel');
+    let readMarkers = await this.store.getMarkers(guid, 'read_channel');
     readMarkers.forEach((marker) => {
       this.read.set(marker.id, parseInt(marker.value));
     });
-    const hasSyncedMarkers = await this.store.getMarkers(guid, 'first_sync_complete');
+    let hasSyncedMarkers = await this.store.getMarkers(guid, 'first_sync_complete');
     this.hasSynced = hasSyncedMarkers.filter((marker) => (marker.id === 'stream')).length !== 0;
 
     // load map of channels
-    const channels = await this.store.getContentChannels(guid);
+    let channels = await this.store.getContentChannels(guid);
     channels.forEach(({ channelId, item }) => {
-      const channel = this.setChannel(channelId, item);
+      let channel = this.setChannel(channelId, item);
       this.channelEntries.set(channelId, { item, channel });
     });
     this.emitChannels();
@@ -124,20 +124,20 @@ export class StreamModule {
   private async sync(): Promise<void> {
     if (!this.syncing) {
       this.syncing = true;
-      const { guid, node, secure, token, channelTypes } = this;
+      let { guid, node, secure, token, channelTypes } = this;
       while ((this.unsealAll || this.nextRevision) && !this.closing) {
         if (this.nextRevision && this.revision !== this.nextRevision) {
-          const nextRev = this.nextRevision;
+          let nextRev = this.nextRevision;
           try {
-            const delta = await getChannels(node, secure, token, this.revision, channelTypes);
-            for (const entity of delta) {
-              const { id, revision, data } = entity;
+            let delta = await getChannels(node, secure, token, this.revision, channelTypes);
+            for (let entity of delta) {
+              let { id, revision, data } = entity;
               if (data) {
-                const { detailRevision, topicRevision, channelSummary, channelDetail } = data;
-                const entry = await this.getChannelEntry(id);
+                let { detailRevision, topicRevision, channelSummary, channelDetail } = data;
+                let entry = await this.getChannelEntry(id);
 
                 if (detailRevision !== entry.item.detail.revision) {
-                  const detail = channelDetail ? channelDetail : await getChannelDetail(node, secure, token, id);
+                  let detail = channelDetail ? channelDetail : await getChannelDetail(node, secure, token, id);
                   entry.item.detail = {
                     revision: detailRevision,
                     sealed: detail.dataType === 'sealed',
@@ -156,10 +156,10 @@ export class StreamModule {
                   await this.unsealChannelDetail(id, entry.item);
                   entry.channel = this.setChannel(id, entry.item);
                   if (this.focus) {
-                    const { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = detail;
-                    const sealed = dataType === 'sealed';
-                    const channelData = sealed ? entry.item.unsealedDetail : data;
-                    const focusDetail = { 
+                    let { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = detail;
+                    let sealed = dataType === 'sealed';
+                    let channelData = sealed ? entry.item.unsealedDetail : data;
+                    let focusDetail = { 
                       sealed,
                       locked: sealed && (!this.seal || !entry.item.channelKey),
                       dataType,
@@ -177,7 +177,7 @@ export class StreamModule {
                 }
 
                 if (topicRevision !== entry.item.summary.revision) {
-                  const summary = channelSummary ? channelSummary : await getChannelSummary(node, secure, token, id);
+                  let summary = channelSummary ? channelSummary : await getChannelSummary(node, secure, token, id);
                   entry.item.summary = {
                     revision: topicRevision,
                     sealed: summary.lastTopic.dataType === 'sealedtopic',
@@ -231,9 +231,9 @@ export class StreamModule {
         }
 
         if (this.unsealAll) {
-          for (const [channelId, entry] of this.channelEntries.entries()) {
+          for (let [channelId, entry] of this.channelEntries.entries()) {
             try {
-              const { item } = entry;
+              let { item } = entry;
               if (await this.unsealChannelDetail(channelId, item)) {
                 await this.store.setContentChannelUnsealedDetail(guid, channelId, item.unsealedDetail);
               }
@@ -260,7 +260,7 @@ export class StreamModule {
 
   public addChannelListener(ev: (arg: { channels: Channel[]; cardId: string | null }) => void): void {
     this.emitter.on('channel', ev);
-    const channels = Array.from(this.channelEntries, ([channelId, entry]) => entry.channel);
+    let channels = Array.from(this.channelEntries, ([channelId, entry]) => entry.channel);
     ev({ channels, cardId: null });
   }
 
@@ -269,7 +269,7 @@ export class StreamModule {
   }
 
   private emitChannels() {
-    const channels = Array.from(this.channelEntries, ([channelId, entry]) => entry.channel);
+    let channels = Array.from(this.channelEntries, ([channelId, entry]) => entry.channel);
     this.emitter.emit('channel', { channels, cardId: null });
   }
 
@@ -307,39 +307,39 @@ export class StreamModule {
   }
 
   public async addSealedChannel(type: string, subject: any, cardIds: string[], aesKeyHex: string, seals: { publicKey: string; sealedKey: string }[]): Promise<string> {
-    const { node, secure, token, crypto, seal } = this;
+    let { node, secure, token, crypto, seal } = this;
     if (!crypto) {
       throw new Error('crypto not set');
     }
     if (!seal) {
       throw new Error('seal not set');
     }
-    const sealKey = await crypto.rsaEncrypt(aesKeyHex, seal.publicKey);
-    const hostSeal = { publicKey: seal.publicKey, sealedKey: sealKey.encryptedDataB64 };
-    const { ivHex } = await crypto.aesIv();
-    const subjectData = JSON.stringify(subject);
-    const { encryptedDataB64 } = await crypto.aesEncrypt(subjectData, ivHex, aesKeyHex);
-    const sealedSubject = { subjectEncrypted: encryptedDataB64, subjectIv: ivHex, seals: [...seals, hostSeal] };
+    let sealKey = await crypto.rsaEncrypt(aesKeyHex, seal.publicKey);
+    let hostSeal = { publicKey: seal.publicKey, sealedKey: sealKey.encryptedDataB64 };
+    let { ivHex } = await crypto.aesIv();
+    let subjectData = JSON.stringify(subject);
+    let { encryptedDataB64 } = await crypto.aesEncrypt(subjectData, ivHex, aesKeyHex);
+    let sealedSubject = { subjectEncrypted: encryptedDataB64, subjectIv: ivHex, seals: [...seals, hostSeal] };
     return await addChannel(node, secure, token, type, sealedSubject, cardIds);
   }
 
   public async addUnsealedChannel(type: string, subject: any, cardIds: string[]): Promise<string> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     return await addChannel(node, secure, token, type, subject, cardIds);
   }
 
   public async removeChannel(channelId: string): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     return await removeChannel(node, secure, token, channelId);
   }
 
   public async setChannelSubject(channelId: string, type: string, subject: any): Promise<void> {
-    const channel = this.channelEntries.get(channelId);
+    let channel = this.channelEntries.get(channelId);
     if (!channel) {
       throw new Error('channel not found');
     }
-    const { item } = channel;
-    const { node, secure, token, crypto, seal } = this;
+    let { item } = channel;
+    let { node, secure, token, crypto, seal } = this;
     if (item.detail.sealed) {
       if (!crypto) {
         throw new Error('crypto not set');
@@ -347,16 +347,16 @@ export class StreamModule {
       if (!seal) {
         throw new Error('seal not set');
       }
-      const { subjectIv, seals } = JSON.parse(item.detail.data);
+      let { subjectIv, seals } = JSON.parse(item.detail.data);
       if (!item.channelKey) {
         item.channelKey = await this.getChannelKey(seals);
       }
       if (!item.channelKey) {
         throw new Error('channel key not available');
       }
-      const subjectData = JSON.stringify(subject);
-      const { encryptedDataB64 } = await crypto.aesEncrypt(subjectData, subjectIv, item.channelKey);
-      const sealedSubject = { subjectEncrypted: encryptedDataB64, subjectIv, seals };
+      let subjectData = JSON.stringify(subject);
+      let { encryptedDataB64 } = await crypto.aesEncrypt(subjectData, subjectIv, item.channelKey);
+      let sealedSubject = { subjectEncrypted: encryptedDataB64, subjectIv, seals };
       await setChannelSubject(node, secure, token, channelId, type, sealedSubject);
     } else {
       await setChannelSubject(node, secure, token, channelId, type, subject);
@@ -364,28 +364,28 @@ export class StreamModule {
   }
 
   public async setChannelCard(channelId: string, cardId: string, getSeal: (aesKey: string)=>Promise<{publicKey: string; sealedKey: string}>): Promise<void> {
-    const { node, secure, token } = this;
-    const channel = this.channelEntries.get(channelId);
+    let { node, secure, token } = this;
+    let channel = this.channelEntries.get(channelId);
     if (!channel) {
       throw new Error('channel not found');
     }
     if (channel.item.detail.sealed) {
-      const channelKey = channel.item.channelKey;
+      let channelKey = channel.item.channelKey;
       if (!channelKey) {
         throw new Error('cannot add members to locked channels');
       }
-      const seal = await getSeal(channelKey);
-      const data = JSON.parse(channel.item.detail.data);
-      const seals = [...data.seals, seal];
-      const subject = { ...data, seals };
+      let seal = await getSeal(channelKey);
+      let data = JSON.parse(channel.item.detail.data);
+      let seals = [...data.seals, seal];
+      let subject = { ...data, seals };
       await setChannelSubject(node, secure, token, channelId, channel.item.detail.dataType, subject); 
     }
     await setChannelCard(node, secure, token, channelId, cardId);
   }
 
   public async clearChannelCard(channelId: string, cardId: string): Promise<void> {
-    const { node, secure, token } = this;
-    const channel = this.channelEntries.get(channelId);
+    let { node, secure, token } = this;
+    let channel = this.channelEntries.get(channelId);
     if (!channel) {
       throw new Error('channel not found');
     }
@@ -393,7 +393,7 @@ export class StreamModule {
   }
 
   public async getBlockedChannels(): Promise<Channel[]> {
-    const channels = [] as Channel[];
+    let channels = [] as Channel[];
     this.channelEntries.forEach((entry, channelId) => {
       if (this.isChannelBlocked(channelId)) {
         channels.push(entry.channel);
@@ -403,7 +403,7 @@ export class StreamModule {
   }
 
   public async setBlockedChannel(channelId: string, blocked: boolean): Promise<void> {
-    const entry = this.channelEntries.get(channelId);
+    let entry = this.channelEntries.get(channelId);
     if (entry) {
       if (blocked) {
         await this.setChannelBlocked(channelId);
@@ -416,8 +416,8 @@ export class StreamModule {
   }
 
   public async clearBlockedChannelTopic(channelId: string, topicId: string) {
-    const { guid } = this;
-    const id = `'':${channelId}:${topicId}`
+    let { guid } = this;
+    let id = `'':${channelId}:${topicId}`
     await this.store.clearMarker(guid, 'blocked_topic', id);
     if (this.focus) {
       await this.focus.clearBlockedChannelTopic(null, channelId, topicId);
@@ -425,22 +425,22 @@ export class StreamModule {
   }
 
   public async flagChannel(channelId: string): Promise<void> {
-    const { node, secure, guid } = this;
+    let { node, secure, guid } = this;
     await addFlag(node, secure, guid, { channelId });
   }
 
   public async getChannelNotifications(channelId: string): Promise<boolean> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     return await getChannelNotifications(node, secure, token, channelId);
   }
 
   public async setChannelNotifications(channelId: string, enabled: boolean): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setChannelNotifications(node, secure, token, channelId, enabled);
   }
 
   public async setUnreadChannel(channelId: string, unread: boolean): Promise<void> {
-    const entry = this.channelEntries.get(channelId);
+    let entry = this.channelEntries.get(channelId);
     if (!entry) {
       throw new Error('channel not found');
     }
@@ -450,7 +450,7 @@ export class StreamModule {
       this.emitChannels();
       await this.store.clearMarker(this.guid, 'read_channel', channelId);
     } else {
-      const revision = entry.item.summary.revision;
+      let revision = entry.item.summary.revision;
       this.read.set(channelId, revision);
       entry.channel = this.setChannel(channelId, entry.item);
       this.emitChannels();
@@ -459,12 +459,12 @@ export class StreamModule {
   }
 
   public async setFocus(channelId: string): Promise<Focus> {
-    const { node, secure, token, focus } = this;
+    let { node, secure, token, focus } = this;
     if (focus) {
       focus.close();
     }
 
-    const markRead = async () => {
+    let markRead = async () => {
       try {
         await this.setUnreadChannel(channelId, false);
       } catch (err) {
@@ -472,22 +472,22 @@ export class StreamModule {
       }
     }
 
-    const flagTopic = async (topicId: string) => {
-      const { node, secure, guid } = this;
+    let flagTopic = async (topicId: string) => {
+      let { node, secure, guid } = this;
       await addFlag(node, secure, guid, { channelId, topicId }); 
     }
       
-    const entry = this.channelEntries.get(channelId);
-    const channelKey = entry ? await this.setChannelKey(entry.item) : null;
-    const revision = entry ? entry.item.summary.revision : 0;
-    const sealEnabled = Boolean(this.seal);
+    let entry = this.channelEntries.get(channelId);
+    let channelKey = entry ? await this.setChannelKey(entry.item) : null;
+    let revision = entry ? entry.item.summary.revision : 0;
+    let sealEnabled = Boolean(this.seal);
     this.focus = new FocusModule(this.log, this.store, this.crypto, this.staging, null, channelId, this.guid, { node, secure, token }, channelKey, sealEnabled, revision, markRead, flagTopic);
 
     if (entry) {
-      const { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = entry.item.detail;
-      const sealed = dataType === 'sealed';
-      const channelData = sealed ? entry.item.unsealedDetail : data;
-      const focusDetail = { 
+      let { dataType, data, enableImage, enableAudio, enableVideo, enableBinary, members, created } = entry.item.detail;
+      let sealed = dataType === 'sealed';
+      let channelData = sealed ? entry.item.unsealedDetail : data;
+      let focusDetail = { 
         sealed,
         locked: sealed && (!this.seal || !entry.item.channelKey),
         dataType,
@@ -522,9 +522,9 @@ export class StreamModule {
   }
 
   private async getChannelKey(seals: [{ publicKey: string; sealedKey: string }]): Promise<string | null> {
-    const seal = seals.find(({ publicKey }) => this.seal && publicKey === this.seal.publicKey);
+    let seal = seals.find(({ publicKey }) => this.seal && publicKey === this.seal.publicKey);
     if (seal && this.crypto && this.seal) {
-      const key = await this.crypto.rsaDecrypt(seal.sealedKey, this.seal.privateKey);
+      let key = await this.crypto.rsaDecrypt(seal.sealedKey, this.seal.privateKey);
       return key.data;
     }
     return null;
@@ -535,19 +535,19 @@ export class StreamModule {
   }
 
   private async setChannelBlocked(channelId: string) {
-    const entry = this.channelEntries.get(channelId);
+    let entry = this.channelEntries.get(channelId);
     if (!entry) {
       throw new Error('channel not found');
     }
     this.blocked.add(channelId);
     entry.channel = this.setChannel(channelId, entry.item);
     this.emitChannels();
-    const timestamp = Math.floor(Date.now() / 1000);
+    let timestamp = Math.floor(Date.now() / 1000);
     await this.store.setMarker(this.guid, 'blocked_channel', channelId, JSON.stringify({ cardId: null, channelId, timestamp }));
   }
 
   private async clearChannelBlocked(channelId: string) {
-    const entry = this.channelEntries.get(channelId);
+    let entry = this.channelEntries.get(channelId);
     if (!entry) {
       throw new Error('channel not found');
     }
@@ -559,7 +559,7 @@ export class StreamModule {
 
   private isChannelUnread(channelId: string, revision: number): boolean {
     if (this.read.has(channelId)) {
-      const read = this.read.get(channelId);
+      let read = this.read.get(channelId);
       if (read && read >= revision) {
         return false;
       }
@@ -569,7 +569,7 @@ export class StreamModule {
 
   private async markChannelUnread(channelId: string, revision: number) {
     if (!this.read.has(channelId)) {
-      const read = this.read.get(channelId);
+      let read = this.read.get(channelId);
       if (read && read < revision) {
         this.read.delete(channelId);
         await this.store.clearMarker(this.guid, 'read_channel', channelId);
@@ -578,7 +578,7 @@ export class StreamModule {
   }
 
   private async markChannelRead(channelId: string, revision: number) {
-    const read = this.read.get(channelId);
+    let read = this.read.get(channelId);
     if (!read || read < revision) {
       this.read.set(channelId, revision);
       await this.store.setMarker(this.guid, 'read_channel', channelId, revision.toString());
@@ -586,11 +586,11 @@ export class StreamModule {
   }
 
   private setChannel(channelId: string, item: ChannelItem): Channel {
-    const { summary, detail, channelKey } = item;
-    const channelData = detail.sealed ? item.unsealedDetail : detail.data || '{}';
-    const topicData = summary.sealed ? item.unsealedSummary : summary.data || '{}';
-    const parsed = this.parse(topicData);
-    const data = summary.sealed ? parsed?.message : parsed;
+    let { summary, detail, channelKey } = item;
+    let channelData = detail.sealed ? item.unsealedDetail : detail.data || '{}';
+    let topicData = summary.sealed ? item.unsealedSummary : summary.data || '{}';
+    let parsed = this.parse(topicData);
+    let data = summary.sealed ? parsed?.message : parsed;
 
     return {
       channelId,
@@ -622,14 +622,14 @@ export class StreamModule {
   }
 
   private async getChannelEntry(channelId: string) {
-    const { guid } = this;
-    const entry = this.channelEntries.get(channelId);
+    let { guid } = this;
+    let entry = this.channelEntries.get(channelId);
     if (entry) {
       return entry;
     }
-    const item = JSON.parse(JSON.stringify(defaultChannelItem));
-    const channel = this.setChannel(channelId, item);
-    const channelEntry = { item, channel };
+    let item = JSON.parse(JSON.stringify(defaultChannelItem));
+    let channel = this.setChannel(channelId, item);
+    let channelEntry = { item, channel };
     this.channelEntries.set(channelId, channelEntry);
     await this.store.addContentChannel(guid, channelId, item);
     return channelEntry;
@@ -638,7 +638,7 @@ export class StreamModule {
   private async setChannelKey(item: ChannelItem) {
     if (!item.channelKey && item.detail.dataType === 'sealed' && this.seal && this.crypto) {
       try {
-        const { seals } = JSON.parse(item.detail.data);
+        let { seals } = JSON.parse(item.detail.data);
         item.channelKey = await this.getChannelKey(seals);
       } catch (err) {
         console.log(err);
@@ -650,7 +650,7 @@ export class StreamModule {
   private async unsealChannelDetail(channelId: string, item: ChannelItem): Promise<boolean> {
     if (item.unsealedDetail == null && item.detail.dataType === 'sealed' && this.seal && this.crypto) {
       try {
-        const { subjectEncrypted, subjectIv, seals } = JSON.parse(item.detail.data);
+        let { subjectEncrypted, subjectIv, seals } = JSON.parse(item.detail.data);
         if (!item.channelKey) {
           item.channelKey = await this.getChannelKey(seals);
           if (this.focus) {
@@ -662,11 +662,11 @@ export class StreamModule {
           }
         }
         if (item.channelKey) {
-          const { data } = await this.crypto.aesDecrypt(subjectEncrypted, subjectIv, item.channelKey);
+          let { data } = await this.crypto.aesDecrypt(subjectEncrypted, subjectIv, item.channelKey);
           item.unsealedDetail = data;
           if (this.focus) {
-            const { dataType, enableImage, enableAudio, enableVideo, enableBinary, members, created } = item.detail;
-            const focusDetail = { 
+            let { dataType, enableImage, enableAudio, enableVideo, enableBinary, members, created } = item.detail;
+            let focusDetail = { 
               sealed: true,
               locked: false,
               dataType,
@@ -693,7 +693,7 @@ export class StreamModule {
     if (item.unsealedSummary == null && item.summary.status === 'confirmed' && item.summary.dataType === 'sealedtopic' && this.seal && this.crypto) {
       try {
         if (!item.channelKey) {
-          const { seals } = JSON.parse(item.detail.data);
+          let { seals } = JSON.parse(item.detail.data);
           item.channelKey = await this.getChannelKey(seals);
           if (this.focus) {
             try {
@@ -704,11 +704,11 @@ export class StreamModule {
           }
         }
         if (item.channelKey) {
-          const { messageEncrypted, messageIv } = JSON.parse(item.summary.data);
+          let { messageEncrypted, messageIv } = JSON.parse(item.summary.data);
           if (!messageEncrypted || !messageIv) {
             this.log.warn('invalid sealed summary');
           } else {
-            const { data } = await this.crypto.aesDecrypt(messageEncrypted, messageIv, item.channelKey);
+            let { data } = await this.crypto.aesDecrypt(messageEncrypted, messageIv, item.channelKey);
             item.unsealedSummary = data;
             return true;
           }
