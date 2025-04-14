@@ -4,7 +4,7 @@ import {render, act, screen, waitFor, fireEvent} from '@testing-library/react'
 import { ChannelContextProvider, ChannelContext } from 'context/ChannelContext';
 import * as fetchUtil from 'api/fetchUtil';
 
-const channelContext = null;
+let channelContext = null;
 function ChannelView() {
   var [renderCount, setRenderCount] = useState(0);
   var [channels, setChannels] = useState([]);
@@ -44,17 +44,17 @@ function ChannelTestApp() {
 var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
 var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 
-const statusDetail;
-const statusSummary;
-const statusChannels;
-const fetchDetail;
-const fetchSummary;
-const fetchChannels;
-const addedChannel;
-const removedChannel;
-const updatedChannel;
-const addedCard;
-const removedCard;
+let statusDetail;
+let statusSummary;
+let statusChannels;
+let fetchDetail;
+let fetchSummary;
+let fetchChannels;
+let addedChannel;
+let removedChannel;
+let updatedChannel;
+let addedCard;
+let removedCard;
 beforeEach(() => {
 
   statusDetail = 200;
