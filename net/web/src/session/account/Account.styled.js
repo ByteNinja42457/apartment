@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let AccountWrapper = styled.div`
+export const AccountWrapper = styled.div`
   min-height: 100%;
   width: 100%;
   display: flex;
