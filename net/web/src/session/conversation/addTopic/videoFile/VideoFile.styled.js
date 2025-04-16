@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let VideoFileWrapper = styled.div`
+export const VideoFileWrapper = styled.div`
   position: relative;
   height: 100%;
 
