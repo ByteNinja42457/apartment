@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export let CardsWrapper = styled.div`
+export const CardsWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
