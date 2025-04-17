@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { useRingContext } from './useRingContext.hook';
 
-export const RingContext = createContext({});
+export let RingContext = createContext({});
 
 export function RingContextProvider({ children }) {
-  const { state, actions } = useRingContext();
+  let { state, actions } = useRingContext();
   return (
     <RingContext.Provider value={{ state, actions }}>
       {children}
