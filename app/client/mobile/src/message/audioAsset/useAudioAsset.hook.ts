@@ -6,9 +6,9 @@ import {MediaAsset} from '../../conversation/Conversation';
 import {Download} from '../../download';
 
 export function useAudioAsset(topicId: string, asset: MediaAsset) {
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
-  let [state, setState] = useState({
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const [state, setState] = useState({
     strings: display.state.strings,
     dataUrl: null,
     loading: false,
@@ -16,13 +16,13 @@ export function useAudioAsset(topicId: string, asset: MediaAsset) {
     loadPercent: 0,
     failed: false,
   });
-  let cancelled = useRef(false);
+  const cancelled = useRef(false);
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  let actions = {
+  const actions = {
     cancelLoad: () => {
       cancelled.current = true;
     },
@@ -39,13 +39,13 @@ export function useAudioAsset(topicId: string, asset: MediaAsset) {
       }
     },
     loadAudio: async () => {
-      let {focus} = app.state;
-      let assetId = asset.audio ? asset.audio.full : asset.encrypted ? asset.encrypted.parts : null;
+      const {focus} = app.state;
+      const assetId = asset.audio ? asset.audio.full : asset.encrypted ? asset.encrypted.parts : null;
       if (focus && assetId != null && !state.loading && !state.dataUrl) {
         cancelled.current = false;
         updateState({loading: true, loadPercent: 0});
         try {
-          let dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
+          const dataUrl = await focus.getTopicAssetUrl(topicId, assetId, (loadPercent: number) => {
             updateState({loadPercent});
             return !cancelled.current;
           });
