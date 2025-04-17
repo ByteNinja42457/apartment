@@ -5,12 +5,12 @@ import { ContextType } from '../context/ContextType'
 import { Card } from 'databag-client-sdk'
 
 export function useRing() {
-  let ring = useContext(RingContext) as ContextType
-  let display = useContext(DisplayContext) as ContextType
-  let offsetTime = useRef(0)
-  let offset = useRef(false)
+  const ring = useContext(RingContext) as ContextType
+  const display = useContext(DisplayContext) as ContextType
+  const offsetTime = useRef(0)
+  const offset = useRef(false)
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     strings: display.state.strings,
     calls: [] as { callId: string; card: Card }[],
     calling: null as null | Card,
@@ -23,15 +23,15 @@ export function useRing() {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState((s) => ({ ...s, ...value }))
   }
 
   useEffect(() => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (offset.current) {
-        let now = new Date()
-        let duration = Math.floor(now.getTime() / 1000 - offsetTime.current)
+        const now = new Date()
+        const duration = Math.floor(now.getTime() / 1000 - offsetTime.current)
         updateState({ duration })
       }
     }, 1000)
@@ -41,13 +41,13 @@ export function useRing() {
   }, [])
 
   useEffect(() => {
-    let { calls, calling, localVideo, remoteVideo, audioEnabled, connected, connectedTime, failed } = ring.state
+    const { calls, calling, localVideo, remoteVideo, audioEnabled, connected, connectedTime, failed } = ring.state
     offsetTime.current = connectedTime
     offset.current = connected
-    let duration = connected ? Math.floor(new Date().getTime() / 1000 - connectedTime) : 0
+    const duration = connected ? Math.floor(new Date().getTime() / 1000 - connectedTime) : 0
     updateState({ calls, calling, duration, localVideo, remoteVideo, audioEnabled, connected, failed })
   }, [ring.state])
 
-  let actions = ring.actions
+  const actions = ring.actions
   return { state, actions }
 }
