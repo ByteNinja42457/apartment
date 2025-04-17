@@ -4,17 +4,17 @@ import {ContextType} from '../context/ContextType';
 import {useLocation, useNavigate} from 'react-router-dom';
 import SplashScreen from 'react-native-splash-screen';
 
-const CLEAR_TIME = 2000;
+let CLEAR_TIME = 2000;
 
 export function useRoot() {
-  const app = useContext(AppContext) as ContextType;
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType;
+  let location = useLocation();
+  let navigate = useNavigate();
+  let [state, setState] = useState({
     pathname: '',
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
@@ -25,7 +25,7 @@ export function useRoot() {
   }, []);
 
   useEffect(() => {
-    const {pathname} = location;
+    let {pathname} = location;
     updateState({pathname});
   }, [location]);
 
@@ -45,7 +45,7 @@ export function useRoot() {
     }
   }, [state.pathname, app.state.session, app.state.service, app.state.initialized, navigate]);
 
-  const actions = {};
+  let actions = {};
 
   return {state, actions};
 }
