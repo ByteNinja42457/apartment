@@ -12,19 +12,19 @@ import { getChannelSubjectLogo } from 'context/channelUtil';
 
 export function useSettings() {
 
-  let profile = useContext(ProfileContext);
-  let account = useContext(AccountContext);
-  let app = useContext(AppContext);
-  let card = useContext(CardContext);
-  let channel = useContext(ChannelContext);
-  let display = useContext(DisplayContext);
+  const profile = useContext(ProfileContext);
+  const account = useContext(AccountContext);
+  const app = useContext(AppContext);
+  const card = useContext(CardContext);
+  const channel = useContext(ChannelContext);
+  const display = useContext(DisplayContext);
 
-  let debounce = useRef(null);
-  let checking = useRef(null);
-  let channels = useRef([]);
-  let cardChannels = useRef([]);
+  const debounce = useRef(null);
+  const checking = useRef(null);
+  const channels = useRef([]);
+  const cardChannels = useRef([]);
 
-  let [state, setState] = useState({
+  const [state, setState] = useState({
     strings: getLanguageStrings(),
     timeFull: false,
     monthLast: false,
@@ -65,26 +65,26 @@ export function useSettings() {
     mfaImage: null,
   });
 
-  let updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
   useEffect(() => {
-    let { timeFull, monthLast } = profile.state;
-    let handle = profile.state.identity.handle;
+    const { timeFull, monthLast } = profile.state;
+    const handle = profile.state.identity.handle;
     updateState({ timeFull, monthLast, handle });
   }, [profile.state]);
 
   useEffect(() => {
-    let { seal, sealable, pushEnabled, mfaEnabled } = account.state.status;
-    let sealKey = account.state.sealKey;
-    let sealEnabled = seal?.publicKey != null;
-    let sealUnlocked = seal?.publicKey === sealKey?.public && sealKey?.private && sealKey?.public;
+    const { seal, sealable, pushEnabled, mfaEnabled } = account.state.status;
+    const sealKey = account.state.sealKey;
+    const sealEnabled = seal?.publicKey != null;
+    const sealUnlocked = seal?.publicKey === sealKey?.public && sealKey?.private && sealKey?.public;
     updateState({ sealable, seal, sealKey, sealEnabled, sealUnlocked, pushEnabled, mfaEnabled });
   }, [account.state]);
 
-  let setCardItem = (item) => {
-    let { profile, cardId } = item?.card || {};
+  const setCardItem = (item) => {
+    const { profile, cardId } = item?.card || {};
     return {
       cardId: cardId,
       name: profile?.name,
@@ -93,9 +93,9 @@ export function useSettings() {
     }
   };
 
-  let setChannelItem = (item) => {
-    let profileGuid = profile.state?.identity?.guid;
-    let { logo, subject } = getChannelSubjectLogo(item.cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl);
+  const setChannelItem = (item) => {
+    const profileGuid = profile.state?.identity?.guid;
+    const { logo, subject } = getChannelSubjectLogo(item.cardId, profileGuid, item, card.state.cards, card.actions.getCardImageUrl);
     return {
       cardId: item.cardId,
       channelId: item.channelId,
@@ -105,11 +105,11 @@ export function useSettings() {
     }
   };
 
-  let setTopicItem = (item) => {
-    let { cardId, channelId, topicId, detail } = item;
+  const setTopicItem = (item) => {
+    const { cardId, channelId, topicId, detail } = item;
     if (cardId) {
-      let contact = card.state.cards.get(cardId);
-      let { handle, node, imageSet } = contact?.card?.profile || {};
+      const contact = card.state.cards.get(cardId);
+      const { handle, node, imageSet } = contact?.card?.profile || {};
       return {
         cardId: cardId,
         channelId: channelId,
@@ -120,7 +120,7 @@ export function useSettings() {
       }
     }
     else {
-      let { handle, node } = profile?.state.identity || {};
+      const { handle, node } = profile?.state.identity || {};
       return {
         channelId: channelId,
         topicId: topicId,
@@ -132,9 +132,9 @@ export function useSettings() {
   };
 
   useEffect(() => {
-    let contacts = Array.from(card.state.cards.values());
-    let filtered = contacts.filter(contact => contact.card.blocked);
-    let sorted = filtered.map(setCardItem).sort((a, b) => {
+    const contacts = Array.from(card.state.cards.values());
+    const filtered = contacts.filter(contact => contact.card.blocked);
+    const sorted = filtered.map(setCardItem).sort((a, b) => {
       if (a.name === b.name) {
         return 0;
       }
@@ -147,12 +147,12 @@ export function useSettings() {
 
     cardChannels.current = [];
     contacts.forEach(contact => {
-      let filtered = Array.from(contact.channels.values()).filter(topic => topic.blocked);
-      let mapped = filtered.map(item => setChannelItem({ ...item, cardId: contact.card.cardId }));
+      const filtered = Array.from(contact.channels.values()).filter(topic => topic.blocked);
+      const mapped = filtered.map(item => setChannelItem({ ...item, cardId: contact.card.cardId }));
       cardChannels.current = cardChannels.current.concat(mapped);
     });
-    let merged = cardChannels.current.concat(channels.current);
-    let sortedMerge = merged.sort((a, b) => {
+    const merged = cardChannels.current.concat(channels.current);
+    const sortedMerge = merged.sort((a, b) => {
       if (a.created === b.created) {
         return 0;
       }
@@ -165,10 +165,10 @@ export function useSettings() {
   }, [card.state]);
 
   useEffect(() => {
-    let filtered = Array.from(channel.state.channels.values()).filter(topic => topic.blocked);
+    const filtered = Array.from(channel.state.channels.values()).filter(topic => topic.blocked);
     channels.current = filtered.map(setChannelItem);
-    let merged = cardChannels.current.concat(channels.current);
-    let sortedMerge = merged.sort((a, b) => {
+    const merged = cardChannels.current.concat(channels.current);
+    const sortedMerge = merged.sort((a, b) => {
       if (a.created === b.created) {
         return 0;
       }
@@ -180,30 +180,30 @@ export function useSettings() {
     updateState({ topics: sortedMerge });
   }, [channel.state]);
 
-  let unlockKey = async () => {
-    let sealKey = unlockSeal(state.seal, state.sealPassword);
+  const unlockKey = async () => {
+    const sealKey = unlockSeal(state.seal, state.sealPassword);
     await account.actions.unlockAccountSeal(sealKey);
   };
 
-  let disableKey = async () => {
+  const disableKey = async () => {
     await account.actions.unlockAccountSeal({});
   }
 
-  let updateKey = async () => {
-    let updated = updateSeal(state.seal, state.sealKey, state.sealPassword);
+  const updateKey = async () => {
+    const updated = updateSeal(state.seal, state.sealKey, state.sealPassword);
     await account.actions.setAccountSeal(updated.seal, updated.sealKey);
   }
 
-  let generateKey = async () => {
-    let created = await generateSeal(state.sealPassword);
+  const generateKey = async () => {
+    const created = await generateSeal(state.sealPassword);
     await account.actions.setAccountSeal(created.seal, created.sealKey);
   }
 
-  let removeKey = async () => {
+  const removeKey = async () => {
     await account.actions.setAccountSeal({}, {});
   }
 
-  let actions = {
+  const actions = {
     setTimeFull: async (flag) => {
       updateState({ timeFull: flag });
       await profile.actions.setTimeFull(flag);
@@ -229,10 +229,10 @@ export function useSettings() {
       updateState({ blockedTopics: false });
     },
     showBlockedMessages: async () => {
-      let cardMessages = await card.actions.getFlaggedTopics();
-      let channelMessages = await channel.actions.getFlaggedTopics();
-      let merged = cardMessages.map(setTopicItem).concat(channelMessages.map(setTopicItem));
-      let sortedMerge = merged.sort((a, b) => {
+      const cardMessages = await card.actions.getFlaggedTopics();
+      const channelMessages = await channel.actions.getFlaggedTopics();
+      const merged = cardMessages.map(setTopicItem).concat(channelMessages.map(setTopicItem));
+      const sortedMerge = merged.sort((a, b) => {
         if (a.created === b.created) {
           return 0;
         }
@@ -270,8 +270,8 @@ export function useSettings() {
       }
       else {
         debounce.current = setTimeout(async () => {
-          let cur = JSON.parse(JSON.stringify(username));
-          let available = await profile.actions.getHandleStatus(cur);
+          const cur = JSON.parse(JSON.stringify(username));
+          const available = await profile.actions.getHandleStatus(cur);
           if (checking.current === cur) {
             updateState({ available, validated: true });
           }
@@ -384,7 +384,7 @@ export function useSettings() {
     },
     enableMFA: async () => {
       updateState({ mfaModal: true, mfaImage: null, mfaText: null, mfaCode: '' });
-      let mfa = await account.actions.enableMFA();
+      const mfa = await account.actions.enableMFA();
       updateState({ mfaImage: mfa.secretImage, mfaText: mfa.secretText });
     },
     disableMFA: async () => {
