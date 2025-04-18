@@ -4,49 +4,49 @@ import {AppContext} from '../context/AppContext';
 import {ContextType} from '../context/ContextType';
 
 export function useMessage() {
-  let app = useContext(AppContext) as ContextType;
-  let display = useContext(DisplayContext) as ContextType;
-  let [state, setState] = useState({
+  const app = useContext(AppContext) as ContextType;
+  const display = useContext(DisplayContext) as ContextType;
+  const [state, setState] = useState({
     strings: display.state.strings,
     fullDayTime: app.state.fullDayTime,
     monthFirstDate: app.state.monthFirstDate,
   });
 
-  let updateState = (value: any) => {
+  const updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
   useEffect(() => {
-    let {strings} = display.state;
+    const {strings} = display.state;
     updateState({strings});
   }, [display.state]);
 
   useEffect(() => {
-    let {monthFirstDate, fullDayTime} = app.state;
+    const {monthFirstDate, fullDayTime} = app.state;
     updateState({ monthFirstDate, fullDayTime });
   }, [app.state]);
 
-  let actions = {
+  const actions = {
     block: async (topicId: string) => {
-      let focus = app.state.focus;
+      const focus = app.state.focus;
       if (focus) {
         await focus.setBlockTopic(topicId);
       }
     },
     flag: async (topicId: string) => {
-      let focus = app.state.focus;
+      const focus = app.state.focus;
       if (focus) {
         await focus.flagTopic(topicId);
       }
     },
     remove: async (topicId: string) => {
-      let focus = app.state.focus;
+      const focus = app.state.focus;
       if (focus) {
         await focus.removeTopic(topicId);
       }
     },
     saveSubject: async (topicId: string, sealed: boolean, subject: any) => {
-      let focus = app.state.focus;
+      const focus = app.state.focus;
       if (focus) {
         await focus.setTopicSubject(
           topicId,
@@ -58,9 +58,9 @@ export function useMessage() {
       }
     },
     getTimestamp: (created: number) => {
-      let now = Math.floor(new Date().getTime() / 1000);
-      let date = new Date(created * 1000);
-      let offset = now - created;
+      const now = Math.floor(new Date().getTime() / 1000);
+      const date = new Date(created * 1000);
+      const offset = now - created;
       if (offset < 43200) {
         if (state.fullDayTime) {
           return date.toLocaleTimeString('en-GB', {hour12: false, hour: 'numeric', minute: '2-digit'});
