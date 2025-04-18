@@ -5,9 +5,9 @@ import {ContextType} from '../context/ContextType';
 import type {Member} from 'databag-client-sdk';
 
 export function useAccounts() {
-  const app = useContext(AppContext) as ContextType;
-  const display = useContext(DisplayContext) as ContextType;
-  const [state, setState] = useState({
+  let app = useContext(AppContext) as ContextType;
+  let display = useContext(DisplayContext) as ContextType;
+  let [state, setState] = useState({
     layout: '',
     strings: display.state.strings,
     members: [] as Member[],
@@ -15,16 +15,16 @@ export function useAccounts() {
     secretText: '',
   });
 
-  const updateState = (value: any) => {
+  let updateState = (value: any) => {
     setState(s => ({...s, ...value}));
   };
 
-  const sync = async () => {
+  let sync = async () => {
     if (!state.loading) {
       try {
         updateState({loading: true});
-        const service = app.state.service;
-        const members = await service.getMembers();
+        let service = app.state.service;
+        let members = await service.getMembers();
         updateState({members, loading: false});
       } catch (err) {
         console.log(err);
@@ -34,11 +34,11 @@ export function useAccounts() {
   };
 
   useEffect(() => {
-    const {layout, strings} = display.state;
+    let {layout, strings} = display.state;
     updateState({layout, strings});
   }, [display.state]);
 
-  const actions = {
+  let actions = {
     reload: sync,
     addAccount: async () => {
       return await app.state.service.createMemberAccess();
