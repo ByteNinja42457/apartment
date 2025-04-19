@@ -8,16 +8,16 @@ import * as fetchUtil from 'api/fetchUtil';
 let contactHook;
 let cardContext;
 function ContactView() {
-  var [name, setName] = useState();
-  var [status, setStatus] = useState();
-  var { state, actions } = useContact('01ab23');
-  var [renderCount, setRenderCount] = useState(0);
-  var card = useContext(CardContext);
+  const [name, setName] = useState();
+  const [status, setStatus] = useState();
+  const { state, actions } = useContact('01ab23');
+  const [renderCount, setRenderCount] = useState(0);
+  const card = useContext(CardContext);
   cardContext = card;
   contactHook = actions;
 
   useEffect(() => {
-    var rendered = [];
+    const rendered = [];
     setName(state.name);
     setStatus(state.status);
     setRenderCount(renderCount + 1);
@@ -44,14 +44,14 @@ function ContactTestApp() {
 let fetchCards;
 let fetchProfile;
 let fetchDetail;
-var realFetchWithTimeout = fetchUtil.fetchWithTimeout;
-var realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
+const realFetchWithTimeout = fetchUtil.fetchWithTimeout;
+const realFetchWithCustomTimeout = fetchUtil.fetchWithCustomTimeout;
 beforeEach(() => {
   fetchCards = [];
   fetchDetail = {};
   fetchProfile = {};
 
-  var mockFetch = jest.fn().mockImplementation((url, options) => {
+  const mockFetch = jest.fn().mockImplementation((url, options) => {
 
     if (url.startsWith('/contact/cards?agent')) {
       return Promise.resolve({
