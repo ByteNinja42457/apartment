@@ -6,8 +6,8 @@ import { getUsername } from 'api/getUsername';
 
 export function useCreateAccount() {
 
-  var [checked, setChecked] = useState(true);
-  var [state, setState] = useState({
+  const [checked, setChecked] = useState(true);
+  const [state, setState] = useState({
     username: '',
     password: '',
     confirm: '',
@@ -18,17 +18,17 @@ export function useCreateAccount() {
     menuStyle: {},
   });
 
-  var navigate = useNavigate();
-  var { search } = useLocation();
-  var app = useContext(AppContext);
-  var settings = useContext(SettingsContext);
-  var debounce = useRef(null);
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const app = useContext(AppContext);
+  const settings = useContext(SettingsContext);
+  const debounce = useRef(null);
 
-  var updateState = (value) => {
+  const updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
-  var usernameSet = (name) => {
+  const usernameSet = (name) => {
     setChecked(false)
     clearTimeout(debounce.current)
     debounce.current = setTimeout(async () => {
@@ -54,7 +54,7 @@ export function useCreateAccount() {
     }, 500)
   }
 
-  var actions = {
+  const actions = {
     setUsername: (username) => {
       updateState({ username });
       usernameSet(username);
@@ -66,7 +66,7 @@ export function useCreateAccount() {
       updateState({ confirm });
     },
     isDisabled: () => {
-      var restricted = new RegExp('[!@#$%^&*() ,.?":{}|<>]', 'i');
+      const restricted = new RegExp('[!@#$%^&*() ,.?":{}|<>]', 'i');
       if (state.username === '' || restricted.test(state.username) || state.password === '' ||
           state.password !== state.confirm || !checked || state.validateStatus === 'error') {
         return true
@@ -96,7 +96,7 @@ export function useCreateAccount() {
   };
 
   useEffect(() => {
-    var { strings, menuStyle } = settings.state;
+    const { strings, menuStyle } = settings.state;
     updateState({ strings, menuStyle });
   }, [settings.state]);
 
