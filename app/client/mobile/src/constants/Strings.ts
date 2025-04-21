@@ -1,6 +1,6 @@
 import {NativeModules, Platform} from 'react-native';
 
-export const en = {
+export let en = {
   viewTerms: 'View Terms of Service',
   acceptTerms: 'Accept Terms of Service',
   terms: 'Terms of Service',
@@ -296,7 +296,7 @@ export const en = {
   disablePrompt: 'Are you sure you want to disable multi-factor authentication',
 };
 
-export const fr = {
+export let fr = {
   viewTerms: "Voir les conditions d'utilisation",
   acceptTerms: "Accepter les conditions d'utilisation",
   terms: "Conditions d'utilisation",
@@ -592,7 +592,7 @@ export const fr = {
   disablePrompt: "Êtes-vous sûr de vouloir désactiver l'authentification multi-facteurs",
 };
 
-export const sp = {
+export let sp = {
   viewTerms: 'Ver los términos de servicio',
   acceptTerms: 'Aceptar los términos de servicio',
   terms: 'Términos de servicio',
@@ -887,7 +887,7 @@ export const sp = {
   disablePrompt: '¿Estás seguro de que quieres desactivar la autenticación de dos factores?',
 };
 
-export const pt = {
+export let pt = {
   viewTerms: 'Ver os termos de serviço',
   acceptTerms: 'Aceitar os termos de serviço',
   terms: 'Termos de serviço',
@@ -1182,7 +1182,7 @@ export const pt = {
   disablePrompt: 'Tem certeza de que deseja desativar a autenticação de dois fatores?',
 };
 
-export const de = {
+export let de = {
   viewTerms: 'Nutzungsbedingungen anzeigen',
   acceptTerms: 'Nutzungsbedingungen akzeptieren',
   terms: 'Nutzungsbedingungen',
@@ -1477,7 +1477,7 @@ export const de = {
   disablePrompt: 'Sind Sie sicher, dass Sie die Zwei-Faktor-Authentifizierung deaktivieren möchten?',
 };
 
-export const ru = {
+export let ru = {
   viewTerms: 'Просмотреть условия обслуживания',
   acceptTerms: 'Принять условия обслуживания',
   terms: 'Условия обслуживания',
@@ -1772,7 +1772,7 @@ export const ru = {
   disablePrompt: 'Вы уверены, что хотите отключить двухфакторную аутентификацию?',
 };
 
-export const el = {
+export let el = {
   viewTerms: 'Δείτε τους όρους υπηρεσίας',
   acceptTerms: 'Αποδεχτείτε τους όρους υπηρεσίας',
   terms: 'Όροι υπηρεσίας',
@@ -2040,9 +2040,9 @@ export const el = {
 };
 
 export function getLanguageStrings() {
-  const locale = Platform.OS === 'ios' ? NativeModules.SettingsManager?.settings.AppleLocale || NativeModules.SettingsManager?.settings.AppleLanguages[0] : NativeModules.I18nManager?.localeIdentifier;
+  let locale = Platform.OS === 'ios' ? NativeModules.SettingsManager?.settings.AppleLocale || NativeModules.SettingsManager?.settings.AppleLanguages[0] : NativeModules.I18nManager?.localeIdentifier;
 
-  const lang = locale?.slice(0, 2) || '';
+  let lang = locale?.slice(0, 2) || '';
 
   if (lang === 'en') {
     return en;
