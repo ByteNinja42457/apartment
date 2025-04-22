@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 import { useStoreContext } from './useStoreContext.hook';
 
-export const StoreContext = createContext({});
+export let StoreContext = createContext({});
 
 export function StoreContextProvider({ children }) {
-  const { state, actions } = useStoreContext();
+  let { state, actions } = useStoreContext();
   return (
     <StoreContext.Provider value={{ state, actions }}>
       {children}
