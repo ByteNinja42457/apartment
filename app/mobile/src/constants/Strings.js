@@ -1,6 +1,6 @@
 import { NativeModules, Platform } from 'react-native'
 
-let Strings = [
+const Strings = [
   {
     // settings screen
     languageCode: 'en',
@@ -1461,9 +1461,9 @@ let Strings = [
 ];
 
 export function getLanguageStrings() {
-  let locale = Platform.OS === 'ios' ? NativeModules.SettingsManager?.settings.AppleLocale || NativeModules.SettingsManager?.settings.AppleLanguages[0] : NativeModules.I18nManager?.localeIdentifier;
+  const locale = Platform.OS === 'ios' ? NativeModules.SettingsManager?.settings.AppleLocale || NativeModules.SettingsManager?.settings.AppleLanguages[0] : NativeModules.I18nManager?.localeIdentifier;
 
-  let lang = locale?.slice(0, 2) || '';
+  const lang = locale?.slice(0, 2) || '';
 
   if (lang === 'en') {
     return Strings[0];
