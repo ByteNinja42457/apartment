@@ -6,10 +6,10 @@ import { getLanguageStrings } from 'constants/Strings';
 
 export function useLogin() {
 
-  const navigate = useNavigate();
-  const app = useContext(AppContext);
+  let navigate = useNavigate();
+  let app = useContext(AppContext);
 
-  const [state, setState] = useState({
+  let [state, setState] = useState({
     strings: getLanguageStrings(),
     busy: false,
     enabled: false,
@@ -23,7 +23,7 @@ export function useLogin() {
     mfaError: null,
   });
 
-  const updateState = (value) => {
+  let updateState = (value) => {
     setState((s) => ({ ...s, ...value }));
   }
 
@@ -42,7 +42,7 @@ export function useLogin() {
     }
   }, [state.login, state.password]);
 
-  const actions = {
+  let actions = {
     config: () => {
       navigate('/admin');
     },
