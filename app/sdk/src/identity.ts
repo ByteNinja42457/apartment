@@ -9,8 +9,8 @@ import { setProfileData } from './net/setProfileData';
 import { setProfileImage } from './net/setProfileImage';
 import { ProfileEntity, defaultProfileEntity, avatar } from './entities';
 
-const CLOSE_POLL_MS = 100;
-const RETRY_POLL_MS = 2000;
+let CLOSE_POLL_MS = 100;
+let RETRY_POLL_MS = 2000;
 
 export class IdentityModule implements Identity {
   private guid: string;
@@ -63,10 +63,10 @@ export class IdentityModule implements Identity {
         if (this.revision == this.nextRevision) {
           this.nextRevision = null;
         } else {
-          const nextRev = this.nextRevision;
+          let nextRev = this.nextRevision;
           try {
-            const { guid, node, secure, token } = this;
-            const profile = await getProfile(node, secure, token);
+            let { guid, node, secure, token } = this;
+            let profile = await getProfile(node, secure, token);
             await this.store.setProfileData(guid, profile);
             await this.store.setProfileRevision(guid, nextRev);
             this.profile = profile;
@@ -92,7 +92,7 @@ export class IdentityModule implements Identity {
   }
 
   public setProfile(): Profile {
-    const { guid, handle, name, description, location, image, revision, seal, version, node } = this.profile;
+    let { guid, handle, name, description, location, image, revision, seal, version, node } = this.profile;
     return {
       guid,
       handle,
@@ -129,12 +129,12 @@ export class IdentityModule implements Identity {
   }
 
   public async setProfileData(name: string, location: string, description: string): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setProfileData(node, secure, token, name, location, description);
   }
 
   public async setProfileImage(image: string): Promise<void> {
-    const { node, secure, token } = this;
+    let { node, secure, token } = this;
     await setProfileImage(node, secure, token, image);
   }
 
